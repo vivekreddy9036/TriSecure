@@ -10,7 +10,7 @@ from typing import Optional, List
 from uuid import UUID
 import sqlite3
 
-from trisecure.models import Vote
+from models import Vote
 
 logger = logging.getLogger(__name__)
 

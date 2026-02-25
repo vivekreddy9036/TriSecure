@@ -10,7 +10,7 @@ from typing import Optional, List
 from uuid import UUID
 import sqlite3
 
-from trisecure.models import AuditEvent, EventType, EventStatus
+from models import AuditEvent, EventType, EventStatus
 
 logger = logging.getLogger(__name__)
 

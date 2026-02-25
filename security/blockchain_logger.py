@@ -9,8 +9,8 @@ import logging
 from dataclasses import dataclass
 from typing import Optional, List
 
-from trisecure.models import Vote
-from trisecure.repositories import VoteRepositoryBase
+from models import Vote
+from repositories import VoteRepositoryBase
 
 logger = logging.getLogger(__name__)
 

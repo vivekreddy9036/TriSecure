@@ -10,9 +10,9 @@ from dataclasses import dataclass
 from typing import Optional, Callable
 from uuid import UUID
 
-from trisecure.models import Voter, Session, EventType, EventStatus
-from trisecure.core.session_manager import SessionManager
-from trisecure.core.audit_logger import AuditLogger
+from models import Voter, Session, EventType, EventStatus
+from core.session_manager import SessionManager
+from core.audit_logger import AuditLogger
 
 logger = logging.getLogger(__name__)
 

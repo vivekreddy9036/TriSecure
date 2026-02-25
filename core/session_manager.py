@@ -9,7 +9,7 @@ from typing import Optional
 from uuid import UUID
 from datetime import datetime, timedelta
 
-from trisecure.models import Session, Voter
+from models import Session, Voter
 
 logger = logging.getLogger(__name__)
 

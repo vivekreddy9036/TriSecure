@@ -9,7 +9,7 @@ from typing import Optional, Any
 from uuid import UUID
 from datetime import datetime
 
-from trisecure.models import AuditEvent, EventType, EventStatus
+from models import AuditEvent, EventType, EventStatus
 
 # Configure structured logging
 logger = logging.getLogger(__name__)
