@@ -112,12 +112,12 @@ class TRIsecureSystem:
     
     def _initialize_hardware_services(self) -> None:
         """Initialize NFC, Camera, and Face services."""
-        # NFC Service
+        # NFC Service (SPI-based PN532)
         if self.config.NFC_ENABLED:
             self.logger.info("Initializing NFC service...")
+            # SPI pins/baudrate use NFCService defaults (CS=D8, RESET=D25).
+            # We only pass timeout from config.
             self.nfc_service = NFCService(
-                i2c_address=self.config.NFC_I2C_ADDRESS,
-                i2c_bus=self.config.NFC_I2C_BUS,
                 timeout=self.config.NFC_TIMEOUT
             )
             nfc_ok = self.nfc_service.initialize()
