@@ -113,9 +113,22 @@ class Config:
         
         # NFC
         self.NFC_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}NFC_ENABLED"), self.NFC_ENABLED)
-        self.NFC_I2C_ADDRESS = int(os.getenv(f"{env_prefix}NFC_I2C_ADDRESS", self.NFC_I2C_ADDRESS), 0)
-        self.NFC_I2C_BUS = int(os.getenv(f"{env_prefix}NFC_I2C_BUS", self.NFC_I2C_BUS))
-        self.NFC_TIMEOUT = float(os.getenv(f"{env_prefix}NFC_TIMEOUT", self.NFC_TIMEOUT))
+
+        # NFC_I2C_ADDRESS: allow hex strings like "0x24" but do not
+        # pass an int into int(..., 0) (which raises TypeError).
+        nfc_addr_str = os.getenv(f"{env_prefix}NFC_I2C_ADDRESS")
+        if nfc_addr_str is not None:
+            try:
+                self.NFC_I2C_ADDRESS = int(nfc_addr_str, 0)
+            except ValueError:
+                logging.warning(
+                    "Invalid NFC_I2C_ADDRESS '%s', keeping default 0x%X",
+                    nfc_addr_str,
+                    self.NFC_I2C_ADDRESS,
+                )
+
+        self.NFC_I2C_BUS = int(os.getenv(f"{env_prefix}NFC_I2C_BUS", str(self.NFC_I2C_BUS)))
+        self.NFC_TIMEOUT = float(os.getenv(f"{env_prefix}NFC_TIMEOUT", str(self.NFC_TIMEOUT)))
         
         # Camera
         self.CAMERA_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}CAMERA_ENABLED"), self.CAMERA_ENABLED)
