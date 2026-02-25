@@ -1,0 +1,115 @@
+# TRIsecure - Production-Grade Secure eVoting System
+# Requirements for Raspberry Pi 4 + Ubuntu 22.04 ARM64
+
+# Core Dependencies
+python>=3.10
+
+# Hardware Interfaces
+# PN532 NFC Reader (I2C)
+adafruit-circuitpython-pn532>=1.4.5
+adafruit-circuitpython-busdevice>=5.1.8
+
+# Raspberry Pi Hardware Abstraction
+RPi.GPIO>=0.7.0
+adafruit-blinka>=8.0.0
+board>=1.0
+
+# Video/Camera Processing
+opencv-python>=4.5.4  # Or opencv-contrib-python for ARM
+numpy>=1.21.0
+
+# Face Recognition (dlib-based)
+face-recognition>=1.3.5
+dlib>=19.22.0  # May require compilation on ARM - prebuilt wheels recommended
+
+# Database
+# SQLite is built-in, but optionally:
+# sqlalchemy>=1.4.0  # For future ORM migration
+
+# Cryptography (Phase 2)
+cryptography>=38.0.0
+PyNaCl>=1.5.0  # libsodium wrapper
+
+# Blockchain Integration (Phase 3-4)
+# web3>=5.0.0  # Ethereum integration
+# fabric-chaincode-protos>=2.5.0  # Hyperledger Fabric
+
+# Logging and Monitoring
+python-json-logger>=2.0.0  # Structured JSON logging
+
+# CLI Interface (Optional)
+click>=8.1.0
+rich>=11.0.0  # Pretty terminal output
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=3.0.0
+pytest-asyncio>=0.18.0
+
+# Code Quality (Development)
+black>=22.0.0
+flake8>=4.0.0
+mypy>=0.950
+pylint>=2.12.0
+isort>=5.10.0
+
+# Documentation (Development)
+sphinx>=4.5.0
+sphinx-rtd-theme>=1.0.0
+
+# Development Tools
+ipython>=8.0.0
+ipdb>=0.13.0
+
+# ARM-Specific Notes:
+# ==================
+# 1. dlib: Use pre-compiled wheel for ARM64
+#    pip install --no-index --find-links=./wheels dlib
+#
+# 2. OpenCV: May need to compile from source
+#    sudo apt-get install libatlas-base-dev libjasper-dev libqtgui4 libqt4-test libhdf5-dev
+#    pip install opencv-contrib-python
+#
+# 3. face_recognition: Depends on dlib, install dlib first
+#
+# 4. Raspberry Pi Dependencies:
+#    sudo apt-get install python3-dev libffi-dev libssl-dev i2c-tools
+#    sudo apt-get install libjasper-dev libqtgui4 libqt4-test libhdf5-dev libharfbuzz0b libwebp6
+
+# Installation Instructions:
+# ==========================
+# 1. Update system:
+#    sudo apt-get update && sudo apt-get upgrade
+#
+# 2. Install system dependencies:
+#    sudo apt-get install python3.10 python3.10-dev python3.10-venv
+#    sudo apt-get install i2c-tools
+#
+# 3. Create virtual environment:
+#    python3.10 -m venv venv
+#    source venv/bin/activate
+#
+# 4. Install Python dependencies:
+#    pip install --upgrade pip wheel setuptools
+#    pip install -r requirements.txt
+#
+# 5. Enable I2C (for NFC):
+#    sudo raspi-config  # Then Interface > I2C > Enable
+#
+# 6. Test hardware:
+#    i2cdetect -y 1  # Should show PN532 at address 0x24
+#
+# 7. Run system:
+#    python trisecure/main.py
+#
+# 8. Deploy as systemd service:
+#    sudo cp trisecure.service /etc/systemd/system/
+#    sudo systemctl daemon-reload
+#    sudo systemctl enable trisecure
+#    sudo systemctl start trisecure
+
+# Production Deployment:
+# =====================
+# For production, use a locked requirements.txt:
+#   pip freeze > requirements-lock.txt
+# This ensures exact versions across all deployments

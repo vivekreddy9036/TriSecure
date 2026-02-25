@@ -1,0 +1,68 @@
+[Unit]
+Description=TRIsecure - Secure eVoting System
+Documentation=https://trisecure.dev
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=trisecure
+Group=trisecure
+WorkingDirectory=/opt/trisecure
+Environment="PYTHONUNBUFFERED=1"
+Environment="TRISECURE_MODE=production"
+Environment="TRISECURE_LOG_FILE=/var/log/trisecure/trisecure.log"
+Environment="TRISECURE_DATABASE_PATH=/var/lib/trisecure/trisecure.db"
+
+# Hardware access
+SupplementaryGroups=i2c,video
+
+# Restart policy
+Restart=on-failure
+RestartSec=5s
+StartLimitInterval=60s
+StartLimitBurst=3
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/trisecure /var/log/trisecure
+
+# Startup script
+ExecStart=/opt/trisecure/venv/bin/python -m trisecure.main
+
+# Graceful shutdown
+KillMode=process
+KillSignal=SIGTERM
+TimeoutStopSec=10s
+
+[Install]
+WantedBy=multi-user.target
+
+# Installation Instructions:
+# ==========================
+# 1. Create trisecure user:
+#    sudo useradd -r -s /bin/false -d /var/lib/trisecure trisecure
+#
+# 2. Create directories with proper permissions:
+#    sudo mkdir -p /opt/trisecure /var/lib/trisecure /var/log/trisecure
+#    sudo chown -R trisecure:trisecure /var/lib/trisecure /var/log/trisecure
+#    sudo chmod 750 /var/lib/trisecure /var/log/trisecure
+#
+# 3. Copy service file:
+#    sudo cp trisecure.service /etc/systemd/system/
+#
+# 4. Reload systemd:
+#    sudo systemctl daemon-reload
+#
+# 5. Enable service (autostart):
+#    sudo systemctl enable trisecure
+#
+# 6. Start service:
+#    sudo systemctl start trisecure
+#
+# 7. Check status:
+#    sudo systemctl status trisecure
+#    sudo journalctl -u trisecure -f  # Real-time logs
