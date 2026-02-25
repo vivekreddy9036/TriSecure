@@ -18,4 +18,4 @@ export TRISECURE_MODE=development
 python -m trisecure.main
 
 
-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
+//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
