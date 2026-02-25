@@ -13,12 +13,12 @@ from uuid import uuid4
 from datetime import datetime
 
 # Import architecture layers
-from trisecure.config import get_config, setup_logging, DeploymentMode
-from trisecure.models import Voter, Vote, Session, AuditEvent, EventType, EventStatus
-from trisecure.core import SessionManager, AuditLogger, AuthenticationPipeline, AuthenticationResult
-from trisecure.repositories import SQLiteVoterRepository, SQLiteVoteRepository, SQLiteAuditRepository
-from trisecure.services import NFCService, CameraService, FaceService
-from trisecure.security import BlockchainLogger, EncryptionHooks
+from config import get_config, setup_logging, DeploymentMode
+from models import Voter, Vote, Session, AuditEvent, EventType, EventStatus
+from core import SessionManager, AuditLogger, AuthenticationPipeline, AuthenticationResult
+from repositories import SQLiteVoterRepository, SQLiteVoteRepository, SQLiteAuditRepository
+from services import NFCService, CameraService, FaceService
+from security import BlockchainLogger, EncryptionHooks
 
 logger = logging.getLogger(__name__)
 
