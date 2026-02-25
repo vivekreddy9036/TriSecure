@@ -85,13 +85,13 @@ class SQLiteVoteRepository(VoteRepositoryBase):
             
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS votes (
-                    vote_id TEXT PRIMARY KEY,
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                    vote_id TEXT NOT NULL UNIQUE,
                     voter_id TEXT NOT NULL,
                     candidate TEXT NOT NULL,
                     timestamp TEXT NOT NULL,
                     previous_hash TEXT NOT NULL,
-                    current_hash TEXT NOT NULL,
-                    sequence INTEGER PRIMARY KEY AUTOINCREMENT
+                    current_hash TEXT NOT NULL
                 )
             """)
             
