@@ -1,21 +1,7 @@
-sudo apt-get update
-sudo apt-get install -y \
-  python3 python3-venv python3-dev \
-  build-essential cmake \
-  libhdf5-dev \
-  libssl-dev libffi-dev
+ssh-keygen -t ed25519 -C "vivekreddy9036@gmail.com"
 
 
+git remote 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 origin git@github.com:vivekreddy9036/TriSecure.git
 
 
-  pip install --upgrade pip wheel setuptools
-pip install -r requirements.txt
-
-
-
-
-export TRISECURE_MODE=development
-python -m trisecure.main
-
-
-////////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//////
+git push
