@@ -86,14 +86,14 @@ class SQLiteAuditRepository(AuditRepositoryBase):
             
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS audit_events (
-                    event_id TEXT PRIMARY KEY,
+                    sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id TEXT NOT NULL UNIQUE,
                     event_type TEXT NOT NULL,
                     voter_id TEXT,
                     timestamp TEXT NOT NULL,
                     status TEXT NOT NULL,
                     message TEXT NOT NULL,
-                    details TEXT,
-                    sequence INTEGER PRIMARY KEY AUTOINCREMENT
+                    details TEXT
                 )
             """)
             
