@@ -1,8 +1,9 @@
 # TRIsecure - Production-Grade Secure eVoting System
 # Requirements for Raspberry Pi 4 + Ubuntu 22.04 ARM64
 
-# Core Dependencies
-python>=3.10
+# Core Dependencies (Python version is provided by the system/venv,
+# keep this section informational only; do NOT list `python` as a pip package.)
+# Requires Python 3.10+ (you are on 3.13, which is fine).
 
 # Hardware Interfaces
 # PN532 NFC Reader (I2C)
