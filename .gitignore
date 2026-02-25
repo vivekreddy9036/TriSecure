@@ -1,0 +1,5 @@
+.venv/
+*.log
+*.db
+.env
+code.md
