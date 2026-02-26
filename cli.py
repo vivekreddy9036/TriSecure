@@ -48,7 +48,7 @@ class VoterData:
         self.age = age
         self.unique_id = unique_id
         self.voter_id = str(uuid4())
-        self.created_at = datetime.utcnow()
+        self.created_at = datetime.now()
 
 
 class TRIsecureCLI:
@@ -160,7 +160,11 @@ class TRIsecureCLI:
                 self._voting_mode()
             elif choice == "3":
                 self._show_statistics()
-            elif choice == "4" or choice.lower() == "q":
+            elif choice == "4":
+                self._view_registered_voters()
+            elif choice == "5":
+                self._reset_database()
+            elif choice == "6" or choice.lower() == "q":
                 self.running = False
                 print("\nGoodbye!\n")
             else:
@@ -174,10 +178,12 @@ class TRIsecureCLI:
         print("  1. Register New Voter")
         print("  2. Cast Vote")
         print("  3. View Statistics")
-        print("  4. Exit")
+        print("  4. View Registered Voters")
+        print("  5. Reset Database (Dev)")
+        print("  6. Exit")
         print("-" * 40)
         
-        return input("Enter choice [1-4]: ").strip()
+        return input("Enter choice [1-6]: ").strip()
     
     # =========================================================================
     # REGISTRATION MODE
@@ -477,6 +483,83 @@ class TRIsecureCLI:
         print(f"\n  Blockchain Integrity: {'✓ VALID' if is_valid else '✗ INVALID'}")
         
         print("\n" + "=" * 50 + "\n")
+    
+    def _view_registered_voters(self):
+        """Display all registered voters."""
+        print("\n" + "=" * 50)
+        print("         REGISTERED VOTERS")
+        print("=" * 50)
+        
+        all_voters = self.voter_repo.find_all()
+        
+        if not all_voters:
+            print("\n  No voters registered yet.\n")
+            return
+        
+        print(f"\n  Total: {len(all_voters)} voters\n")
+        print("  " + "-" * 46)
+        print(f"  {'Name':<15} {'Age':<5} {'ID':<12} {'Voted':<6} {'NFC UID':<14}")
+        print("  " + "-" * 46)
+        
+        for voter in all_voters:
+            # Parse name field (format: "name|age|unique_id")
+            parts = voter.name.split("|")
+            name = parts[0][:14] if parts else voter.name[:14]
+            age = parts[1] if len(parts) > 1 else "?"
+            unique_id = parts[2][:11] if len(parts) > 2 else "?"
+            voted = "✓" if voter.has_voted else ""
+            nfc = voter.nfc_uid[:13] if voter.nfc_uid else "N/A"
+            
+            print(f"  {name:<15} {age:<5} {unique_id:<12} {voted:<6} {nfc:<14}")
+        
+        print("  " + "-" * 46)
+        print()
+    
+    def _reset_database(self):
+        """Reset database (clear all voters and votes)."""
+        print("\n" + "=" * 50)
+        print("         RESET DATABASE")
+        print("=" * 50)
+        print("\n  ⚠ WARNING: This will delete ALL data!")
+        print("  - All registered voters")
+        print("  - All cast votes")
+        print("  - All audit logs")
+        
+        confirm = input("\n  Type 'RESET' to confirm: ").strip()
+        
+        if confirm != "RESET":
+            print("  ✗ Reset cancelled\n")
+            return
+        
+        try:
+            import sqlite3
+            
+            # Clear voters table
+            with sqlite3.connect(self.config.DATABASE_PATH) as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM voters")
+                cursor.execute("DELETE FROM votes")
+                cursor.execute("DELETE FROM audit_events")
+                conn.commit()
+            
+            # Clear biometric database if exists
+            if self.biometric_db:
+                with sqlite3.connect(self.config.BIOMETRIC_DATABASE_PATH) as conn:
+                    cursor = conn.cursor()
+                    cursor.execute("DELETE FROM biometric_templates")
+                    conn.commit()
+            
+            print("\n  ✓ Database reset successfully!")
+            print("  All voters, votes, and audit logs have been cleared.\n")
+            
+            self.audit_logger.log_event(
+                EventType.CONFIG_LOADED,
+                EventStatus.SUCCESS,
+                "Database reset by administrator"
+            )
+            
+        except Exception as e:
+            print(f"\n  ✗ Reset failed: {e}\n")
     
     # =========================================================================
     # HELPER METHODS

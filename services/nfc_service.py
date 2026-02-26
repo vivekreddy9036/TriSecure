@@ -5,6 +5,7 @@ Abstracts NFC hardware communication for Raspberry Pi PN532 module over SPI.
 """
 
 import logging
+import secrets
 from dataclasses import dataclass
 from typing import Optional
 
@@ -128,10 +129,11 @@ class NFCService:
         """
         if not self._initialized:
             logger.warning("NFC device not initialized. Returning demo UID.")
-            # Return demo UID for development
+            # Return unique demo UID for development/simulation
+            random_uid = secrets.token_hex(7).upper()
             return NFCReadResult(
                 success=True,
-                uid="04ABC123D4E5F6"  # Demo UID
+                uid=random_uid  # Random UID for simulation
             )
 
         try:
