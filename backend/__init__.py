@@ -1,7 +1,19 @@
 """
 Backend layer for TRIsecure.
 
-This package contains backend service modules:
-- db: Database operations for embedding storage
-- crypto: Encryption/decryption for embeddings
+Modules
+-------
+crypto/     AES-256-GCM encryption for face embedding vectors.
+db/         SQLite storage for encrypted biometric templates.
+client.py   BiometricClient — orchestrates camera + authenticator +
+            encryptor + database into a simple enroll/verify API.
 """
+
+from backend.client import BiometricClient, EnrollmentResult, VerificationResult, create_biometric_client
+
+__all__ = [
+    "BiometricClient",
+    "EnrollmentResult",
+    "VerificationResult",
+    "create_biometric_client",
+]

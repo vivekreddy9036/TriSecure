@@ -596,16 +596,37 @@ class FaceAuthenticator:
     
     def _generate_simulation_embedding(self, face_image: np.ndarray) -> np.ndarray:
         """
-        Generate deterministic simulation embedding for testing.
-        
-        Uses image hash for reproducibility.
+        Generate a pixel-based face embedding when no ONNX model is available.
+
+        Uses histogram-equalized grayscale pixel values resized to
+        (16 x 32) = 512 dimensions so the embedding is consistent
+        across frames of the same face and meaningfully different between
+        people -- unlike a hash-seeded random vector.
+
+        Steps:
+            1. Convert BGR → Grayscale
+            2. Histogram-equalize (lighting invariance)
+            3. Resize to 16x32 (= EMBEDDING_SIZE pixels)
+            4. Flatten and L2-normalize
         """
-        # Create seed from image hash
-        image_hash = hash(face_image.tobytes()) % (2**32)
-        rng = np.random.RandomState(image_hash)
-        
-        # Generate and normalize random embedding
-        embedding = rng.randn(self.EMBEDDING_SIZE).astype(np.float32)
+        import cv2
+
+        # 1. Grayscale
+        if face_image.ndim == 3 and face_image.shape[2] == 3:
+            gray = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = face_image.copy()
+
+        # 2. Histogram equalization for lighting invariance
+        gray = cv2.equalizeHist(gray)
+
+        # 3. Resize to exactly EMBEDDING_SIZE pixels (16 wide × 32 tall = 512)
+        cols = 16
+        rows = self.EMBEDDING_SIZE // cols   # 32
+        resized = cv2.resize(gray, (cols, rows), interpolation=cv2.INTER_AREA)
+
+        # 4. Flatten, cast to float32, L2-normalize
+        embedding = resized.flatten().astype(np.float32)
         return self._normalize_embedding(embedding)
     
     @staticmethod
