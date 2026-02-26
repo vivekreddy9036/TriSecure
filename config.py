@@ -38,8 +38,8 @@ class Config:
     DEBUG: bool = False
     
     # Database
-    DATABASE_PATH: str = "trisecure.db"
-    DATABASE_BACKUP_PATH: str = "trisecure_backup.db"
+    DATABASE_PATH: str = "data/trisecure.db"
+    DATABASE_BACKUP_PATH: str = "data/trisecure_backup.db"
     
     # NFC Hardware
     NFC_ENABLED: bool = True
@@ -61,6 +61,13 @@ class Config:
     FACE_MATCH_THRESHOLD: float = 0.7
     FACE_ENCODING_TOLERANCE: float = 0.6
     
+    # Biometric Authentication (MobileFaceNet pipeline)
+    BIOMETRIC_ENABLED: bool = True
+    BIOMETRIC_SIMILARITY_THRESHOLD: float = 0.55  # Cosine similarity (0.5-0.6 recommended)
+    BIOMETRIC_DATABASE_PATH: str = "data/biometrics.db"
+    BIOMETRIC_MODEL_PATH: str = ""  # Empty = auto-detect MobileFaceNet model
+    BIOMETRIC_EMBEDDING_SIZE: int = 512  # MobileFaceNet output dimension
+    
     # Session Management
     SESSION_DURATION_SECONDS: int = 60
     SESSION_CLEANUP_INTERVAL: int = 300  # 5 minutes
@@ -71,7 +78,7 @@ class Config:
     
     # Logging
     LOG_LEVEL: str = "INFO"
-    LOG_FILE: str = "trisecure.log"
+    LOG_FILE: str = "data/trisecure.log"
     LOG_MAX_BYTES: int = 10 * 1024 * 1024  # 10 MB
     LOG_BACKUP_COUNT: int = 5
     
@@ -142,6 +149,12 @@ class Config:
         self.FACE_MODEL = os.getenv(f"{env_prefix}FACE_MODEL", self.FACE_MODEL)
         self.FACE_JITTER = int(os.getenv(f"{env_prefix}FACE_JITTER", self.FACE_JITTER))
         self.FACE_MATCH_THRESHOLD = float(os.getenv(f"{env_prefix}FACE_MATCH_THRESHOLD", self.FACE_MATCH_THRESHOLD))
+        
+        # Biometric Authentication
+        self.BIOMETRIC_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}BIOMETRIC_ENABLED"), self.BIOMETRIC_ENABLED)
+        self.BIOMETRIC_SIMILARITY_THRESHOLD = float(os.getenv(f"{env_prefix}BIOMETRIC_SIMILARITY_THRESHOLD", self.BIOMETRIC_SIMILARITY_THRESHOLD))
+        self.BIOMETRIC_DATABASE_PATH = os.getenv(f"{env_prefix}BIOMETRIC_DATABASE_PATH", self.BIOMETRIC_DATABASE_PATH)
+        self.BIOMETRIC_MODEL_PATH = os.getenv(f"{env_prefix}BIOMETRIC_MODEL_PATH", self.BIOMETRIC_MODEL_PATH)
         
         # Security
         self.ENCRYPTION_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}ENCRYPTION_ENABLED"), self.ENCRYPTION_ENABLED)

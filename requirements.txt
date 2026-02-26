@@ -19,7 +19,11 @@ board>=1.0
 opencv-python>=4.5.4  # Or opencv-contrib-python for ARM
 numpy>=1.21.0
 
-# Face Recognition (dlib-based)
+# Face Recognition (MobileFaceNet)
+# ONNX Runtime for CPU inference (ARM64 compatible)
+onnxruntime>=1.14.0  # MobileFaceNet inference
+
+# Face Recognition (dlib-based, legacy)
 # NOTE: On Raspberry Pi with very new Python versions (e.g. 3.13),
 # compatible wheels for `face-recognition`/`dlib` may not be available yet.
 # In that case, leave these commented out and the system will run in
