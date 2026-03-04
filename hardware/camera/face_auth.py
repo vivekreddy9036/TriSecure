@@ -109,11 +109,12 @@ class FaceCamera:
     """
     Camera capture and face detection class.
     
-    Responsibilities:
-    - Capture frames from webcam
-    - Detect faces using Haar Cascade
-    - Crop and resize detected faces to 112x112
-    - Securely clear frames from memory
+    Optimised for Raspberry Pi 4:
+    - Captures at 320x240 to reduce USB bandwidth
+    - Uses MJPEG codec to avoid on-board YUYV→BGR conversion
+    - Flushes camera buffer (multiple grabs) for fresh frames
+    - Restricts detection to center 70% of frame
+    - Haar Cascade only (no MediaPipe / DNN)
     
     Usage:
         camera = FaceCamera(device=0)
@@ -127,20 +128,28 @@ class FaceCamera:
     # Standard input size for MobileFaceNet
     FACE_SIZE = (112, 112)
     
+    # Number of frames to grab (discard) before the real read
+    # to flush stale frames from the V4L2 ring buffer.
+    BUFFER_FLUSH_COUNT = 3
+    
+    # Fraction of the frame to keep for detection (center crop).
+    # 0.70 → keep the middle 70 %, ignore peripheral 15 % on each side.
+    DETECTION_ZONE_RATIO = 0.70
+    
     def __init__(
         self,
         device: int = 0,
-        width: int = 640,
-        height: int = 480,
-        fps: int = 30
+        width: int = 320,
+        height: int = 240,
+        fps: int = 15
     ):
         """
         Initialize face camera.
         
         Args:
             device: Camera device index (0 for default webcam)
-            width: Capture width in pixels
-            height: Capture height in pixels
+            width: Capture width in pixels (320 recommended for Pi 4)
+            height: Capture height in pixels (240 recommended for Pi 4)
             fps: Target frames per second
         """
         self.device = device
@@ -176,16 +185,27 @@ class FaceCamera:
             if not self._cap.isOpened():
                 raise RuntimeError(f"Cannot open camera device: {self.device}")
             
+            # Request MJPEG codec — avoids slow YUYV→BGR conversion
+            # on the Pi's USB controller.  Falls back silently if the
+            # camera does not support MJPEG.
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            self._cap.set(cv2.CAP_PROP_FOURCC, fourcc)
+            
             # Configure camera settings
             self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
             self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self._cap.set(cv2.CAP_PROP_FPS, self.fps)
             
+            # Reduce internal buffer to 1 to keep frames fresh
+            self._cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            
             # Verify settings
             actual_width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             actual_height = int(self._cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            actual_fourcc = int(self._cap.get(cv2.CAP_PROP_FOURCC))
+            codec_tag = "".join(chr((actual_fourcc >> 8 * i) & 0xFF) for i in range(4))
             
-            logger.info(f"Camera initialized: {actual_width}x{actual_height}")
+            logger.info(f"Camera initialized: {actual_width}x{actual_height}, codec={codec_tag}")
             self._initialized = True
             return True
             
@@ -208,6 +228,12 @@ class FaceCamera:
             return None
         
         try:
+            # Flush stale frames from the V4L2 ring buffer.
+            # grab() is ~100× cheaper than read() because it only
+            # dequeues the kernel buffer without decoding the frame.
+            for _ in range(self.BUFFER_FLUSH_COUNT):
+                self._cap.grab()
+            
             ret, frame = self._cap.read()
             
             if not ret or frame is None:
@@ -235,16 +261,25 @@ class FaceCamera:
             
             classifier = self._cascade_loader.get_classifier()
             
-            # Step 1: Convert to grayscale for detection
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # Step 1: Crop to center 70% detection zone
+            # Reduces false positives from objects at frame edges
+            # and speeds up cascade search.
+            h_frame, w_frame = frame.shape[:2]
+            margin_x = int(w_frame * (1 - self.DETECTION_ZONE_RATIO) / 2)
+            margin_y = int(h_frame * (1 - self.DETECTION_ZONE_RATIO) / 2)
+            detection_roi = frame[margin_y:h_frame - margin_y,
+                                  margin_x:w_frame - margin_x]
             
-            # Step 2: Detect faces
+            # Step 2: Convert ROI to grayscale for detection
+            gray = cv2.cvtColor(detection_roi, cv2.COLOR_BGR2GRAY)
+            
+            # Step 3: Detect faces
             # Parameters tuned for Raspberry Pi performance
             faces = classifier.detectMultiScale(
                 gray,
                 scaleFactor=1.1,
                 minNeighbors=5,
-                minSize=(60, 60),
+                minSize=(50, 50),
                 flags=cv2.CASCADE_SCALE_IMAGE
             )
             
@@ -254,21 +289,25 @@ class FaceCamera:
                     error_message="No face detected in frame"
                 )
             
-            # Step 3: Select largest face (closest to camera)
+            # Step 4: Select largest face (closest to camera)
             largest_face = max(faces, key=lambda rect: rect[2] * rect[3])
             x, y, w, h = largest_face
             
-            # Step 4: Add margin for better face capture
-            margin = int(min(w, h) * 0.2)
-            x1 = max(0, x - margin)
-            y1 = max(0, y - margin)
-            x2 = min(frame.shape[1], x + w + margin)
-            y2 = min(frame.shape[0], y + h + margin)
+            # Translate ROI coordinates back to full-frame coordinates
+            x += margin_x
+            y += margin_y
             
-            # Step 5: Crop face region
+            # Step 5: Add margin for better face capture
+            pad = int(min(w, h) * 0.2)
+            x1 = max(0, x - pad)
+            y1 = max(0, y - pad)
+            x2 = min(frame.shape[1], x + w + pad)
+            y2 = min(frame.shape[0], y + h + pad)
+            
+            # Step 6: Crop face region from original frame
             face_crop = frame[y1:y2, x1:x2].copy()
             
-            # Step 6: Resize to 112x112 (MobileFaceNet input size)
+            # Step 7: Resize to 112x112 (MobileFaceNet input size)
             face_resized = cv2.resize(face_crop, self.FACE_SIZE, interpolation=cv2.INTER_AREA)
             
             logger.debug(f"Face detected: ({x}, {y}, {w}, {h}), resized to {self.FACE_SIZE}")
@@ -413,8 +452,8 @@ class FaceAuthenticator:
             
             # Set ONNX Runtime to CPU-only mode
             sess_options = ort.SessionOptions()
-            sess_options.intra_op_num_threads = 2  # Optimize for Raspberry Pi
-            sess_options.inter_op_num_threads = 2
+            sess_options.intra_op_num_threads = 2  # Optimize for Raspberry Pi 4 (4 cores)
+            sess_options.inter_op_num_threads = 1  # Single operator at a time — avoids thread contention
             
             # Find model path
             model_path = self._find_model_path()

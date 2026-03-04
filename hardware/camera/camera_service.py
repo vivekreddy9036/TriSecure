@@ -28,15 +28,17 @@ class CameraService:
     Lightweight OpenCV camera wrapper.
 
     Handles device open/close and provides single-frame capture.
-    Uses integer device index (default 0) so it works on Windows, Mac
-    and Linux alike.  Pass a string path such as '/dev/video0' only when
-    running on Raspberry Pi / Linux.
+    Optimised for Raspberry Pi 4:
+    - 320×240 default resolution (lower USB bandwidth)
+    - MJPEG codec (skip slow YUYV→BGR conversion)
+    - Buffer flushing for fresh frames
     """
 
     DEFAULT_DEVICE = 0          # 0 = default webcam (works on all platforms)
-    DEFAULT_WIDTH  = 640
-    DEFAULT_HEIGHT = 480
-    DEFAULT_FPS    = 30
+    DEFAULT_WIDTH  = 320
+    DEFAULT_HEIGHT = 240
+    DEFAULT_FPS    = 15
+    BUFFER_FLUSH   = 3          # grab() calls before read() to flush stale frames
 
     def __init__(
         self,
@@ -64,9 +66,14 @@ class CameraService:
                 logger.error(f"Failed to open camera device: {self.device}")
                 return False
 
+            # Request MJPEG codec (avoids slow YUYV→BGR on Pi)
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            self._cap.set(cv2.CAP_PROP_FOURCC, fourcc)
+
             self._cap.set(cv2.CAP_PROP_FRAME_WIDTH,  self.width)
             self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
             self._cap.set(cv2.CAP_PROP_FPS,          self.fps)
+            self._cap.set(cv2.CAP_PROP_BUFFERSIZE,   1)
 
             aw = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             ah = int(self._cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -91,6 +98,10 @@ class CameraService:
                 frame=np.zeros((self.height, self.width, 3), dtype=np.uint8)
             )
         try:
+            # Flush stale frames from kernel buffer
+            for _ in range(self.BUFFER_FLUSH):
+                self._cap.grab()
+
             ret, frame = self._cap.read()
             if not ret or frame is None:
                 return CaptureResult(success=False, error_message="Failed to capture frame")

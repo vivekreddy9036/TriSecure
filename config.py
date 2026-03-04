@@ -50,9 +50,9 @@ class Config:
     # Camera Hardware
     CAMERA_ENABLED: bool = True
     CAMERA_DEVICE: str = "/dev/video0"
-    CAMERA_WIDTH: int = 640
-    CAMERA_HEIGHT: int = 480
-    CAMERA_FPS: int = 30
+    CAMERA_WIDTH: int = 320
+    CAMERA_HEIGHT: int = 240
+    CAMERA_FPS: int = 15
     
     # Face Recognition
     FACE_ENABLED: bool = True

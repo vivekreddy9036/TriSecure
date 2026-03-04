@@ -97,7 +97,7 @@ def _header(title: str) -> None:
 
 def _init_camera_and_auth(device: int = 0):
     """Return initialised (FaceCamera, FaceAuthenticator) pair."""
-    camera = FaceCamera(device=device, width=640, height=480, fps=30)
+    camera = FaceCamera(device=device, width=320, height=240, fps=15)
     auth = FaceAuthenticator()
     camera.initialize()
     auth.initialize()
@@ -126,7 +126,7 @@ def _capture_face_embedding(
 
     window = f"TRIsecure — {prompt}"
     cv2.namedWindow(window, cv2.WINDOW_NORMAL)
-    cv2.resizeWindow(window, 640, 480)
+    cv2.resizeWindow(window, 320, 240)
 
     print(f"  [Camera] {prompt}  ({num_samples} sample(s) needed)  —  press Q to abort")
 
