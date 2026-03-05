@@ -52,6 +52,20 @@ FACE_MODELS_DIR = Path("data/face_models")
 FACE_MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 
+# ── Display detection ──────────────────────────────────────────────────────────
+def _has_display() -> bool:
+    """Return True when a graphical display is available (X11 / Wayland)."""
+    import os
+    if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
+        return True
+    return False
+
+
+_HEADLESS = not _has_display()
+if _HEADLESS:
+    logger.info("No display detected — running in headless mode (GUI windows disabled).")
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 # Helpers
 # ══════════════════════════════════════════════════════════════════════════════
@@ -64,21 +78,123 @@ def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
     return float(np.clip(np.dot(a / na, b / nb), -1.0, 1.0))
 
 
-def _model_path(name: str) -> Path:
+def _legacy_model_path(name: str) -> Path:
+    """Legacy name-based template path (backward compat only)."""
     return FACE_MODELS_DIR / f"{name.lower().replace(' ', '_')}.npy"
 
 
-def _save_embedding(name: str, embedding: np.ndarray) -> Path:
-    path = _model_path(name)
-    np.save(str(path), embedding)
+def _voter_model_path(voter_id) -> Path:
+    """Path to multi-template face model file keyed by voter UUID."""
+    return FACE_MODELS_DIR / f"{voter_id}.npz"
+
+
+def _save_templates(
+    voter_id,
+    embedding: np.ndarray,
+    append: bool = True,
+) -> Path:
+    """
+    Save a face template for a voter.  Supports storing multiple
+    templates per voter in a single .npz file.
+
+    Args:
+        voter_id:  Voter UUID.
+        embedding: New embedding vector (1-D).
+        append:    If True, add to existing templates; if False, replace all.
+
+    Returns:
+        Path to the saved .npz file.
+    """
+    path = _voter_model_path(voter_id)
+    new_template = embedding.flatten().astype(np.float32).reshape(1, -1)
+
+    if append and path.exists():
+        try:
+            existing = np.load(str(path))["templates"]
+            if existing.ndim == 1:
+                existing = existing.reshape(1, -1)
+            # Dimension guard: only stack if dims match
+            if existing.shape[1] == new_template.shape[1]:
+                templates = np.vstack([existing, new_template])
+            else:
+                logger.warning(
+                    f"Dimension mismatch (stored={existing.shape[1]}, "
+                    f"new={new_template.shape[1]}). Replacing templates."
+                )
+                templates = new_template
+        except Exception as e:
+            logger.warning(f"Failed to load existing templates, starting fresh: {e}")
+            templates = new_template
+    else:
+        templates = new_template
+
+    np.savez(str(path), templates=templates)
     return path
 
 
-def _load_embedding(name: str) -> Optional[np.ndarray]:
-    path = _model_path(name)
+def _load_templates(voter_id, voter_name: str = None) -> Optional[np.ndarray]:
+    """
+    Load all face templates for a voter.
+
+    Returns:
+        2-D array of shape (N, embedding_dim) or None if nothing found.
+        Falls back to legacy name-based .npy when the new .npz is absent.
+    """
+    # Primary: voter-ID based .npz
+    path = _voter_model_path(voter_id)
+    if path.exists():
+        try:
+            data = np.load(str(path))
+            templates = data["templates"].astype(np.float32)
+            if templates.ndim == 1:
+                templates = templates.reshape(1, -1)
+            return templates
+        except Exception as e:
+            logger.error(f"Corrupt template file {path}: {e}")
+
+    # Fallback: legacy name-based .npy
+    if voter_name:
+        legacy = _legacy_model_path(voter_name)
+        if legacy.exists():
+            try:
+                emb = np.load(str(legacy)).astype(np.float32)
+                return emb.reshape(1, -1) if emb.ndim == 1 else emb
+            except Exception as e:
+                logger.error(f"Corrupt legacy model {legacy}: {e}")
+
+    return None
+
+
+def _count_templates(voter_id) -> int:
+    """Return the number of stored templates for a voter."""
+    path = _voter_model_path(voter_id)
     if not path.exists():
-        return None
-    return np.load(str(path)).astype(np.float32)
+        return 0
+    try:
+        data = np.load(str(path))
+        t = data["templates"]
+        return t.shape[0] if t.ndim == 2 else 1
+    except Exception:
+        return 0
+
+
+def _match_against_templates(
+    live_embedding: np.ndarray,
+    templates: np.ndarray,
+) -> float:
+    """
+    Compare a live embedding against all stored templates.
+
+    Returns the highest cosine similarity (best match).
+    """
+    if templates is None or len(templates) == 0:
+        return -1.0
+    best = -1.0
+    for t in templates:
+        sim = _cosine_similarity(live_embedding, t)
+        if sim > best:
+            best = sim
+    return best
 
 
 def _sep(char: str = "─", width: int = 60) -> str:
@@ -111,8 +227,10 @@ def _capture_face_embedding(
     prompt: str = "Capturing face",
 ) -> Optional[np.ndarray]:
     """
-    Open a live webcam window, collect `num_samples` embeddings and return
-    their averaged + re-normalized vector.  Returns None if capture fails.
+    Collect `num_samples` embeddings and return their averaged +
+    re-normalized vector.  When a display is available a live preview
+    window is shown; on headless systems the capture runs silently.
+    Returns None if capture fails.
     """
     try:
         import cv2
@@ -123,12 +241,15 @@ def _capture_face_embedding(
     COOLDOWN = 2.0
     embeddings = []
     last_capture = 0.0
+    show_gui = not _HEADLESS
 
     window = f"TRIsecure — {prompt}"
-    cv2.namedWindow(window, cv2.WINDOW_NORMAL)
-    cv2.resizeWindow(window, 320, 240)
+    if show_gui:
+        cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+        cv2.resizeWindow(window, 320, 240)
 
-    print(f"  [Camera] {prompt}  ({num_samples} sample(s) needed)  —  press Q to abort")
+    print(f"  [Camera] {prompt}  ({num_samples} sample(s) needed)" +
+          ("  —  press Q to abort" if show_gui else ""))
 
     while len(embeddings) < num_samples:
         frame = camera.capture_frame()
@@ -136,18 +257,20 @@ def _capture_face_embedding(
             break
 
         detection = camera.detect_face(frame)
-        display = frame.copy()
         face_found = detection.success and detection.face_image is not None
 
-        status = f"Samples: {len(embeddings)}/{num_samples}"
-        cv2.putText(display, status, (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
+        if show_gui:
+            display = frame.copy()
+            status = f"Samples: {len(embeddings)}/{num_samples}"
+            cv2.putText(display, status, (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
 
         if face_found:
-            x, y, w, h = detection.face_location
-            cv2.rectangle(display, (x, y), (x + w, y + h), (0, 220, 0), 2)
-            cv2.putText(display, "Face OK", (x, y - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 220, 0), 2)
+            if show_gui:
+                x, y, w, h = detection.face_location
+                cv2.rectangle(display, (x, y), (x + w, y + h), (0, 220, 0), 2)
+                cv2.putText(display, "Face OK", (x, y - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 220, 0), 2)
 
             now = time.time()
             if now - last_capture >= COOLDOWN:
@@ -156,27 +279,30 @@ def _capture_face_embedding(
                     embeddings.append(result.embedding)
                     last_capture = now
                     print(f"  [Camera] Sample {len(embeddings)}/{num_samples} captured.")
-                    # Green flash
-                    overlay = display.copy()
-                    overlay[:] = (0, 200, 0)
-                    cv2.addWeighted(overlay, 0.3, display, 0.7, 0, display)
-                    cv2.putText(display, f"CAPTURED {len(embeddings)}/{num_samples}",
-                                (140, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,255,255), 3)
-                    cv2.imshow(window, display)
-                    cv2.waitKey(600)
+                    if show_gui:
+                        overlay = display.copy()
+                        overlay[:] = (0, 200, 0)
+                        cv2.addWeighted(overlay, 0.3, display, 0.7, 0, display)
+                        cv2.putText(display, f"CAPTURED {len(embeddings)}/{num_samples}",
+                                    (140, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,255,255), 3)
+                        cv2.imshow(window, display)
+                        cv2.waitKey(600)
                     continue
         else:
-            cv2.putText(display, "No face", (20, 70),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 60, 220), 2)
+            if show_gui:
+                cv2.putText(display, "No face", (20, 70),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 60, 220), 2)
 
-        cv2.imshow(window, display)
-        key = cv2.waitKey(30) & 0xFF
-        if key in (ord('q'), ord('Q'), 27):
-            print("  [Camera] Aborted by user.")
-            cv2.destroyWindow(window)
-            return None
+        if show_gui:
+            cv2.imshow(window, display)
+            key = cv2.waitKey(30) & 0xFF
+            if key in (ord('q'), ord('Q'), 27):
+                print("  [Camera] Aborted by user.")
+                cv2.destroyWindow(window)
+                return None
 
-    cv2.destroyWindow(window)
+    if show_gui:
+        cv2.destroyWindow(window)
 
     if not embeddings:
         return None
@@ -246,10 +372,14 @@ class TRIsecureApp:
             print("  Name cannot be empty.")
             return
 
-        # Check if already registered
-        existing_path = _model_path(name)
-        if existing_path.exists():
-            overwrite = input(f"  '{name}' already has a face model. Overwrite? [y/N]: ").strip().lower()
+        # Check if a voter with this name exists in the DB
+        existing_by_name = None
+        for v in self.voter_repo.find_all():
+            if v.name.lower() == name.lower():
+                existing_by_name = v
+                break
+        if existing_by_name and _count_templates(existing_by_name.id) > 0:
+            overwrite = input(f"  '{name}' already has face templates. Overwrite? [y/N]: ").strip().lower()
             if overwrite != "y":
                 print("  Enrollment cancelled.")
                 return
@@ -281,21 +411,23 @@ class TRIsecureApp:
             print("  ✗ Face capture failed. Enrollment aborted.")
             return
 
-        # 3. Persist
-        emb_path = _save_embedding(name, embedding)
-
+        # 3. Persist — save voter first so we have a stable UUID
         voter = existing_voter or Voter(name=name)
         voter.name = name
         voter.nfc_uid = nfc_uid
         voter.face_embedding = embedding.tobytes()
-
         self.voter_repo.save(voter)
+
+        # Save multi-template file (fresh enrollment replaces old templates)
+        emb_path = _save_templates(voter.id, embedding, append=False)
+        n_templates = _count_templates(voter.id)
 
         print(_sep())
         print(f"  ✓ Voter enrolled successfully!")
         print(f"    Name       : {name}")
         print(f"    NFC UID    : {nfc_uid}")
         print(f"    Face model : {emb_path.name}")
+        print(f"    Templates  : {n_templates}")
         print(f"    Voter ID   : {voter.id}")
         print(_sep())
 
@@ -320,10 +452,11 @@ class TRIsecureApp:
         print(f"  ✓ Voter found: {voter.name}")
 
         # ── Step 2: Face verification ────────────────────────────────────────
-        stored_embedding = _load_embedding(voter.name)
-        if stored_embedding is None:
+        stored_templates = _load_templates(voter.id, voter.name)
+        if stored_templates is None:
             print(f"  ✗ No face model found for '{voter.name}'. Please re-enroll.")
             return
+        print(f"  [Face] {stored_templates.shape[0]} template(s) loaded for matching.")
 
         print(f"\n  [Face] Please look at the camera for verification …")
         camera, auth = _init_camera_and_auth(self.camera_device)
@@ -340,7 +473,7 @@ class TRIsecureApp:
             print("  ✗ Face capture failed. Vote aborted.")
             return
 
-        similarity = _cosine_similarity(live_embedding, stored_embedding)
+        similarity = _match_against_templates(live_embedding, stored_templates)
         match = similarity >= self.face_threshold
 
         print(f"\n  [Face] Similarity : {similarity * 100:.1f}%")
@@ -406,17 +539,20 @@ class TRIsecureApp:
         """Identify who is in front of the camera (no vote)."""
         _header("FACE IDENTIFICATION")
 
-        # Load all enrolled face models
-        models = {}
-        for npy_file in sorted(FACE_MODELS_DIR.glob("*.npy")):
-            label = npy_file.stem.replace("_", " ").title()
-            models[label] = np.load(str(npy_file)).astype(np.float32)
+        # Load face templates grouped by voter from the database
+        models = {}   # {voter_name: np.ndarray of shape (N, dim)}
+        voters = self.voter_repo.find_all()
+        for v in voters:
+            templates = _load_templates(v.id, v.name)
+            if templates is not None and len(templates) > 0:
+                models[v.name] = templates
 
         if not models:
             print("  No face models enrolled yet.  Run option 1 first.")
             return
 
-        print(f"  Loaded {len(models)} model(s): {', '.join(models.keys())}")
+        total_tpl = sum(t.shape[0] for t in models.values())
+        print(f"  Loaded {len(models)} voter(s) ({total_tpl} template(s)): {', '.join(models.keys())}")
         print("  Press Q in the camera window to stop.\n")
 
         try:
@@ -434,8 +570,10 @@ class TRIsecureApp:
         last_loc  = None
 
         window = "TRIsecure — Face Identification"
-        cv2.namedWindow(window, cv2.WINDOW_NORMAL)
-        cv2.resizeWindow(window, 640, 480)
+        show_gui = not _HEADLESS
+        if show_gui:
+            cv2.namedWindow(window, cv2.WINDOW_NORMAL)
+            cv2.resizeWindow(window, 640, 480)
 
         try:
             while True:
@@ -444,7 +582,7 @@ class TRIsecureApp:
                     break
 
                 detection = camera.detect_face(frame)
-                display = frame.copy()
+                display = frame.copy() if show_gui else None
                 face_found = detection.success and detection.face_image is not None
 
                 now = time.time()
@@ -453,10 +591,10 @@ class TRIsecureApp:
                     if result.success and result.embedding is not None:
                         best_name, best_sim, is_match = "Unknown", -1.0, False
                         e = result.embedding
-                        for name, stored in models.items():
-                            sim = _cosine_similarity(e, stored)
+                        for vname, templates in models.items():
+                            sim = _match_against_templates(e, templates)
                             if sim > best_sim:
-                                best_sim, best_name = sim, name
+                                best_sim, best_name = sim, vname
                         is_match = best_sim >= self.face_threshold
                         last_name  = best_name if is_match else "Unknown"
                         last_sim   = best_sim
@@ -467,27 +605,32 @@ class TRIsecureApp:
                         status = "MATCH" if is_match else "NO MATCH"
                         logger.info(f"Identity: {last_name} | Similarity: {best_sim*100:.1f}% | {status}")
 
-                # Draw
-                if last_loc:
-                    x, y, w, h = last_loc
-                    color = (0, 220, 0) if last_match else (0, 60, 220)
-                    cv2.rectangle(display, (x, y), (x + w, y + h), color, 2)
-                    label = f"{last_name}  ({last_sim*100:.1f}%)"
-                    cv2.putText(display, label, (x, y - 10),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+                # Draw (only when display available)
+                if show_gui:
+                    if last_loc:
+                        x, y, w, h = last_loc
+                        color = (0, 220, 0) if last_match else (0, 60, 220)
+                        cv2.rectangle(display, (x, y), (x + w, y + h), color, 2)
+                        label = f"{last_name}  ({last_sim*100:.1f}%)"
+                        cv2.putText(display, label, (x, y - 10),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
-                if not face_found:
-                    cv2.putText(display, "No face detected", (15, 60),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 100, 255), 2)
+                    if not face_found:
+                        cv2.putText(display, "No face detected", (15, 60),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 100, 255), 2)
 
-                cv2.putText(display, "Q = quit", (10, display.shape[0] - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 180, 180), 1)
-                cv2.imshow(window, display)
+                    cv2.putText(display, "Q = quit", (10, display.shape[0] - 10),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 180, 180), 1)
+                    cv2.imshow(window, display)
 
-                if cv2.waitKey(30) & 0xFF in (ord('q'), ord('Q'), 27):
+                    if cv2.waitKey(30) & 0xFF in (ord('q'), ord('Q'), 27):
+                        break
+                else:
+                    # Headless: run a single pass then stop
                     break
         finally:
-            cv2.destroyWindow(window)
+            if show_gui:
+                cv2.destroyWindow(window)
             camera.release()
             auth.release()
 
@@ -503,11 +646,23 @@ class TRIsecureApp:
         print(f"  Already voted     : {len(voted)}")
         print(f"  Still eligible    : {len(eligible)}")
 
-        # Enrolled face models
-        npy_files = list(FACE_MODELS_DIR.glob("*.npy"))
-        print(f"  Face models saved : {len(npy_files)}")
-        for f in sorted(npy_files):
-            print(f"    • {f.stem.replace('_', ' ').title()}")
+        # Enrolled face templates
+        total_templates = 0
+        print(f"  Face templates:")
+        for v in voters:
+            n = _count_templates(v.id)
+            total_templates += n
+            if n > 0:
+                print(f"    • {v.name:<25} {n} template(s)")
+            else:
+                # Check legacy .npy fallback
+                legacy = _legacy_model_path(v.name)
+                if legacy.exists():
+                    print(f"    • {v.name:<25} 1 template (legacy .npy)")
+                    total_templates += 1
+                else:
+                    print(f"    • {v.name:<25} ✗ no templates")
+        print(f"  Total templates   : {total_templates}")
 
         print()
         stats = self.blockchain.get_blockchain_statistics()
@@ -524,7 +679,8 @@ class TRIsecureApp:
             print("\n  Voter status:")
             for v in voters:
                 status = "✓ voted" if v.has_voted else "○ pending"
-                model = "face ✓" if _model_path(v.name).exists() else "face ✗"
+                has_tpl = _count_templates(v.id) > 0 or _legacy_model_path(v.name).exists()
+                model = "face ✓" if has_tpl else "face ✗"
                 print(f"    {v.name:<25} {status:<12} {model}  NFC: {v.nfc_uid or 'none'}")
 
         print(_sep())
@@ -562,11 +718,15 @@ class TRIsecureApp:
             print("  ✗ Face capture failed.")
             return
 
-        emb_path = _save_embedding(voter.name, embedding)
+        # Append new template to existing ones (improves recognition
+        # by adding templates captured under different conditions).
+        emb_path = _save_templates(voter.id, embedding, append=True)
         voter.face_embedding = embedding.tobytes()
         self.voter_repo.save(voter)
+        n_templates = _count_templates(voter.id)
 
-        print(f"  ✓ Face model updated for '{voter.name}'  →  {emb_path.name}")
+        print(f"  ✓ Face template added for '{voter.name}'  →  {emb_path.name}")
+        print(f"    Total templates for this voter: {n_templates}")
 
     # ── Main loop ─────────────────────────────────────────────────────────────
 
@@ -616,8 +776,8 @@ def parse_args():
     p.add_argument("--candidates", "-c",
                    default="Candidate A,Candidate B,Candidate C",
                    help="Comma-separated list of candidates")
-    p.add_argument("--threshold", "-t", type=float, default=0.45,
-                   help="Face cosine similarity threshold (default: 0.45)")
+    p.add_argument("--threshold", "-t", type=float, default=0.55,
+                   help="Face cosine similarity threshold (default: 0.55)")
     p.add_argument("--device", "-d", type=int, default=0,
                    help="Webcam device index (default: 0)")
     return p.parse_args()

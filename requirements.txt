@@ -16,8 +16,11 @@ adafruit-blinka>=8.0.0
 board>=1.0
 
 # Video/Camera Processing
-opencv-python>=4.5.4  # Or opencv-contrib-python for ARM
-numpy>=1.21.0
+# Use opencv-python-headless on Raspberry Pi / SSH / headless systems
+# to avoid Qt display plugin crashes.  Switch to opencv-python if you
+# need cv2.imshow() on a desktop.
+opencv-python-headless>=4.5.4
+numpy<2
 
 # Face Recognition (MobileFaceNet)
 # ONNX Runtime for CPU inference (ARM64 compatible)

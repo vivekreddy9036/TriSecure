@@ -1,6 +1,16 @@
 .venv/
+venv/
 *.log
 *.db
 .env
 code.md
-venv/
+
+# Binary / model files (too large for git)
+*.onnx
+*.npy
+*.npz
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

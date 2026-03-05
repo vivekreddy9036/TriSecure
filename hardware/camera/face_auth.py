@@ -509,12 +509,14 @@ class FaceAuthenticator:
         model_names = [
             "mobilefacenet.onnx",
             "MobileFaceNet.onnx",
-            "mobilefacenet_v2.onnx"
+            "mobilefacenet_v2.onnx",
+            "arcfaceresnet100-8.onnx",
         ]
         
         search_paths = [
             Path.cwd(),
             Path.cwd() / "models",
+            Path.cwd() / "data" / "face_models",
             Path.cwd() / "hardware" / "camera" / "models",
             Path.home() / ".trisecure" / "models",
             Path("/opt/trisecure/models")
