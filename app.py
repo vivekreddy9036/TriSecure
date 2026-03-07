@@ -197,6 +197,55 @@ def _match_against_templates(
     return best
 
 
+# Cosine similarity above which two face embeddings are treated as the same
+# person during enrollment.  Set higher than the auth threshold so only
+# near-identical faces are flagged as duplicates.
+_DUPLICATE_FACE_THRESHOLD = 0.68
+
+
+def _check_face_uniqueness(
+    new_embedding: np.ndarray,
+    voter_repo,
+    exclude_voter_id=None,
+    threshold: float = _DUPLICATE_FACE_THRESHOLD,
+):
+    """
+    Aadhaar-style biometric deduplication.
+
+    Compares *new_embedding* against every enrolled voter's face templates.
+    Returns early as soon as a duplicate is found.
+
+    Args:
+        new_embedding:    Embedding to check.
+        voter_repo:       Voter repository (iterable via find_all()).
+        exclude_voter_id: Voter ID to skip — pass the current voter's ID
+                          during re-enrollment so they don't block themselves.
+        threshold:        Cosine similarity at or above which the face is
+                          considered already registered.
+
+    Returns:
+        Tuple (is_duplicate: bool, matched_voter_name: str | None, best_sim: float)
+    """
+    best_name: Optional[str] = None
+    best_sim = -1.0
+
+    for voter in voter_repo.find_all():
+        if exclude_voter_id and str(voter.id) == str(exclude_voter_id):
+            continue
+        templates = _load_templates(voter.id, voter.name)
+        if templates is None or len(templates) == 0:
+            continue
+        sim = _match_against_templates(new_embedding, templates)
+        if sim > best_sim:
+            best_sim = sim
+            best_name = voter.name
+        # Short-circuit: no need to check further once clearly over threshold
+        if best_sim >= threshold:
+            break
+
+    return best_sim >= threshold, best_name, best_sim
+
+
 def _sep(char: str = "─", width: int = 60) -> str:
     return char * width
 
@@ -361,6 +410,29 @@ class TRIsecureApp:
             print(f"  [NFC] Read failed: {e}")
             return None
 
+    def _write_voter_id_to_card(self, voter_id: str, voter_name: str) -> bool:
+        """
+        Write encrypted voter UUID to the NFC card.
+
+        Asks the voter to tap the card again (face capture happens between
+        the initial UID-read and this write step).
+
+        Returns True if write succeeded.
+        """
+        print(f"\n  [NFC] Please tap the NFC card again to write the encrypted voter ID…")
+        try:
+            uid = self.nfc.read_card_blocking(max_wait=30.0)
+        except RuntimeError as e:
+            print(f"  [NFC] Card not detected: {e}")
+            return False
+
+        result = self.nfc.write_voter_id(voter_id)
+        if result.success:
+            print(f"  [NFC] ✓ Encrypted voter ID written to card  (voter: {voter_name})")
+        else:
+            print(f"  [NFC] ✗ Write failed: {result.error_message}")
+        return result.success
+
     # ── Menu actions ──────────────────────────────────────────────────────────
 
     def enroll_voter(self) -> None:
@@ -411,7 +483,25 @@ class TRIsecureApp:
             print("  ✗ Face capture failed. Enrollment aborted.")
             return
 
-        # 3. Persist — save voter first so we have a stable UUID
+        # 3. Biometric deduplication (Aadhaar-style)
+        #    Skip the existing record for this voter — re-enrolling the same
+        #    person should not block them.
+        print("  [Face] Running deduplication check against existing registrations…")
+        exclude_id = existing_by_name.id if existing_by_name else None
+        is_dup, dup_name, dup_sim = _check_face_uniqueness(
+            embedding, self.voter_repo, exclude_voter_id=exclude_id
+        )
+        if is_dup:
+            print(_sep())
+            print("  ✗ ENROLLMENT REJECTED — Face already registered in the system!")
+            print(f"    Matched voter : {dup_name}")
+            print(f"    Similarity    : {dup_sim * 100:.1f}%")
+            print("    Each person may only register once (biometric deduplication).")
+            print(_sep())
+            return
+        print(f"  [Face] Deduplication passed (best match: {dup_sim * 100:.1f}%  <  threshold)")
+
+        # 4. Persist — save voter first so we have a stable UUID
         voter = existing_voter or Voter(name=name)
         voter.name = name
         voter.nfc_uid = nfc_uid
@@ -422,6 +512,9 @@ class TRIsecureApp:
         emb_path = _save_templates(voter.id, embedding, append=False)
         n_templates = _count_templates(voter.id)
 
+        # 5. Write encrypted voter UUID onto the NFC card
+        write_ok = self._write_voter_id_to_card(str(voter.id), name)
+
         print(_sep())
         print(f"  ✓ Voter enrolled successfully!")
         print(f"    Name       : {name}")
@@ -429,6 +522,7 @@ class TRIsecureApp:
         print(f"    Face model : {emb_path.name}")
         print(f"    Templates  : {n_templates}")
         print(f"    Voter ID   : {voter.id}")
+        print(f"    NFC write  : {'✓ UUID encrypted on card' if write_ok else '⚠ Skipped (manual retry possible)'}")
         print(_sep())
 
     def cast_vote(self) -> None:
@@ -718,6 +812,23 @@ class TRIsecureApp:
             print("  ✗ Face capture failed.")
             return
 
+        # Biometric deduplication — exclude this voter so they don't block
+        # their own re-enrollment, but catch if someone else tries to use
+        # the same NFC card with a different face.
+        print("  [Face] Running deduplication check against other registrations…")
+        is_dup, dup_name, dup_sim = _check_face_uniqueness(
+            embedding, self.voter_repo, exclude_voter_id=voter.id
+        )
+        if is_dup:
+            print(_sep())
+            print("  ✗ RE-ENROLLMENT REJECTED — Face matches another registered voter!")
+            print(f"    Matched voter : {dup_name}")
+            print(f"    Similarity    : {dup_sim * 100:.1f}%")
+            print("    Biometric deduplication prevents cross-registration.")
+            print(_sep())
+            return
+        print(f"  [Face] Deduplication passed (best match: {dup_sim * 100:.1f}%  <  threshold)")
+
         # Append new template to existing ones (improves recognition
         # by adding templates captured under different conditions).
         emb_path = _save_templates(voter.id, embedding, append=True)
@@ -725,8 +836,12 @@ class TRIsecureApp:
         self.voter_repo.save(voter)
         n_templates = _count_templates(voter.id)
 
+        # Re-write encrypted voter UUID to card with updated info
+        write_ok = self._write_voter_id_to_card(str(voter.id), voter.name)
+
         print(f"  ✓ Face template added for '{voter.name}'  →  {emb_path.name}")
         print(f"    Total templates for this voter: {n_templates}")
+        print(f"    NFC write  : {'✓ UUID encrypted on card' if write_ok else '⚠ Skipped (manual retry possible)'}")
 
     # ── Main loop ─────────────────────────────────────────────────────────────
 
