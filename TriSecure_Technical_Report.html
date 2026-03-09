@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TriSecure — Technical Review Report</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --accent3: #f78166;
+      --accent4: #d2a8ff;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --tag-bg: #1f3a5f;
+      --tag-text: #79c0ff;
+      --done-bg: #0d3023;
+      --done-text: #3fb950;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* ── Layout ── */
+    .page-wrapper {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #1a2742 0%, #0d1f3c 60%, #111827 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 56px 48px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(88,166,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid #2d5a9e;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #58a6ff, #a5d6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .hero .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hero-meta span strong {
+      color: var(--text);
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-number {
+      background: var(--accent);
+      color: #0d1117;
+      font-size: 12px;
+      font-weight: 700;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── Pipeline steps ── */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .pipeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+    }
+    .pipeline-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 17px;
+      top: 36px;
+      bottom: -2px;
+      width: 2px;
+      background: var(--border);
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 2px solid var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .step-body {
+      padding: 6px 0 24px;
+    }
+    .step-body strong {
+      color: var(--text);
+      display: block;
+      margin-bottom: 3px;
+    }
+    .step-body span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    td code, th code {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: 12px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      color: var(--accent4);
+    }
+    td .cat {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    td .done {
+      display: inline-block;
+      background: var(--done-bg);
+      color: var(--done-text);
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    td .planned {
+      display: inline-block;
+      background: #2d2106;
+      color: #e3b341;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e6edf3;
+      margin-bottom: 16px;
+    }
+    pre .comment { color: #8b949e; }
+    pre .kw { color: #ff7b72; }
+    pre .str { color: #a5d6ff; }
+    pre .num { color: #d2a8ff; }
+    pre .fn { color: #d2a8ff; }
+    pre .cls { color: #ffa657; }
+
+    /* ── Architecture tree ── */
+    .arch-tree {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 28px;
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+    .arch-tree .root { color: var(--accent); font-weight: 700; font-size: 15px; }
+    .arch-tree .dir { color: var(--accent4); font-weight: 600; }
+    .arch-tree .file { color: var(--text); }
+    .arch-tree .comment { color: #8b949e; font-style: italic; }
+
+    /* ── Model cards ── */
+    .model-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .model-card-header {
+      background: linear-gradient(90deg, #1a2742, #1c2128);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .model-icon {
+      width: 40px; height: 40px;
+      background: var(--tag-bg);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .model-card-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .model-card-header span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .model-card .table-wrap { margin: 0; border: none; border-radius: 0; }
+    .model-card .table-wrap table td { font-size: 13px; }
+
+    /* ── Hash chain viz ── */
+    .hash-chain {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .hash-block {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      min-width: 160px;
+      flex-shrink: 0;
+    }
+    .hash-block .block-label {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+    .hash-block .block-field {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .hash-block .block-field span {
+      color: var(--text);
+      font-family: monospace;
+      font-size: 11px;
+    }
+    .hash-arrow {
+      color: var(--accent);
+      font-size: 22px;
+      padding: 0 10px;
+      flex-shrink: 0;
+    }
+
+    /* ── Checklist ── */
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 10px;
+    }
+    .check-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .check-item .checkmark {
+      color: var(--accent2);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* ── Roadmap ── */
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .roadmap-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .roadmap-item .phase-badge {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 3px 10px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+    .phase-done { background: var(--done-bg); color: var(--done-text); }
+    .phase-planned { background: #2d2106; color: #e3b341; }
+    .roadmap-item h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .roadmap-item p { font-size: 13px; color: var(--muted); }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 32px 24px; }
+      .hero h1 { font-size: 28px; }
+      .page-wrapper { padding: 24px 16px 60px; }
+      .hash-chain { flex-direction: column; align-items: flex-start; }
+      .hash-arrow { transform: rotate(90deg); }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="badge">Technical Review Report</div>
+    <h1>TriSecure</h1>
+    <p class="subtitle">Production-Grade Secure Electronic Voting Terminal</p>
+    <div class="hero-meta">
+      <span><strong>Date:</strong> March 9, 2026</span>
+      <span><strong>Platform:</strong> Raspberry Pi 4 (4 GB) — Ubuntu 22.04 LTS ARM64</span>
+      <span><strong>Language:</strong> Python 3.10+</span>
+      <span><strong>License:</strong> MIT</span>
+      <span><strong>Version:</strong> 1.0</span>
+    </div>
+  </div>
+
+  <!-- ── 1. What We Built ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <h2 class="section-title">What We Built</h2>
+    </div>
+    <p style="color:var(--muted);margin-bottom:20px;max-width:800px;">
+      TriSecure is a fully self-contained, tamper-resistant electronic voting terminal with
+      three-factor security — no cloud, no network dependency, designed for electoral-grade
+      security with audit trails, blockchain-style vote chaining, and biometric deduplication.
+    </p>
+    <div class="card-grid">
+      <div class="card">
+        <h3>📡 Factor 1 — NFC Card</h3>
+        <p>Physical token verification via PN532 NFC reader (SPI). Voter UUID written to NTAG2xx cards using XOR encryption derived from a SHA-256 key.</p>
+      </div>
+      <div class="card">
+        <h3>👤 Factor 2 — Face Biometrics</h3>
+        <p>Live face capture with Haar Cascade detection + MobileFaceNet 512-D embedding extraction. 3-sample averaging for robust enrollment.</p>
+      </div>
+      <div class="card">
+        <h3>🔑 Factor 3 — Session Token</h3>
+        <p>One-time cryptographically secure session token (60-second TTL). Consumed on vote cast; forces re-authentication on every voting action.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. Architecture ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <h2 class="section-title">Architecture Overview</h2>
+    </div>
+    <div class="arch-tree">
+<span class="root">TriSecure/</span>
+├── <span class="dir">app.py</span>               <span class="comment"># Entry point — Interactive terminal UI</span>
+├── <span class="dir">config.py</span>            <span class="comment"># Environment-aware config (dev / staging / prod)</span>
+│
+├── <span class="dir">core/</span>                <span class="comment"># Business Logic Layer</span>
+│   ├── <span class="file">auth_pipeline.py</span>  <span class="comment"># 5-stage voter verification pipeline</span>
+│   ├── <span class="file">session_manager.py</span> <span class="comment"># One-time session tokens (60 s TTL)</span>
+│   └── <span class="file">audit_logger.py</span>    <span class="comment"># Event logging &amp; forensic trail</span>
+│
+├── <span class="dir">hardware/</span>            <span class="comment"># Hardware Abstraction Layer</span>
+│   ├── <span class="dir">nfc/</span>
+│   │   └── <span class="file">nfc_service.py</span>    <span class="comment"># PN532 NFC reader / writer (SPI)</span>
+│   └── <span class="dir">camera/</span>
+│       ├── <span class="file">camera_service.py</span> <span class="comment"># USB webcam via OpenCV (320×240 @ 15 fps)</span>
+│       ├── <span class="file">face_auth.py</span>      <span class="comment"># Haar Cascade + MobileFaceNet (primary)</span>
+│       └── <span class="file">face_service.py</span>   <span class="comment"># dlib 128-D fallback</span>
+│
+├── <span class="dir">models/</span>              <span class="comment"># Domain Entities (Dataclasses)</span>
+│   ├── <span class="file">voter.py</span>  <span class="file">vote.py</span>  <span class="file">session.py</span>  <span class="file">audit_event.py</span>
+│
+├── <span class="dir">repositories/</span>        <span class="comment"># Data Persistence (Repository Pattern)</span>
+│   ├── <span class="file">voter_repository.py</span>   <span class="file">vote_repository.py</span>   <span class="file">audit_repository.py</span>
+│
+├── <span class="dir">security/</span>            <span class="comment"># Security &amp; Integrity</span>
+│   ├── <span class="file">blockchain_logger.py</span>  <span class="comment"># Vote SHA-256 hash chain</span>
+│   └── <span class="file">encryption_hooks.py</span>   <span class="comment"># Embedding encryption hooks</span>
+│
+├── <span class="dir">backend/</span>             <span class="comment"># Biometric Orchestration</span>
+│   ├── <span class="file">client.py</span>             <span class="comment"># Enrollment &amp; verification coordinator</span>
+│   ├── <span class="dir">crypto/encryptor.py</span>   <span class="comment"># Embedding encryption (AES / Fernet)</span>
+│   └── <span class="dir">db/database.py</span>        <span class="comment"># BiometricDatabase (SQLite)</span>
+│
+└── <span class="dir">data/</span>
+    ├── <span class="file">trisecure.db</span>          <span class="comment"># Main SQLite database</span>
+    ├── <span class="dir">face_models/</span>
+    │   ├── <span class="file">mobilefacenet.onnx</span>  <span class="comment"># ML model</span>
+    │   └── <span class="file">{voter_id}.npz</span>      <span class="comment"># Per-voter face templates</span>
+    └── <span class="dir">logs/system.log</span>       <span class="comment"># Rotating audit log</span>
+    </div>
+    <div style="margin-top:20px;">
+      <p style="color:var(--muted);font-size:14px;margin-bottom:12px;"><strong style="color:var(--text);">Design Patterns Used:</strong></p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pattern</th><th>Implementation</th></tr></thead>
+          <tbody>
+            <tr><td>Repository Pattern</td><td>Abstract interfaces backed by SQLite for all entities</td></tr>
+            <tr><td>Dependency Injection</td><td>All services receive dependencies via constructors</td></tr>
+            <tr><td>Domain-Driven Design</td><td>Rich dataclass models with embedded business logic</td></tr>
+            <tr><td>Clean Architecture</td><td>Strict layer separation — ML, crypto, DB, business logic isolated</td></tr>
+            <tr><td>Simulation Mode</td><td>Graceful hardware fallback for development without physical hardware</td></tr>
+            <tr><td>ACID Transactions</td><td>SQLite with proper connection management on all writes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. Technologies ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <h2 class="section-title">Technologies &amp; Libraries</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Category</th><th>Technology</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="cat">Core</span></td><td>Python 3.10+</td><td>Primary runtime language</td></tr>
+          <tr><td><span class="cat">Vision</span></td><td>OpenCV (<code>cv2</code>)</td><td>Camera capture, frame processing, Haar Cascade detection</td></tr>
+          <tr><td><span class="cat">ML Inference</span></td><td><code>onnxruntime</code></td><td>MobileFaceNet ONNX inference on ARM64 CPU</td></tr>
+          <tr><td><span class="cat">ML Fallback</span></td><td>dlib</td><td>128-D face embedding fallback when ONNX unavailable</td></tr>
+          <tr><td><span class="cat">Numerics</span></td><td>NumPy</td><td>Embedding vectors, cosine similarity, template storage</td></tr>
+          <tr><td><span class="cat">Hardware</span></td><td>Adafruit PN532</td><td>SPI-based NFC card reader/writer</td></tr>
+          <tr><td><span class="cat">Database</span></td><td>SQLite3 (built-in)</td><td>ACID-compliant local persistent storage</td></tr>
+          <tr><td><span class="cat">Encryption</span></td><td><code>cryptography</code> (Fernet/AES)</td><td>Face embedding encryption at rest</td></tr>
+          <tr><td><span class="cat">Hashing</span></td><td><code>hashlib</code> SHA-256</td><td>Blockchain-style vote hash chain + NFC key derivation</td></tr>
+          <tr><td><span class="cat">Session</span></td><td><code>secrets</code> + base64</td><td>Cryptographically secure one-time session tokens</td></tr>
+          <tr><td><span class="cat">Identity</span></td><td><code>uuid</code></td><td>Unique IDs for all entities (voter, vote, session, audit)</td></tr>
+          <tr><td><span class="cat">Logging</span></td><td>Python <code>logging</code> + RotatingFileHandler</td><td>Structured audit trail with automatic log rotation</td></tr>
+          <tr><td><span class="cat">Config</span></td><td>Dataclasses + Environment Variables</td><td>Multi-environment configuration (dev / staging / prod)</td></tr>
+          <tr><td><span class="cat">Serialization</span></td><td>NumPy <code>.npz</code> / JSON</td><td>Face template storage, audit event details</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── 4. ML Models ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <h2 class="section-title">ML Models Used</h2>
+    </div>
+
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-icon">🧠</div>
+        <div>
+          <h3>MobileFaceNet — Primary Face Recognition</h3>
+          <span>ONNX Runtime · data/face_models/mobilefacenet.onnx</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><td style="width:200px;color:var(--muted);">Architecture</td><td>MobileFaceNet (lightweight ResNet-style, optimized for mobile/edge)</td></tr>
+          <tr><td style="color:var(--muted);">Input</td><td>112 × 112 × 3 normalized RGB face image</td></tr>
+          <tr><td style="color:var(--muted);">Output</td><td>512-dimensional float32 embedding vector (L2 normalized)</td></tr>
+          <tr><td style="color:var(--muted);">Matching Method</td><td>Cosine similarity (auth threshold: 0.55 – 0.70)</td></tr>
+          <tr><td style="color:var(--muted);">Runtime</td><td>ONNX Runtime (CPU, ARM64 optimized)</td></tr>
+          <tr><td style="color:var(--muted);">Use Cases</td><td>Voter enrollment (3-sample averaged embeddings) + live authentication</td></tr>
+          <tr><td style="color:var(--muted);">Deduplication Threshold</td><td>0.68 cosine similarity — rejects duplicate registrations</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-icon">👁️</div>
+        <div>
+          <h3>OpenCV Haar Cascade — Face Detector</h3>
+          <span>haarcascade_frontalface_default.xml · Bundled with OpenCV</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><td style="width:200px;color:var(--muted);">Algorithm</td><td>Viola-Jones (Haar features + AdaBoost cascade classifier)</td></tr>
+          <tr><td style="color:var(--muted);">Detection Zone</td><td>Center 70% of frame — reduces peripheral false positives</td></tr>
+          <tr><td style="color:var(--muted);">Output</td><td>Bounding box → cropped &amp; resized to 112 × 112 for MobileFaceNet</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-icon">🔄</div>
+        <div>
+          <h3>dlib — Fallback Face Recognition</h3>
+          <span>128-D Euclidean matching · Activates when MobileFaceNet / ONNX unavailable</span>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><td style="width:200px;color:var(--muted);">Embedding Dimension</td><td>128-D (vs. 512-D for MobileFaceNet)</td></tr>
+          <tr><td style="color:var(--muted);">Matching Method</td><td>Euclidean distance → confidence score conversion</td></tr>
+          <tr><td style="color:var(--muted);">Model Modes</td><td><code>"hog"</code> (CPU-fast) or <code>"cnn"</code> (GPU-accurate)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. Security ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <h2 class="section-title">Security Architecture</h2>
+    </div>
+
+    <p style="color:var(--muted);margin-bottom:24px;font-size:14px;">Five-Stage Authentication Pipeline</p>
+    <div class="pipeline" style="margin-bottom:36px;">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>NFC UID Format Validation</strong>
+          <span>Verify card UID format before any database lookup</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Voter Database Lookup</strong>
+          <span>Indexed O(1) NFC UID → Voter record resolution</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Eligibility Check</strong>
+          <span>Reject if <code>has_voted = true</code> — enforces one vote per voter</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Live Face Biometric Match</strong>
+          <span>Captured embedding vs. stored template — cosine similarity ≥ 0.55 required</span>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <strong>Session Token Issuance</strong>
+          <span>60-second one-time token (<code>secrets.token_urlsafe(32)</code>) — consumed on vote cast</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="color:var(--muted);margin-bottom:16px;font-size:14px;">Blockchain-Style Vote Hash Chain (SHA-256)</p>
+    <div class="hash-chain" style="margin-bottom:32px;">
+      <div class="hash-block">
+        <div class="block-label">Genesis Block</div>
+        <div class="block-field">prev_hash: <span>000...0</span></div>
+        <div class="block-field">candidate: <span>Alice</span></div>
+        <div class="block-field">hash: <span>SHA256(...)</span></div>
+      </div>
+      <div class="hash-arrow">→</div>
+      <div class="hash-block">
+        <div class="block-label">Vote [1]</div>
+        <div class="block-field">prev_hash: <span>← block[0].hash</span></div>
+        <div class="block-field">candidate: <span>Bob</span></div>
+        <div class="block-field">hash: <span>SHA256(...)</span></div>
+      </div>
+      <div class="hash-arrow">→</div>
+      <div class="hash-block">
+        <div class="block-label">Vote [N]</div>
+        <div class="block-field">prev_hash: <span>← block[N-1].hash</span></div>
+        <div class="block-field">candidate: <span>...</span></div>
+        <div class="block-field">hash: <span>SHA256(...)</span></div>
+      </div>
+      <div class="hash-arrow">→</div>
+      <div class="hash-block" style="border-color:var(--accent3);">
+        <div class="block-label" style="color:var(--accent3);">Tamper Detected</div>
+        <div class="block-field">Any modification</div>
+        <div class="block-field">breaks all</div>
+        <div class="block-field">subsequent hashes</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Security Control</th><th>Implementation</th></tr></thead>
+        <tbody>
+          <tr><td>Biometric Deduplication</td><td>Compares new face vs. all stored templates — cosine similarity ≥ 0.68 blocks duplicate enrollment (Aadhaar-style)</td></tr>
+          <tr><td>NFC Payload Encryption</td><td>XOR encryption with SHA-256 derived key from <code>"TRIsecure-NFC-2026"</code> — no plaintext identity on card</td></tr>
+          <tr><td>Vote Integrity</td><td>SHA-256 hash chain — tampered votes detected via full chain verification</td></tr>
+          <tr><td>Session Security</td><td><code>secrets.token_urlsafe(32)</code>, 60 s TTL, one-time use, in-memory only</td></tr>
+          <tr><td>Double-Vote Prevention</td><td><code>has_voted</code> flag set atomically after vote is recorded</td></tr>
+          <tr><td>Embedding Encryption</td><td>AES/Fernet encryption for face embeddings stored at rest</td></tr>
+          <tr><td>Audit Trail</td><td>Every system event persisted to immutable <code>audit_events</code> table with type, status, timestamp, voter ID</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── 6. Database Schema ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <h2 class="section-title">Database Schema (SQLite)</h2>
+    </div>
+    <pre><span class="comment">-- Voters Table</span>
+<span class="kw">CREATE TABLE</span> voters (
+    id           <span class="cls">TEXT</span> <span class="kw">PRIMARY KEY</span>,
+    name         <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    nfc_uid      <span class="cls">TEXT</span> <span class="kw">UNIQUE NOT NULL</span>,        <span class="comment">-- indexed, O(1) lookups</span>
+    face_embedding <span class="cls">BLOB</span>,                      <span class="comment">-- encrypted embedding</span>
+    has_voted    <span class="cls">INTEGER</span> <span class="kw">DEFAULT</span> <span class="num">0</span>,
+    created_at   <span class="cls">TEXT</span>,
+    updated_at   <span class="cls">TEXT</span>
+);
+
+<span class="comment">-- Votes Table  (append-only ledger)</span>
+<span class="kw">CREATE TABLE</span> votes (
+    sequence       <span class="cls">INTEGER</span> <span class="kw">PRIMARY KEY AUTOINCREMENT</span>,
+    vote_id        <span class="cls">TEXT</span> <span class="kw">NOT NULL UNIQUE</span>,
+    voter_id       <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    candidate      <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    timestamp      <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    previous_hash  <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    current_hash   <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>               <span class="comment">-- SHA256(candidate+ts+prev_hash)</span>
+);
+
+<span class="comment">-- Audit Events Table  (immutable compliance log)</span>
+<span class="kw">CREATE TABLE</span> audit_events (
+    sequence    <span class="cls">INTEGER</span> <span class="kw">PRIMARY KEY AUTOINCREMENT</span>,
+    event_id    <span class="cls">TEXT</span> <span class="kw">NOT NULL UNIQUE</span>,
+    event_type  <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    voter_id    <span class="cls">TEXT</span>,
+    timestamp   <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    status      <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,                <span class="comment">-- SUCCESS | FAILURE | WARNING</span>
+    message     <span class="cls">TEXT</span> <span class="kw">NOT NULL</span>,
+    details     <span class="cls">TEXT</span>                            <span class="comment">-- JSON structured metadata</span>
+);</pre>
+  </div>
+
+  <!-- ── 7. Hardware ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <h2 class="section-title">Hardware Specifications</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Hardware</th><th>Interface</th><th>Configuration</th></tr></thead>
+        <tbody>
+          <tr><td>NFC Reader</td><td>PN532</td><td>SPI</td><td>SCK/MOSI/MISO · CS=D8 · RST=D25 · 1 MHz</td></tr>
+          <tr><td>NFC Cards</td><td>NTAG2xx (e.g. NTAG213)</td><td>—</td><td>36-byte XOR-encrypted UUID payload (pages 4–12)</td></tr>
+          <tr><td>Camera</td><td>USB Webcam</td><td>V4L2 via OpenCV</td><td>320 × 240 @ 15 fps MJPEG · /dev/video0</td></tr>
+          <tr><td>Host SBC</td><td>Raspberry Pi 4 (4 GB+)</td><td>ARM64</td><td>Ubuntu 22.04 LTS · Python 3.10+</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>Camera Optimizations for Raspberry Pi</h3>
+      <p>MJPEG codec avoids slow YUYV→BGR conversion · Low 320×240 resolution reduces USB bandwidth · Multiple <code>grab()</code> calls flush stale kernel-buffered frames · 15 fps sufficient for reliable face detection.</p>
+    </div>
+  </div>
+
+  <!-- ── 8. Data Storage ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <h2 class="section-title">Data &amp; File Storage</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Data</th><th>Path</th><th>Format</th></tr></thead>
+        <tbody>
+          <tr><td>Main Database</td><td><code>data/trisecure.db</code></td><td>SQLite</td></tr>
+          <tr><td>Face Templates (new)</td><td><code>data/face_models/{voter_id}.npz</code></td><td>NumPy compressed archive</td></tr>
+          <tr><td>Face Templates (legacy)</td><td><code>data/face_models/{name}.npy</code></td><td>NumPy raw array (backward compat)</td></tr>
+          <tr><td>MobileFaceNet Model</td><td><code>data/face_models/mobilefacenet.onnx</code></td><td>ONNX</td></tr>
+          <tr><td>System Log</td><td><code>data/logs/system.log</code></td><td>Rotating text log (10 MB, 5 backups)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── 9. Features ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">9</div>
+      <h2 class="section-title">Feature Completion</h2>
+    </div>
+    <div class="checklist">
+      <div class="check-item"><span class="checkmark">✓</span> NFC card enrollment &amp; encrypted UUID writing</div>
+      <div class="check-item"><span class="checkmark">✓</span> Face capture with 3-sample embedding averaging</div>
+      <div class="check-item"><span class="checkmark">✓</span> MobileFaceNet 512-D ONNX inference</div>
+      <div class="check-item"><span class="checkmark">✓</span> Aadhaar-style biometric deduplication</div>
+      <div class="check-item"><span class="checkmark">✓</span> Multi-template per voter support</div>
+      <div class="check-item"><span class="checkmark">✓</span> 5-stage authentication pipeline</div>
+      <div class="check-item"><span class="checkmark">✓</span> Blockchain-style SHA-256 hash chaining</div>
+      <div class="check-item"><span class="checkmark">✓</span> Full chain tamper verification</div>
+      <div class="check-item"><span class="checkmark">✓</span> One-time session tokens (60 s TTL)</div>
+      <div class="check-item"><span class="checkmark">✓</span> Comprehensive audit trail (all events)</div>
+      <div class="check-item"><span class="checkmark">✓</span> SQLite ACID-compliant persistence</div>
+      <div class="check-item"><span class="checkmark">✓</span> Hardware simulation mode (no-device dev)</div>
+      <div class="check-item"><span class="checkmark">✓</span> Multi-environment config (dev/staging/prod)</div>
+      <div class="check-item"><span class="checkmark">✓</span> Rotating log files (10 MB, 5 backups)</div>
+      <div class="check-item"><span class="checkmark">✓</span> Legacy .npy + new .npz template support</div>
+      <div class="check-item"><span class="checkmark">✓</span> NFC payload XOR encryption</div>
+      <div class="check-item"><span class="checkmark">✓</span> Vote statistics dashboard</div>
+      <div class="check-item"><span class="checkmark">✓</span> Double-vote prevention</div>
+    </div>
+  </div>
+
+  <!-- ── 10. Roadmap ── -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">10</div>
+      <h2 class="section-title">Development Roadmap</h2>
+    </div>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="phase-badge phase-done">Phase 1 — Complete</div>
+        <h4>Internal Hash Chaining</h4>
+        <p>SHA-256 blockchain-style vote ledger. All core features built and operational.</p>
+      </div>
+      <div class="roadmap-item">
+        <div class="phase-badge phase-planned">Phase 2 — Planned</div>
+        <h4>AES Vote Encryption</h4>
+        <p>Encrypt all vote payloads at rest using AES-256 before ledger write.</p>
+      </div>
+      <div class="roadmap-item">
+        <div class="phase-badge phase-planned">Phase 3 — Planned</div>
+        <h4>External Blockchain</h4>
+        <p>Integration with Hyperledger Fabric or Ethereum for distributed immutable vote ledger.</p>
+      </div>
+      <div class="roadmap-item">
+        <div class="phase-badge phase-planned">Phase 4 — Planned</div>
+        <h4>HSM Key Management</h4>
+        <p>Hardware Security Module for cryptographic key storage, eliminating software key exposure.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    <span><strong style="color:var(--text);">TriSecure</strong> — Secure Electronic Voting Terminal</span>
+    <span>Generated March 9, 2026 · MIT License</span>
+  </div>
+
+</div>
+</body>
+</html>
