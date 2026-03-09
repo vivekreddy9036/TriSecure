@@ -410,20 +410,27 @@ class TRIsecureApp:
             print(f"  [NFC] Read failed: {e}")
             return None
 
-    def _write_voter_id_to_card(self, voter_id: str, voter_name: str) -> bool:
+    def _write_voter_id_to_card(self, voter_id: str, voter_name: str, expected_uid: str) -> bool:
         """
         Write encrypted voter UUID to the NFC card.
 
-        Asks the voter to tap the card again (face capture happens between
-        the initial UID-read and this write step).
+        Asks the voter to tap the card again and verifies it is the SAME card
+        that was scanned during enrollment (UID must match expected_uid).
 
         Returns True if write succeeded.
         """
-        print(f"\n  [NFC] Please tap the NFC card again to write the encrypted voter ID…")
+        print(f"\n  [NFC] Please tap the SAME NFC card again to write the encrypted voter ID…")
         try:
             uid = self.nfc.read_card_blocking(max_wait=30.0)
         except RuntimeError as e:
             print(f"  [NFC] Card not detected: {e}")
+            return False
+
+        if uid.upper() != expected_uid.upper():
+            print(f"  [NFC] ✗ SECURITY VIOLATION — Card mismatch detected!")
+            print(f"         Expected UID : {expected_uid.upper()}")
+            print(f"         Presented UID: {uid.upper()}")
+            print(f"         Enrollment aborted. The registered card must be used for writing.")
             return False
 
         result = self.nfc.write_voter_id(voter_id)
@@ -512,8 +519,8 @@ class TRIsecureApp:
         emb_path = _save_templates(voter.id, embedding, append=False)
         n_templates = _count_templates(voter.id)
 
-        # 5. Write encrypted voter UUID onto the NFC card
-        write_ok = self._write_voter_id_to_card(str(voter.id), name)
+        # 5. Write encrypted voter UUID onto the NFC card (must be same card as step 1)
+        write_ok = self._write_voter_id_to_card(str(voter.id), name, nfc_uid)
 
         print(_sep())
         print(f"  ✓ Voter enrolled successfully!")
@@ -626,7 +633,7 @@ class TRIsecureApp:
         print(f"  ✓ Vote recorded successfully!")
         print(f"    Voter     : {voter.name}")
         print(f"    Candidate : {candidate}")
-        print(f"    Vote ID   : {vote.id}")
+        print(f"    Vote ID   : {vote.vote_id}")
         print(_sep())
 
     def verify_face_only(self) -> None:
