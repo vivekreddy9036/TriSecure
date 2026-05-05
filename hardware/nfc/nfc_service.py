@@ -13,6 +13,7 @@ Capabilities:
 
 import hashlib
 import logging
+import os
 import secrets
 import time
 from dataclasses import dataclass
@@ -20,20 +21,59 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# ── Lightweight XOR-based encryption for NFC payloads ──────────────────────
-# We derive a 16-byte key from a shared secret via SHA-256 and XOR
-# the plaintext.  This is intentionally simple so it works on the
-# constrained 144-byte NTAG213 user memory and is easy to audit.
-# For production, replace with AES-128 (cryptography.fernet).
 
-_NFC_SECRET = b"TRIsecure-NFC-2026"          # change per deployment
+class NFCPayloadCrypto:
+    """AES-128-GCM authenticated encryption for NFC tag payloads.
 
-def _derive_key(secret: bytes, length: int = 16) -> bytes:
-    return hashlib.sha256(secret).digest()[:length]
+    Wire format written to tag: [12-byte IV | ciphertext | 16-byte GCM tag]
+    For a 36-byte UUID payload: 12 + 36 + 16 = 64 bytes = 16 NTAG pages.
+    """
 
-def _xor_crypt(data: bytes, key: bytes) -> bytes:
-    """Symmetric XOR encryption/decryption."""
-    return bytes(b ^ key[i % len(key)] for i, b in enumerate(data))
+    _KEY_SIZE = 16   # AES-128
+    _IV_SIZE = 12    # GCM nonce (96-bit recommended)
+    _TAG_SIZE = 16   # GCM authentication tag
+
+    def __init__(self, secret: bytes) -> None:
+        try:
+            from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+            from cryptography.hazmat.primitives import hashes
+            hkdf = HKDF(
+                algorithm=hashes.SHA256(),
+                length=self._KEY_SIZE,
+                salt=None,
+                info=b"trisecure-nfc-v1",
+            )
+            self._key: Optional[bytes] = hkdf.derive(secret)
+            self._available = True
+        except ImportError:
+            logger.warning("cryptography library not available — NFC using XOR fallback")
+            self._key = hashlib.sha256(secret).digest()[:self._KEY_SIZE]
+            self._available = False
+
+    def encrypt(self, plaintext: bytes) -> bytes:
+        """Return [IV || ciphertext+tag]."""
+        if self._available:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            iv = secrets.token_bytes(self._IV_SIZE)
+            ciphertext = AESGCM(self._key).encrypt(iv, plaintext, None)
+            return iv + ciphertext
+        # XOR fallback (simulation / no-cryptography environments)
+        iv = secrets.token_bytes(self._IV_SIZE)
+        ct = bytes(b ^ self._key[i % len(self._key)] for i, b in enumerate(plaintext))
+        return iv + ct + bytes(self._TAG_SIZE)
+
+    def decrypt(self, data: bytes) -> bytes:
+        """Decrypt [IV || ciphertext+tag] and return plaintext."""
+        if len(data) < self._IV_SIZE + self._TAG_SIZE:
+            raise ValueError(f"NFC payload too short: {len(data)} bytes")
+        iv = data[:self._IV_SIZE]
+        ct = data[self._IV_SIZE:]
+        if self._available:
+            from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+            return AESGCM(self._key).decrypt(iv, ct, None)
+        # XOR fallback — strip dummy tag and decrypt
+        ciphertext = ct[:-self._TAG_SIZE] if len(ct) > self._TAG_SIZE else ct
+        return bytes(b ^ self._key[i % len(self._key)] for i, b in enumerate(ciphertext))
 
 
 @dataclass
@@ -75,8 +115,10 @@ class NFCService:
 
     # NTAG2xx user-memory starts at page 4 (pages 0-3 are reserved).
     _USER_PAGE_START = 4
-    # We write 36 bytes = 9 pages (UUID is 36 chars as hex-encoded string).
-    _PAYLOAD_PAGES = 9
+    # AES-GCM payload: 12 IV + 36 UUID + 16 tag = 64 bytes = 16 pages
+    _PAYLOAD_PAGES = 16
+    # Total encrypted payload length in bytes
+    _PAYLOAD_BYTES = 64
 
     def __init__(
         self,
@@ -94,7 +136,8 @@ class NFCService:
 
         self._device = None
         self._initialized = False
-        self._key = _derive_key(_NFC_SECRET)
+        nfc_secret = os.environ.get("TRISECURE_NFC_SECRET", "TRIsecure-NFC-2026").encode()
+        self._crypto = NFCPayloadCrypto(nfc_secret)
 
         logger.info(
             f"NFCService (SPI) created (CS={spi_cs_pin}, RESET={spi_reset_pin}, "
@@ -228,22 +271,17 @@ class NFCService:
             return NFCWriteResult(success=True)
 
         try:
-            # Encode and encrypt
-            plaintext = voter_uuid.encode("utf-8")            # 36 bytes
-            ciphertext = _xor_crypt(plaintext, self._key)
+            plaintext = voter_uuid.encode("utf-8")   # 36 bytes
+            payload = self._crypto.encrypt(plaintext)  # 64 bytes
 
-            # Pad to multiple of 4 (NTAG2xx page = 4 bytes)
-            padded = ciphertext + b'\x00' * (4 - len(ciphertext) % 4) \
-                     if len(ciphertext) % 4 != 0 else ciphertext
-
-            # Write page by page
-            for i in range(0, len(padded), 4):
+            # Write page by page (4 bytes per NTAG page)
+            for i in range(0, len(payload), 4):
                 page = self._USER_PAGE_START + (i // 4)
-                data = padded[i:i+4]
+                data = payload[i:i + 4]
                 self._device.ntag2xx_write_block(page, data)
                 logger.debug(f"Wrote page {page}: {data.hex()}")
 
-            logger.info(f"Encrypted voter ID written to NFC tag ({len(padded)} bytes)")
+            logger.info(f"Encrypted voter ID written to NFC tag ({len(payload)} bytes)")
             return NFCWriteResult(success=True)
 
         except Exception as e:
@@ -273,9 +311,13 @@ class NFCService:
                     return None
                 raw.extend(block)
 
-            # Trim to 36 bytes (UUID length) and decrypt
-            ciphertext = bytes(raw[:36])
-            plaintext = _xor_crypt(ciphertext, self._key)
+            # Decrypt full 64-byte AES-GCM payload
+            try:
+                plaintext = self._crypto.decrypt(bytes(raw[:self._PAYLOAD_BYTES]))
+            except Exception as e:
+                logger.warning(f"NFC payload decryption failed: {e}")
+                return None
+
             voter_uuid = plaintext.decode("utf-8", errors="replace")
 
             # Basic UUID format validation (8-4-4-4-12)

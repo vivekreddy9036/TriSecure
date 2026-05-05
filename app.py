@@ -376,10 +376,28 @@ class TRIsecureApp:
 
         cfg = get_config()
 
+        # Validate production config before starting
+        errors = cfg.validate_production()
+        if errors:
+            for e in errors:
+                logger.critical(e)
+            raise SystemExit("Production configuration incomplete. Set required env vars.")
+
+        # Encryption / signing setup
+        try:
+            from backend.crypto.encryptor import EmbeddingEncryptor
+            encryptor = EmbeddingEncryptor()
+        except ValueError as e:
+            logger.warning(f"Face encryption disabled: {e}")
+            encryptor = None
+
+        vote_key = cfg.VOTE_SIGNING_KEY.encode() if cfg.VOTE_SIGNING_KEY else None
+        audit_key = cfg.AUDIT_HMAC_KEY.encode() if cfg.AUDIT_HMAC_KEY else None
+
         # Repositories
-        self.voter_repo  = SQLiteVoterRepository(cfg.DATABASE_PATH)
-        self.vote_repo   = SQLiteVoteRepository(cfg.DATABASE_PATH)
-        self.audit_repo  = SQLiteAuditRepository(cfg.DATABASE_PATH)
+        self.voter_repo  = SQLiteVoterRepository(cfg.DATABASE_PATH, encryptor=encryptor)
+        self.vote_repo   = SQLiteVoteRepository(cfg.DATABASE_PATH, signing_key=vote_key)
+        self.audit_repo  = SQLiteAuditRepository(cfg.DATABASE_PATH, audit_key=audit_key)
 
         # Core
         self.audit_logger    = AuditLogger(self.audit_repo)
@@ -844,7 +862,7 @@ class TRIsecureApp:
         n_templates = _count_templates(voter.id)
 
         # Re-write encrypted voter UUID to card with updated info
-        write_ok = self._write_voter_id_to_card(str(voter.id), voter.name)
+        write_ok = self._write_voter_id_to_card(str(voter.id), voter.name, nfc_uid)
 
         print(f"  ✓ Face template added for '{voter.name}'  →  {emb_path.name}")
         print(f"    Total templates for this voter: {n_templates}")

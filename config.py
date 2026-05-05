@@ -75,6 +75,15 @@ class Config:
     # Security
     ENCRYPTION_ENABLED: bool = False  # Enable in Phase 2
     BLOCKCHAIN_ENABLED: bool = False  # Enable in Phase 2
+
+    # Cryptographic keys (required in production; set via environment)
+    VOTE_SIGNING_KEY: str = ""    # env: TRISECURE_VOTE_SIGNING_KEY
+    AUDIT_HMAC_KEY: str = ""      # env: TRISECURE_AUDIT_HMAC_KEY
+    # Face embedding master key: env TRISECURE_MASTER_KEY (read by EmbeddingEncryptor)
+    # NFC secret: env TRISECURE_NFC_SECRET (read by NFCPayloadCrypto)
+
+    # Face backend selection
+    FACE_BACKEND: str = "mobilefacenet"  # "mobilefacenet" (primary) or "dlib" (legacy)
     
     # Logging
     LOG_LEVEL: str = "INFO"
@@ -159,6 +168,9 @@ class Config:
         # Security
         self.ENCRYPTION_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}ENCRYPTION_ENABLED"), self.ENCRYPTION_ENABLED)
         self.BLOCKCHAIN_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}BLOCKCHAIN_ENABLED"), self.BLOCKCHAIN_ENABLED)
+        self.VOTE_SIGNING_KEY = os.getenv(f"{env_prefix}VOTE_SIGNING_KEY", self.VOTE_SIGNING_KEY)
+        self.AUDIT_HMAC_KEY = os.getenv(f"{env_prefix}AUDIT_HMAC_KEY", self.AUDIT_HMAC_KEY)
+        self.FACE_BACKEND = os.getenv(f"{env_prefix}FACE_BACKEND", self.FACE_BACKEND)
         
         # Logging
         self.LOG_LEVEL = os.getenv(f"{env_prefix}LOG_LEVEL", self.LOG_LEVEL).upper()
@@ -178,6 +190,26 @@ class Config:
     def is_development(self) -> bool:
         """Check if running in development mode."""
         return self.MODE == DeploymentMode.DEVELOPMENT
+
+    def validate_production(self) -> list:
+        """
+        Return list of missing required settings for production mode.
+
+        Call this at startup; raise SystemExit if the list is non-empty.
+        """
+        if not self.is_production():
+            return []
+        missing = []
+        required = {
+            "TRISECURE_MASTER_KEY": "face embedding encryption key",
+            "TRISECURE_VOTE_SIGNING_KEY": "vote chain HMAC signing key",
+            "TRISECURE_NFC_SECRET": "NFC payload encryption secret",
+            "TRISECURE_AUDIT_HMAC_KEY": "audit log HMAC key",
+        }
+        for env_var, description in required.items():
+            if not os.environ.get(env_var):
+                missing.append(f"{env_var} ({description}) must be set in production")
+        return missing
 
 
 def setup_logging(config: Config) -> logging.Logger:

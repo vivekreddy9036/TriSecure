@@ -124,9 +124,11 @@ class EmbeddingEncryptor:
         if env_key:
             return env_key.encode('utf-8')
         
-        # Generate random key for testing (NOT for production!)
-        logger.warning("No master key provided. Using random key (testing only).")
-        return secrets.token_bytes(32)
+        # No key available — refuse to generate an ephemeral key.
+        # An ephemeral key silently makes all stored embeddings unreadable after restart.
+        raise ValueError(
+            "No master key available. Set the TRISECURE_MASTER_KEY environment variable."
+        )
     
     def _check_crypto(self) -> bool:
         """Check if cryptography library is available."""

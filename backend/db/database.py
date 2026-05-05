@@ -1,3 +1,7 @@
+# DEPRECATED: This module is not used by the active app pipeline.
+# Face embeddings are stored encrypted in the voters table via
+# SQLiteVoterRepository + EmbeddingEncryptor (see repositories/voter_repository.py).
+# Retained for reference only.
 """
 Biometric Database Module.
 
@@ -20,7 +24,7 @@ import sqlite3
 from pathlib import Path
 from typing import Optional, List
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from threading import Lock
 from contextlib import contextmanager
 
@@ -44,8 +48,8 @@ class BiometricRecord:
     encrypted_embedding: bytes
     salt: bytes = field(default_factory=bytes)
     iv: bytes = field(default_factory=bytes)
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    updated_at: datetime = field(default_factory=datetime.utcnow)
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
 class BiometricDatabase:
@@ -185,7 +189,7 @@ class BiometricDatabase:
         if not encrypted_embedding:
             raise ValueError("encrypted_embedding cannot be empty")
         
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         
         with self._lock:
             try:

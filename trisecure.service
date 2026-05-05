@@ -5,7 +5,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-Type=simple
+Type=notify
 User=trisecure
 Group=trisecure
 WorkingDirectory=/opt/trisecure
@@ -14,8 +14,11 @@ Environment="TRISECURE_MODE=production"
 Environment="TRISECURE_LOG_FILE=/var/log/trisecure/trisecure.log"
 Environment="TRISECURE_DATABASE_PATH=/var/lib/trisecure/trisecure.db"
 
-# Hardware access
-SupplementaryGroups=i2c,video
+# Load secrets from a protected file (chmod 640, owned root:trisecure)
+EnvironmentFile=/etc/trisecure/secrets.env
+
+# Hardware access (i2c=PN532, spi=NFC SPI bus, video=webcam, gpio=GPIO pins)
+SupplementaryGroups=i2c spi video gpio
 
 # Restart policy
 Restart=on-failure
@@ -23,15 +26,23 @@ RestartSec=5s
 StartLimitInterval=60s
 StartLimitBurst=3
 
-# Security settings
+# Watchdog — systemd will restart if app hangs for >120s without notifying
+WatchdogSec=120s
+NotifyAccess=main
+
+# Resource limits
+MemoryMax=512M
+CPUQuota=80%
+
+# Security hardening
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/trisecure /var/log/trisecure
 
-# Startup script
-ExecStart=/opt/trisecure/venv/bin/python -m trisecure.main
+# Startup
+ExecStart=/opt/trisecure/venv/bin/python app.py
 
 # Graceful shutdown
 KillMode=process
@@ -41,28 +52,37 @@ TimeoutStopSec=10s
 [Install]
 WantedBy=multi-user.target
 
-# Installation Instructions:
+# Installation Instructions
 # ==========================
 # 1. Create trisecure user:
 #    sudo useradd -r -s /bin/false -d /var/lib/trisecure trisecure
 #
-# 2. Create directories with proper permissions:
-#    sudo mkdir -p /opt/trisecure /var/lib/trisecure /var/log/trisecure
+# 2. Create directories:
+#    sudo mkdir -p /opt/trisecure /var/lib/trisecure /var/log/trisecure /etc/trisecure
 #    sudo chown -R trisecure:trisecure /var/lib/trisecure /var/log/trisecure
-#    sudo chmod 750 /var/lib/trisecure /var/log/trisecure
+#    sudo chown root:trisecure /etc/trisecure
+#    sudo chmod 750 /var/lib/trisecure /var/log/trisecure /etc/trisecure
 #
-# 3. Copy service file:
+# 3. Create secrets file (chmod 640):
+#    sudo tee /etc/trisecure/secrets.env > /dev/null <<EOF
+#    TRISECURE_MASTER_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+#    TRISECURE_VOTE_SIGNING_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+#    TRISECURE_NFC_SECRET=$(python3 -c "import secrets; print(secrets.token_hex(16))")
+#    TRISECURE_AUDIT_HMAC_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+#    EOF
+#    sudo chmod 640 /etc/trisecure/secrets.env
+#    sudo chown root:trisecure /etc/trisecure/secrets.env
+#
+# 4. Deploy application:
+#    sudo rsync -a TriSecure/ /opt/trisecure/
+#    sudo chown -R trisecure:trisecure /opt/trisecure
+#
+# 5. Install service:
 #    sudo cp trisecure.service /etc/systemd/system/
-#
-# 4. Reload systemd:
 #    sudo systemctl daemon-reload
-#
-# 5. Enable service (autostart):
 #    sudo systemctl enable trisecure
-#
-# 6. Start service:
 #    sudo systemctl start trisecure
 #
-# 7. Check status:
+# 6. Check status:
 #    sudo systemctl status trisecure
-#    sudo journalctl -u trisecure -f  # Real-time logs
+#    sudo journalctl -u trisecure -f

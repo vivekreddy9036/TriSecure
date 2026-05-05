@@ -1,3 +1,6 @@
+# DEPRECATED: This module is not used by the active app pipeline.
+# The active pipeline uses SQLiteVoterRepository + EmbeddingEncryptor directly.
+# Retained for reference only.
 """
 Biometric Client — orchestration layer.
 

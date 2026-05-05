@@ -6,7 +6,7 @@ in the TRIsecure voting system.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID, uuid4
 from typing import Optional
 
@@ -31,13 +31,13 @@ class Voter:
     nfc_uid: str = ""
     face_embedding: Optional[bytes] = None
     has_voted: bool = False
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    updated_at: datetime = field(default_factory=datetime.utcnow)
-    
+    created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+
     def mark_as_voted(self) -> None:
         """Mark this voter as having voted."""
         self.has_voted = True
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now(timezone.utc)
     
     def is_eligible_to_vote(self) -> bool:
         """Check if voter is eligible to vote (hasn't already voted)."""

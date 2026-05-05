@@ -1,16 +1,26 @@
+# Virtual environments
 .venv/
 venv/
+
+# Runtime data
 *.log
 *.db
 .env
-code.md
 
 # Binary / model files (too large for git)
 *.onnx
 *.npy
 *.npz
+data/face_models/
 
 # Python cache
 __pycache__/
 *.pyc
 *.pyo
+.pytest_cache/
+
+# Generated / documentation artifacts
+TriSecure_Technical_Report.html
+Journal_Readiness_Roadmap.md
+Q2_Publication_Benchmark_Doc.md
+code.md

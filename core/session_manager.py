@@ -4,10 +4,11 @@ Session Manager for temporary voting authentication sessions.
 Manages creation, validation, and lifecycle of one-time voting tokens.
 """
 
+import hashlib
 import logging
 from typing import Optional
 from uuid import UUID
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from models import Session, Voter
 
@@ -31,7 +32,12 @@ class SessionManager:
     """
     
     DEFAULT_SESSION_DURATION_SECONDS = 60
-    
+
+    @staticmethod
+    def _token_key(token: str) -> str:
+        """Store SHA-256 of token as dict key, never the raw token."""
+        return hashlib.sha256(token.encode()).hexdigest()
+
     def __init__(self, duration_seconds: int = DEFAULT_SESSION_DURATION_SECONDS):
         """
         Initialize SessionManager.
@@ -62,12 +68,12 @@ class SessionManager:
         
         session = Session(
             voter_id=voter.id,
-            issued_at=datetime.utcnow(),
-            expires_at=datetime.utcnow() + timedelta(seconds=self.duration_seconds),
+            issued_at=datetime.now(timezone.utc),
+            expires_at=datetime.now(timezone.utc) + timedelta(seconds=self.duration_seconds),
             is_active=True
         )
-        
-        self._active_sessions[session.token] = session
+
+        self._active_sessions[self._token_key(session.token)] = session
         logger.info(f"Session created for voter {voter.id}: {session.session_id}")
         return session
     
@@ -81,7 +87,7 @@ class SessionManager:
         Returns:
             True if token is valid and can be used for voting
         """
-        session = self._active_sessions.get(token)
+        session = self._active_sessions.get(self._token_key(token))
         if not session:
             logger.warning(f"Session token not found: {token[:8]}...")
             return False
@@ -104,7 +110,7 @@ class SessionManager:
         Returns:
             Session object if valid, None otherwise
         """
-        session = self._active_sessions.get(token)
+        session = self._active_sessions.get(self._token_key(token))
         if not session or not session.is_valid():
             logger.error(f"Attempted to consume invalid session token: {token[:8]}...")
             return None
@@ -123,7 +129,7 @@ class SessionManager:
         Returns:
             Session object if found, None otherwise
         """
-        return self._active_sessions.get(token)
+        return self._active_sessions.get(self._token_key(token))
     
     def cleanup_expired_sessions(self) -> int:
         """
@@ -155,7 +161,7 @@ class SessionManager:
         Returns:
             True if session was deactivated, False if not found
         """
-        session = self._active_sessions.get(token)
+        session = self._active_sessions.get(self._token_key(token))
         if session:
             session.deactivate()
             logger.info(f"Session deactivated: {session.session_id}")

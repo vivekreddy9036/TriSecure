@@ -6,7 +6,9 @@ and session token generation.
 """
 
 import logging
+from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from typing import Optional, Callable
 from uuid import UUID
 
@@ -15,6 +17,29 @@ from core.session_manager import SessionManager
 from core.audit_logger import AuditLogger
 
 logger = logging.getLogger(__name__)
+
+
+class _RateLimiter:
+    """Per-voter failure counter with sliding time window."""
+
+    def __init__(self, max_failures: int = 5, window_seconds: int = 300) -> None:
+        self._max = max_failures
+        self._window = window_seconds
+        self._failures: dict = defaultdict(list)
+
+    def record_failure(self, key: str) -> None:
+        now = datetime.now(timezone.utc).timestamp()
+        self._failures[key].append(now)
+
+    def is_blocked(self, key: str) -> bool:
+        now = datetime.now(timezone.utc).timestamp()
+        cutoff = now - self._window
+        recent = [t for t in self._failures[key] if t > cutoff]
+        self._failures[key] = recent
+        return len(recent) >= self._max
+
+    def reset(self, key: str) -> None:
+        self._failures.pop(key, None)
 
 
 @dataclass
@@ -71,7 +96,8 @@ class AuthenticationPipeline:
         self.session_manager = session_manager or SessionManager()
         self.audit_logger = audit_logger or AuditLogger()
         self.face_match_threshold = face_match_threshold
-        
+        self._rate_limiter = _RateLimiter(max_failures=5, window_seconds=300)
+
         logger.info(f"AuthenticationPipeline initialized with face threshold={face_match_threshold}")
     
     def authenticate(
@@ -94,10 +120,22 @@ class AuthenticationPipeline:
             AuthenticationResult with success status and optional session
         """
         logger.info(f"Starting authentication pipeline for NFC UID: {nfc_uid}")
-        
+
+        # Rate limit check (before any expensive operations)
+        if self._rate_limiter.is_blocked(nfc_uid):
+            self.audit_logger.log_unauthorized_access(
+                f"Rate limit exceeded for NFC UID: {nfc_uid}"
+            )
+            return AuthenticationResult(
+                success=False,
+                message="Too many failed attempts. Please wait before trying again.",
+                error_stage="rate_limit"
+            )
+
         # Stage 1: Verify NFC
         if not self._verify_nfc(nfc_uid, nfc_reader):
             self.audit_logger.log_nfc_read_failure("Invalid NFC UID format")
+            self._rate_limiter.record_failure(nfc_uid)
             return AuthenticationResult(
                 success=False,
                 message="NFC verification failed",
@@ -109,6 +147,7 @@ class AuthenticationPipeline:
         voter = self._verify_voter_exists(nfc_uid)
         if not voter:
             self.audit_logger.log_voter_not_found(nfc_uid)
+            self._rate_limiter.record_failure(nfc_uid)
             return AuthenticationResult(
                 success=False,
                 message="Voter not registered",
@@ -119,6 +158,7 @@ class AuthenticationPipeline:
         # Stage 3: Check not already voted
         if not self._verify_not_voted(voter):
             self.audit_logger.log_voter_already_voted(voter.id)
+            self._rate_limiter.record_failure(nfc_uid)
             return AuthenticationResult(
                 success=False,
                 message="Voter has already cast vote",
@@ -136,6 +176,7 @@ class AuthenticationPipeline:
                 self.audit_logger.log_face_match_failure(
                     f"Face confidence {confidence:.2f} below threshold {self.face_match_threshold}"
                 )
+                self._rate_limiter.record_failure(nfc_uid)
                 return AuthenticationResult(
                     success=False,
                     message="Face verification failed",
@@ -148,7 +189,8 @@ class AuthenticationPipeline:
         # Stage 5: Issue session token
         session = self.session_manager.create_session(voter)
         self.audit_logger.log_session_issued(voter.id, session.session_id)
-        
+        self._rate_limiter.reset(nfc_uid)
+
         logger.info(f"Authentication successful for voter {voter.id}, session {session.session_id}")
         return AuthenticationResult(
             success=True,

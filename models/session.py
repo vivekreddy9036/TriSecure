@@ -6,7 +6,7 @@ sessions issued after successful biometric verification.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from uuid import UUID, uuid4
 import secrets
 from typing import Optional
@@ -30,8 +30,8 @@ class Session:
     session_id: UUID = field(default_factory=uuid4)
     voter_id: UUID = field(default_factory=uuid4)
     token: str = field(default_factory=lambda: secrets.token_urlsafe(32))
-    issued_at: datetime = field(default_factory=datetime.utcnow)
-    expires_at: datetime = field(default_factory=lambda: datetime.utcnow() + timedelta(seconds=60))
+    issued_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    expires_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(seconds=60))
     is_active: bool = True
     used: bool = False
     
@@ -42,7 +42,7 @@ class Session:
         Returns:
             True if current time is past expires_at
         """
-        return datetime.utcnow() > self.expires_at
+        return datetime.now(timezone.utc) > self.expires_at
     
     def is_valid(self) -> bool:
         """
@@ -73,7 +73,7 @@ class Session:
         Returns:
             Seconds remaining, or 0 if expired
         """
-        remaining = (self.expires_at - datetime.utcnow()).total_seconds()
+        remaining = (self.expires_at - datetime.now(timezone.utc)).total_seconds()
         return max(0, int(remaining))
     
     def __str__(self) -> str:

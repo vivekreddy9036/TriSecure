@@ -4,8 +4,10 @@ Domain model for AuditEvent entity.
 This module defines the AuditEvent model for comprehensive system audit logging.
 """
 
+import hmac as _hmac
+import json
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import UUID, uuid4
 from enum import Enum
 from typing import Optional
@@ -69,11 +71,32 @@ class AuditEvent:
     event_id: UUID = field(default_factory=uuid4)
     event_type: EventType = EventType.SYSTEM_ERROR
     voter_id: Optional[UUID] = None
-    timestamp: datetime = field(default_factory=datetime.utcnow)
+    timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     status: EventStatus = EventStatus.SUCCESS
     message: str = ""
     details: Optional[dict] = field(default_factory=dict)
+    hmac: Optional[str] = None
     
+    def compute_hmac(self, secret_key: bytes) -> str:
+        """Compute HMAC-SHA256 over canonical event fields."""
+        payload = json.dumps({
+            "event_id": str(self.event_id),
+            "event_type": self.event_type.value,
+            "voter_id": str(self.voter_id) if self.voter_id else None,
+            "timestamp": self.timestamp.isoformat(),
+            "status": self.status.value,
+            "message": self.message,
+            "details": self.details,
+        }, sort_keys=True).encode()
+        return _hmac.new(secret_key, payload, "sha256").hexdigest()
+
+    def verify_hmac(self, secret_key: bytes) -> bool:
+        """Verify stored hmac matches computed value."""
+        if not self.hmac:
+            return False
+        expected = self.compute_hmac(secret_key)
+        return _hmac.compare_digest(expected, self.hmac)
+
     def is_success(self) -> bool:
         """Check if event completed successfully."""
         return self.status == EventStatus.SUCCESS
