@@ -1,25 +1,9 @@
-"""
-Security package.
-
-Cryptographic operations and blockchain integration.
-"""
+"""Security package — blockchain-style vote integrity."""
 
 from .blockchain_logger import BlockchainLogger, BlockchainRecord, SmartContractInterface
-from .encryption_hooks import (
-    EncryptionHooks,
-    EncryptionProvider,
-    EncryptionKey,
-    CryptographicSignature,
-    NoOpEncryptionProvider
-)
 
 __all__ = [
-    'BlockchainLogger',
-    'BlockchainRecord',
-    'SmartContractInterface',
-    'EncryptionHooks',
-    'EncryptionProvider',
-    'EncryptionKey',
-    'CryptographicSignature',
-    'NoOpEncryptionProvider',
+    "BlockchainLogger",
+    "BlockchainRecord",
+    "SmartContractInterface",
 ]

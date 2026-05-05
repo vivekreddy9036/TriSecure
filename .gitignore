@@ -24,3 +24,9 @@ TriSecure_Technical_Report.html
 Journal_Readiness_Roadmap.md
 Q2_Publication_Benchmark_Doc.md
 code.md
+
+# Runtime outputs
+nfc_log.txt
+htmlcov/
+.coverage
+requirements-lock.txt

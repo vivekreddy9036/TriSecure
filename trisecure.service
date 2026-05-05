@@ -5,7 +5,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-Type=notify
+Type=simple
 User=trisecure
 Group=trisecure
 WorkingDirectory=/opt/trisecure
@@ -25,10 +25,6 @@ Restart=on-failure
 RestartSec=5s
 StartLimitInterval=60s
 StartLimitBurst=3
-
-# Watchdog — systemd will restart if app hangs for >120s without notifying
-WatchdogSec=120s
-NotifyAccess=main
 
 # Resource limits
 MemoryMax=512M

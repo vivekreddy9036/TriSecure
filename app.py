@@ -40,12 +40,6 @@ from hardware.nfc import NFCService
 from security import BlockchainLogger
 from hardware.camera.face_auth import FaceCamera, FaceAuthenticator
 
-# ── Logging setup ──────────────────────────────────────────────────────────────
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%H:%M:%S",
-)
 logger = logging.getLogger(__name__)
 
 FACE_MODELS_DIR = Path("data/face_models")
@@ -428,15 +422,62 @@ class TRIsecureApp:
             print(f"  [NFC] Read failed: {e}")
             return None
 
+    def _scan_nfc_existing(self, prompt: str = "Present NFC card") -> Optional[str]:
+        """
+        NFC scan for operations that require a registered voter.
+
+        On real hardware behaves identically to _scan_nfc().
+        In simulation mode (no PN532), shows a list of enrolled voters
+        so the operator can select one without tapping a physical card.
+        """
+        if self.nfc.is_initialized():
+            return self._scan_nfc(prompt)
+
+        voters = self.voter_repo.find_all()
+        if not voters:
+            print("\n  [SIM] No NFC hardware detected and no voters enrolled yet.")
+            print("        Use option 1 to enroll a voter first.")
+            return None
+
+        print(f"\n  [SIM] No NFC hardware — select a registered voter:")
+        print(f"  {'#':<4} {'Name':<25} {'Status':<12} NFC UID")
+        print(f"  {'─'*60}")
+        for i, v in enumerate(voters, 1):
+            status = "✓ voted" if v.has_voted else "○ eligible"
+            print(f"  {i:<4} {v.name:<25} {status:<12} {v.nfc_uid}")
+        print(f"  {'─'*60}")
+
+        try:
+            choice = int(input("  Select voter (0 = cancel): ").strip())
+        except (ValueError, EOFError):
+            return None
+
+        if choice == 0:
+            return None
+        if 1 <= choice <= len(voters):
+            selected = voters[choice - 1]
+            print(f"  [SIM] Selected: {selected.name}  (UID: {selected.nfc_uid})")
+            return selected.nfc_uid
+
+        print("  Invalid selection.")
+        return None
+
     def _write_voter_id_to_card(self, voter_id: str, voter_name: str, expected_uid: str) -> bool:
         """
         Write encrypted voter UUID to the NFC card.
 
-        Asks the voter to tap the card again and verifies it is the SAME card
-        that was scanned during enrollment (UID must match expected_uid).
+        On real hardware asks the voter to re-tap the card and verifies
+        it is the SAME card scanned during enrollment (UID must match).
+        In simulation mode the write is acknowledged without a second tap.
 
         Returns True if write succeeded.
         """
+        if not self.nfc.is_initialized():
+            result = self.nfc.write_voter_id(voter_id)
+            if result.success:
+                print(f"  [SIM] Voter ID stored in database (no physical card write in simulation)")
+            return result.success
+
         print(f"\n  [NFC] Please tap the SAME NFC card again to write the encrypted voter ID…")
         try:
             uid = self.nfc.read_card_blocking(max_wait=30.0)
@@ -555,7 +596,7 @@ class TRIsecureApp:
         _header("CAST VOTE")
 
         # ── Step 1: NFC ──────────────────────────────────────────────────────
-        nfc_uid = self._scan_nfc("Scan your NFC card")
+        nfc_uid = self._scan_nfc_existing("Scan your NFC card")
         if not nfc_uid:
             return
 
@@ -808,7 +849,7 @@ class TRIsecureApp:
         """Update face template for an existing voter (NFC identifies them)."""
         _header("RE-ENROLL FACE")
 
-        nfc_uid = self._scan_nfc("Scan voter's NFC card")
+        nfc_uid = self._scan_nfc_existing("Scan voter's NFC card")
         if not nfc_uid:
             return
 

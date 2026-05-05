@@ -228,31 +228,37 @@ def setup_logging(config: Config) -> logging.Logger:
     Returns:
         Configured logger instance
     """
-    logger = logging.getLogger()
-    logger.setLevel(getattr(logging, config.LOG_LEVEL))
-    
-    # Format
+    root = logging.getLogger()
+
+    # Guard: if handlers already exist this function was already called — skip.
+    if root.handlers:
+        return root
+
+    root.setLevel(getattr(logging, config.LOG_LEVEL))
+
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        '%(asctime)s [%(levelname)s] %(name)s — %(message)s'
     )
-    
-    # File handler with rotation
+
+    # Rotating file handler
     file_handler = RotatingFileHandler(
         config.LOG_FILE,
         maxBytes=config.LOG_MAX_BYTES,
-        backupCount=config.LOG_BACKUP_COUNT
+        backupCount=config.LOG_BACKUP_COUNT,
     )
     file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    
-    # Console handler (development)
+    root.addHandler(file_handler)
+
+    # Console handler (development / interactive)
     if config.is_development():
         console_handler = logging.StreamHandler()
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
-    
-    logger.info(f"Logging initialized - Mode: {config.MODE.value}, Level: {config.LOG_LEVEL}")
-    return logger
+        console_handler.setFormatter(
+            logging.Formatter('%(asctime)s [%(levelname)s] %(message)s', datefmt='%H:%M:%S')
+        )
+        root.addHandler(console_handler)
+
+    root.info(f"Logging ready — mode={config.MODE.value}, level={config.LOG_LEVEL}")
+    return root
 
 
 # Global configuration instance

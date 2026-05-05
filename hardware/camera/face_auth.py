@@ -16,12 +16,17 @@ Design:
 
 import logging
 import gc
+import os
 from pathlib import Path
 from typing import Optional, Tuple
 from dataclasses import dataclass
 from threading import Lock
 
 import numpy as np
+
+# Suppress ONNX Runtime GPU-discovery stderr noise on CPU-only systems (e.g. RPi).
+# Must be set before the first onnxruntime import anywhere in the process.
+os.environ.setdefault("ORT_LOGGING_LEVEL", "3")
 
 logger = logging.getLogger(__name__)
 
