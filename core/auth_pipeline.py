@@ -81,7 +81,9 @@ class AuthenticationPipeline:
         voter_repository: 'VoterRepository',
         session_manager: Optional[SessionManager] = None,
         audit_logger: Optional[AuditLogger] = None,
-        face_match_threshold: float = 0.7
+        face_match_threshold: float = 0.7,
+        pad_detector=None,         # Optional[PADDetector] — liveness check
+        biometric_fusion=None,     # Optional[BayesianFusionVerifier] — score fusion
     ):
         """
         Initialize authentication pipeline.
@@ -96,6 +98,8 @@ class AuthenticationPipeline:
         self.session_manager = session_manager or SessionManager()
         self.audit_logger = audit_logger or AuditLogger()
         self.face_match_threshold = face_match_threshold
+        self._pad_detector = pad_detector
+        self._biometric_fusion = biometric_fusion
         self._rate_limiter = _RateLimiter(max_failures=5, window_seconds=300)
 
         logger.info(f"AuthenticationPipeline initialized with face threshold={face_match_threshold}")
@@ -105,7 +109,8 @@ class AuthenticationPipeline:
         nfc_uid: str,
         face_embedding: Optional[bytes] = None,
         nfc_reader: Optional[Callable[[str], bool]] = None,
-        face_verifier: Optional[Callable[[bytes, bytes], float]] = None
+        face_verifier: Optional[Callable[[bytes, bytes], float]] = None,
+        face_image=None,   # Optional[np.ndarray] — live face image for PAD
     ) -> AuthenticationResult:
         """
         Execute full authentication pipeline.
@@ -166,13 +171,25 @@ class AuthenticationPipeline:
             )
         
         # Stage 4: Verify face
+        confidence = 0.0
         if face_embedding and voter.face_embedding:
             confidence = self._verify_face(
                 voter.face_embedding,
                 face_embedding,
                 face_verifier
             )
-            if confidence < self.face_match_threshold:
+
+            # Stage 4a: Bayesian score-level fusion (replaces hard threshold when injected)
+            if self._biometric_fusion is not None:
+                fusion_result = self._biometric_fusion.verify(
+                    face_score=confidence, nfc_match=True
+                )
+                face_accepted = fusion_result.accept
+                logger.info(f"Bayesian fusion log-LR={fusion_result.log_lr:.3f}, accept={face_accepted}")
+            else:
+                face_accepted = confidence >= self.face_match_threshold
+
+            if not face_accepted:
                 self.audit_logger.log_face_match_failure(
                     f"Face confidence {confidence:.2f} below threshold {self.face_match_threshold}"
                 )
@@ -185,7 +202,20 @@ class AuthenticationPipeline:
             self.audit_logger.log_face_match_success(voter.id, confidence)
         else:
             logger.warning("Face verification skipped: embedding not available")
-        
+
+        # Stage 4b: Presentation Attack Detection (liveness)
+        if self._pad_detector is not None and face_image is not None:
+            pad_result = self._pad_detector.detect(face_image)
+            if not pad_result.is_live:
+                logger.warning(f"PAD rejected: confidence={pad_result.confidence:.3f}, type={pad_result.attack_type}")
+                self._rate_limiter.record_failure(nfc_uid)
+                return AuthenticationResult(
+                    success=False,
+                    message="Liveness check failed — presentation attack detected",
+                    error_stage="presentation_attack"
+                )
+            logger.info(f"PAD passed: live_prob={pad_result.confidence:.3f}, {pad_result.latency_ms:.1f} ms")
+
         # Stage 5: Issue session token
         session = self.session_manager.create_session(voter)
         self.audit_logger.log_session_issued(voter.id, session.session_id)

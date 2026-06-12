@@ -18,12 +18,14 @@ logger = logging.getLogger(__name__)
 @dataclass
 class BlockchainRecord:
     """Record compatible with blockchain systems."""
-    
-    block_hash: str  # Current block hash
-    previous_hash: str  # Previous block hash
-    data: str  # Vote data
-    timestamp: str  # ISO timestamp
-    nonce: int = 0  # For PoW systems (future)
+
+    block_hash: str      # Current block hash
+    previous_hash: str   # Previous block hash
+    data: str            # Vote data
+    timestamp: str       # ISO timestamp
+    nonce: int = 0       # For PoW systems (future)
+    merkle_root: str = ""   # Merkle tree root at time of block
+    merkle_leaf: str = ""   # SHA-256 leaf hash for this vote
 
 
 class BlockchainLogger:
@@ -129,6 +131,18 @@ class BlockchainLogger:
         logger.info(f"Blockchain integrity check: {status}")
         return valid
     
+    def get_merkle_proof(self, vote_id) -> list:
+        """Return O(log n) Merkle inclusion proof for the given vote_id."""
+        if hasattr(self.vote_repository, "get_merkle_proof"):
+            return self.vote_repository.get_merkle_proof(vote_id)
+        return []
+
+    def verify_vote_inclusion(self, vote_id) -> bool:
+        """Verify a vote is included in the current Merkle tree."""
+        if hasattr(self.vote_repository, "verify_merkle_inclusion"):
+            return self.vote_repository.verify_merkle_inclusion(vote_id)
+        return False
+
     def get_blockchain_statistics(self) -> dict:
         """
         Get statistics about the blockchain-style vote log.

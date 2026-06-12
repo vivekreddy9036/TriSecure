@@ -83,7 +83,21 @@ class Config:
     # NFC secret: env TRISECURE_NFC_SECRET (read by NFCPayloadCrypto)
 
     # Face backend selection
-    FACE_BACKEND: str = "mobilefacenet"  # "mobilefacenet" (primary) or "dlib" (legacy)
+    FACE_BACKEND: str = "mobilefacenet"  # "mobilefacenet" or "arcface"
+
+    # ArcFace (InsightFace buffalo_sc) settings
+    ARCFACE_MODEL: str = "buffalo_sc"
+    ARCFACE_THRESHOLD: float = 0.45    # cosine similarity threshold for ArcFace
+
+    # Post-quantum cryptography (Dilithium-3 vote signing)
+    PQC_ENABLED: bool = False          # requires liboqs-python installed from source
+
+    # KDF backend for face embedding encryption
+    KDF_BACKEND: str = "argon2id"      # "argon2id" (default) or "pbkdf2" (legacy)
+
+    # Presentation Attack Detection (SilentFace liveness)
+    PAD_ENABLED: bool = True
+    PAD_THRESHOLD: float = 0.5         # live probability threshold (SilentFace)
     
     # Logging
     LOG_LEVEL: str = "INFO"
@@ -171,7 +185,13 @@ class Config:
         self.VOTE_SIGNING_KEY = os.getenv(f"{env_prefix}VOTE_SIGNING_KEY", self.VOTE_SIGNING_KEY)
         self.AUDIT_HMAC_KEY = os.getenv(f"{env_prefix}AUDIT_HMAC_KEY", self.AUDIT_HMAC_KEY)
         self.FACE_BACKEND = os.getenv(f"{env_prefix}FACE_BACKEND", self.FACE_BACKEND)
-        
+        self.ARCFACE_MODEL = os.getenv(f"{env_prefix}ARCFACE_MODEL", self.ARCFACE_MODEL)
+        self.ARCFACE_THRESHOLD = float(os.getenv(f"{env_prefix}ARCFACE_THRESHOLD", str(self.ARCFACE_THRESHOLD)))
+        self.PQC_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}PQC_ENABLED"), self.PQC_ENABLED)
+        self.KDF_BACKEND = os.getenv(f"{env_prefix}KDF_BACKEND", self.KDF_BACKEND)
+        self.PAD_ENABLED = self._parse_bool(os.getenv(f"{env_prefix}PAD_ENABLED"), self.PAD_ENABLED)
+        self.PAD_THRESHOLD = float(os.getenv(f"{env_prefix}PAD_THRESHOLD", str(self.PAD_THRESHOLD)))
+
         # Logging
         self.LOG_LEVEL = os.getenv(f"{env_prefix}LOG_LEVEL", self.LOG_LEVEL).upper()
         self.LOG_FILE = os.getenv(f"{env_prefix}LOG_FILE", self.LOG_FILE)

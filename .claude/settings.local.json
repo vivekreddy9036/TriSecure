@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs head *)",
+      "Bash(python -c \"import pdfplumber; print\\('pdfplumber ok'\\)\")",
+      "Bash(python -c \"import fitz; print\\('pymupdf ok'\\)\")",
+      "Bash(python -c \"import pdfminer; print\\('pdfminer ok'\\)\")",
+      "Bash(python -m pip install pdfplumber --quiet)",
+      "Bash(python *)",
+      "Bash(git stash *)"
+    ]
+  }
+}

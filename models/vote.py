@@ -34,6 +34,8 @@ class Vote:
     previous_hash: str = "0" * 64  # Genesis block hash (64 zeros for SHA256)
     current_hash: str = ""
     vote_hmac: str = ""
+    vote_dilithium_sig: str = ""   # Dilithium-3 signature (FIPS 204/ML-DSA-65)
+    merkle_leaf_hash: str = ""     # SHA-256(current_hash) Merkle tree leaf
 
     def __post_init__(self) -> None:
         """Calculate current hash after initialization."""
@@ -74,6 +76,37 @@ class Vote:
             return False
         expected = self.compute_vote_hmac(signing_key)
         return _hmac.compare_digest(expected, self.vote_hmac)
+
+    def compute_dilithium_signature(self, secret_key: bytes) -> str:
+        """Sign canonical vote payload with Dilithium-3 (Ed25519 fallback when liboqs absent)."""
+        from backend.crypto.pqc_kem import DilithiumSigner
+        payload = (
+            f"{self.vote_id}\x00{self.voter_id}\x00{self.candidate}"
+            f"\x00{self.timestamp.isoformat()}\x00{self.current_hash}"
+        ).encode()
+        return DilithiumSigner().sign(payload, secret_key).hex()
+
+    def verify_dilithium_signature(self, public_key: bytes) -> bool:
+        """Verify stored Dilithium-3 (or Ed25519 fallback) signature."""
+        if not self.vote_dilithium_sig:
+            return False
+        from backend.crypto.pqc_kem import DilithiumSigner
+        payload = (
+            f"{self.vote_id}\x00{self.voter_id}\x00{self.candidate}"
+            f"\x00{self.timestamp.isoformat()}\x00{self.current_hash}"
+        ).encode()
+        try:
+            return DilithiumSigner().verify(payload, bytes.fromhex(self.vote_dilithium_sig), public_key)
+        except Exception:
+            return False
+
+    def compute_merkle_leaf(self, nonce: Optional[bytes] = None) -> str:
+        """Compute Merkle leaf as SHA-256(current_hash) or SHA-256(current_hash:nonce)."""
+        if nonce:
+            data = f"{self.current_hash}:{nonce.hex()}".encode()
+        else:
+            data = self.current_hash.encode()
+        return hashlib.sha256(data).hexdigest()
 
     def verify_chain_link(self, previous_vote: Optional['Vote']) -> bool:
         """

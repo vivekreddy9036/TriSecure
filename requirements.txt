@@ -22,9 +22,24 @@ board>=1.0
 opencv-python-headless>=4.5.4
 numpy<2
 
-# Face Recognition (MobileFaceNet)
+# Face Recognition (MobileFaceNet / ArcFace)
 # ONNX Runtime for CPU inference (ARM64 compatible)
-onnxruntime>=1.14.0  # MobileFaceNet inference
+onnxruntime>=1.14.0  # MobileFaceNet + PAD (SilentFace) inference
+insightface>=0.7.3   # ArcFace buffalo_sc (RetinaFace detect + ArcFace embed)
+
+# Post-quantum cryptography — Argon2id KDF
+argon2-cffi>=21.3.0  # Argon2id memory-hard KDF (OWASP / FIPS 202)
+# liboqs-python>=0.10.0  # Kyber-768 + Dilithium-3 FIPS 203/204 — build from source on RPi4
+# git clone https://github.com/open-quantum-safe/liboqs-python && pip install .
+
+# SilentFace PAD (liveness detection) — no PyPI package, clone from GitHub:
+# git clone https://github.com/minivision-ai/Silent-Face-Anti-Spoofing hardware/camera/silent_face/
+
+# Evaluation and statistical analysis
+scipy>=1.9.0         # Welch t-test, normal PDF, stats
+pandas>=1.5.0        # Benchmark result tables
+matplotlib>=3.6.0    # ROC / DET curves
+scikit-learn>=1.1.0  # roc_curve(), auc()
 
 # Face Recognition (dlib-based, legacy)
 # NOTE: On Raspberry Pi with very new Python versions (e.g. 3.13),

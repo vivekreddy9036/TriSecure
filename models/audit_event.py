@@ -44,6 +44,11 @@ class EventType(str, Enum):
     CONFIG_LOADED = "CONFIG_LOADED"
     HARDWARE_ERROR = "HARDWARE_ERROR"
 
+    # Biometric liveness / PAD events
+    PRESENTATION_ATTACK = "PRESENTATION_ATTACK"
+    PAD_CHECK_SUCCESS = "PAD_CHECK_SUCCESS"
+    PAD_CHECK_FAILED = "PAD_CHECK_FAILED"
+
 
 class EventStatus(str, Enum):
     """Status of audited event."""

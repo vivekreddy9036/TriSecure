@@ -1,6 +1,10 @@
-"""Cast vote use-case: NFC → face match → ballot → record."""
+"""Cast vote use-case: NFC → face match → ballot → record → Merkle receipt."""
 
+import hashlib
+import json
 import logging
+import secrets
+from pathlib import Path
 from typing import List
 
 from models import Vote
@@ -114,10 +118,41 @@ class CastVoteUseCase:
         self._session_mgr.deactivate_session(session.token)
         self._audit.log_vote_cast(voter.id, candidate)
 
+        # Voter receipt — O(log n) Merkle inclusion proof (ZKP-lite commitment)
+        receipt_nonce = secrets.token_bytes(16)
+        commitment = hashlib.sha256(
+            f"{vote.vote_id}:{receipt_nonce.hex()}".encode()
+        ).hexdigest()
+        merkle_proof = self._blockchain.get_merkle_proof(vote.vote_id)
+        merkle_root = (
+            self._blockchain.vote_repository.get_merkle_root()
+            if hasattr(self._blockchain, "vote_repository")
+            else ""
+        )
+
+        receipt = {
+            "vote_id": str(vote.vote_id),
+            "commitment": commitment,
+            "nonce": receipt_nonce.hex(),
+            "merkle_proof": [[h, s] for h, s in merkle_proof],
+            "merkle_root": merkle_root or "",
+            "timestamp": vote.timestamp.isoformat(),
+        }
+
+        receipts_dir = Path("data/receipts")
+        receipts_dir.mkdir(parents=True, exist_ok=True)
+        receipt_path = receipts_dir / f"{vote.vote_id}.json"
+        with open(receipt_path, "w") as _rf:
+            json.dump(receipt, _rf, indent=2)
+
         print("  " + "─" * 58)
         print(f"  ✓ Vote recorded successfully!")
         print(f"    Voter     : {voter.name}")
         print(f"    Candidate : {candidate}")
         print(f"    Vote ID   : {vote.vote_id}")
+        print(f"    Receipt   : {receipt_path}")
+        print(f"    Commitment: {commitment[:24]}…")
+        if merkle_root:
+            print(f"    Merkle root: {merkle_root[:24]}…")
         print("  " + "─" * 58)
         return True

@@ -762,6 +762,95 @@ class FaceAuthenticator:
         return False
 
 
+class ArcFaceAuthenticator:
+    """
+    Face embedding extraction using InsightFace ArcFace (buffalo_sc model).
+
+    Replaces MobileFaceNet + Haar Cascade with RetinaFace detection + ArcFace
+    embedding in a single pass.  Falls back to simulation mode when insightface
+    is not installed (development / CI environments).
+
+    Interface is identical to FaceAuthenticator so it can be swapped in
+    init_camera_and_auth(backend='arcface') without touching upstream callers.
+
+    Model: buffalo_sc — ArcFace MobileNet, ~20 MB, ~150 ms on RPi4 ARM64.
+    Embedding: 512-D L2-normalised float32 vector, cosine threshold ~0.40–0.45.
+    """
+
+    EMBEDDING_SIZE = 512
+    DEFAULT_THRESHOLD = 0.45
+
+    def __init__(self, model_name: str = "buffalo_sc", threshold: float = DEFAULT_THRESHOLD) -> None:
+        self._model_name = model_name
+        self.threshold = threshold
+        self._app = None
+        self._simulation_mode = False
+        self._initialized = False
+
+    def initialize(self) -> bool:
+        try:
+            import insightface  # type: ignore
+            from insightface.app import FaceAnalysis  # type: ignore
+            self._app = FaceAnalysis(name=self._model_name,
+                                     providers=["CPUExecutionProvider"])
+            self._app.prepare(ctx_id=-1, det_size=(160, 160))
+            logger.info(f"ArcFaceAuthenticator initialized: {self._model_name}")
+            self._initialized = True
+        except ImportError:
+            logger.warning("insightface not installed — ArcFaceAuthenticator in simulation mode")
+            self._simulation_mode = True
+            self._initialized = True
+        except Exception as exc:
+            logger.warning(f"ArcFaceAuthenticator init failed ({exc}) — simulation mode")
+            self._simulation_mode = True
+            self._initialized = True
+        return True
+
+    def extract_embedding(self, face_image: np.ndarray) -> EmbeddingResult:
+        """
+        Extract 512-D ArcFace embedding from a face crop.
+
+        Args:
+            face_image: BGR uint8 ndarray (any size; resized internally).
+
+        Returns:
+            EmbeddingResult with L2-normalised 512-D embedding.
+        """
+        if not self._initialized:
+            return EmbeddingResult(success=False, error_message="Not initialized")
+
+        if self._simulation_mode:
+            emb = np.random.default_rng(int(face_image.mean())).random(self.EMBEDDING_SIZE).astype(np.float32)
+            norm = np.linalg.norm(emb)
+            return EmbeddingResult(success=True, embedding=(emb / norm if norm > 0 else emb))
+
+        try:
+            import cv2  # type: ignore
+            img_rgb = cv2.cvtColor(face_image, cv2.COLOR_BGR2RGB)
+            faces = self._app.get(img_rgb)
+            if not faces:
+                return EmbeddingResult(success=False, error_message="No face detected by RetinaFace")
+            # Select highest-confidence detection
+            face = max(faces, key=lambda f: f.det_score)
+            emb = face.normed_embedding.astype(np.float32)
+            return EmbeddingResult(success=True, embedding=emb)
+        except Exception as exc:
+            logger.error(f"ArcFace embedding extraction failed: {exc}")
+            return EmbeddingResult(success=False, error_message=str(exc))
+
+    def release(self) -> None:
+        self._app = None
+        logger.debug("ArcFaceAuthenticator released")
+
+    def __enter__(self):
+        self.initialize()
+        return self
+
+    def __exit__(self, *_):
+        self.release()
+        return False
+
+
 def capture_live_face(camera: FaceCamera) -> Optional[np.ndarray]:
     """
     Convenience function to capture face from camera.

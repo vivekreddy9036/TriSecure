@@ -38,6 +38,15 @@ SALT_SIZE = 16     # 128 bits
 TAG_SIZE = 16      # 128 bits (GCM authentication tag)
 PBKDF2_ITERATIONS = 100_000
 
+# Argon2id parameters (OWASP recommended for interactive auth on ~64 MB RAM)
+ARGON2_TIME_COST = 3
+ARGON2_MEMORY_COST = 65_536   # 64 MB
+ARGON2_PARALLELISM = 1
+
+# Version byte prefixed to every ciphertext blob for KDF detection
+KDF_VERSION_PBKDF2 = 0x01
+KDF_VERSION_ARGON2ID = 0x02
+
 
 @dataclass
 class EncryptionResult:
@@ -139,33 +148,40 @@ class EmbeddingEncryptor:
         except ImportError:
             return False
     
-    def _derive_key(self, salt: bytes) -> bytes:
+    def _derive_key(self, salt: bytes, version: int = KDF_VERSION_ARGON2ID) -> bytes:
         """
         Derive encryption key from master key and salt.
-        
-        Uses PBKDF2-HMAC-SHA256 with 100,000 iterations.
-        
-        Args:
-            salt: Random salt bytes
-            
-        Returns:
-            Derived AES-256 key
+
+        version=KDF_VERSION_ARGON2ID (0x02): Argon2id — memory-hard, OWASP recommended.
+        version=KDF_VERSION_PBKDF2   (0x01): PBKDF2-HMAC-SHA256 — legacy backward compat.
+        Falls back to PBKDF2 when argon2-cffi is not installed.
         """
         if not self._crypto_available:
-            # Simulation mode: simple hash
             import hashlib
             return hashlib.sha256(self._master_key + salt).digest()
-        
+
+        if version == KDF_VERSION_ARGON2ID:
+            try:
+                from argon2.low_level import hash_secret_raw, Type  # type: ignore
+                return hash_secret_raw(
+                    self._master_key, salt,
+                    time_cost=ARGON2_TIME_COST,
+                    memory_cost=ARGON2_MEMORY_COST,
+                    parallelism=ARGON2_PARALLELISM,
+                    hash_len=AES_KEY_SIZE,
+                    type=Type.ID,
+                )
+            except ImportError:
+                logger.warning("argon2-cffi not installed — falling back to PBKDF2")
+
         from cryptography.hazmat.primitives import hashes
         from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-        
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=AES_KEY_SIZE,
             salt=salt,
             iterations=PBKDF2_ITERATIONS,
         )
-        
         return kdf.derive(self._master_key)
     
     def encrypt(self, embedding: np.ndarray) -> EncryptionResult:
@@ -192,10 +208,10 @@ class EmbeddingEncryptor:
             salt = secrets.token_bytes(SALT_SIZE)
             iv = secrets.token_bytes(AES_IV_SIZE)
             
-            # Step 3: Derive key from master key and salt
-            key = self._derive_key(salt)
-            
-            # Step 4: Encrypt using AES-GCM
+            # Step 3: Derive key — Argon2id by default, PBKDF2 fallback
+            key = self._derive_key(salt, version=KDF_VERSION_ARGON2ID)
+
+            # Step 4: Encrypt using AES-GCM (version byte prepended to ciphertext)
             if self._crypto_available:
                 ciphertext = self._encrypt_aes_gcm(embedding_bytes, key, iv)
             else:
@@ -246,15 +262,23 @@ class EmbeddingEncryptor:
             )
         
         try:
-            # Step 1: Derive key from master key and salt
-            key = self._derive_key(salt)
-            
-            # Step 2: Decrypt using AES-GCM
+            # Step 1: Detect version byte (0x01=PBKDF2, 0x02=Argon2id; absent=legacy PBKDF2)
+            if len(ciphertext) >= 1 and ciphertext[0] in (KDF_VERSION_PBKDF2, KDF_VERSION_ARGON2ID):
+                kdf_version = ciphertext[0]
+                ciphertext_payload = ciphertext[1:]
+            else:
+                kdf_version = KDF_VERSION_PBKDF2  # legacy ciphertext without version byte
+                ciphertext_payload = ciphertext
+
+            # Step 2: Derive key with detected KDF version
+            key = self._derive_key(salt, version=kdf_version)
+
+            # Step 3: Decrypt using AES-GCM
             if self._crypto_available:
-                plaintext = self._decrypt_aes_gcm(ciphertext, key, iv)
+                plaintext = self._decrypt_aes_gcm(ciphertext_payload, key, iv)
             else:
                 # Simulation mode
-                plaintext = self._simulate_decrypt(ciphertext, key, iv)
+                plaintext = self._simulate_decrypt(ciphertext_payload, key, iv)
             
             # Step 3: Convert bytes back to embedding
             embedding = self._bytes_to_embedding(plaintext)
@@ -295,12 +319,10 @@ class EmbeddingEncryptor:
             Ciphertext with appended authentication tag
         """
         from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-        
         aesgcm = AESGCM(key)
-        ciphertext = aesgcm.encrypt(iv, plaintext, None)
-        
-        return ciphertext
-    
+        raw = aesgcm.encrypt(iv, plaintext, None)
+        return bytes([KDF_VERSION_ARGON2ID]) + raw  # prepend version byte
+
     def _decrypt_aes_gcm(
         self,
         ciphertext: bytes,

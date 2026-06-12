@@ -123,10 +123,14 @@ def check_face_uniqueness(new_embedding, voter_repo, exclude_voter_id=None,
     return best_sim >= threshold, best_name, best_sim
 
 
-def init_camera_and_auth(device: int = 0):
+def init_camera_and_auth(device: int = 0, backend: str = "mobilefacenet"):
     from hardware.camera.face_auth import FaceCamera, FaceAuthenticator
     camera = FaceCamera(device=device, width=320, height=240, fps=15)
-    auth = FaceAuthenticator()
+    if backend == "arcface":
+        from hardware.camera.face_auth import ArcFaceAuthenticator
+        auth = ArcFaceAuthenticator()
+    else:
+        auth = FaceAuthenticator()
     camera.initialize()
     auth.initialize()
     return camera, auth
