@@ -158,62 +158,169 @@ def roc_det_data(
 # Plot helpers
 # ---------------------------------------------------------------------------
 
-def _try_plot(genuine: np.ndarray, impostor: np.ndarray, roc: dict, eer: float) -> None:
+def _try_plot(genuine: np.ndarray, impostor: np.ndarray, roc: dict, eer: float,
+              eer_threshold: float = 0.539) -> None:
     try:
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+        import matplotlib.ticker as ticker
+        from scipy.stats import gaussian_kde  # type: ignore
 
         _FIGURES_DIR.mkdir(parents=True, exist_ok=True)
-        far  = np.array(roc["FAR"])
-        frr  = np.array(roc["FRR"])
-        tar  = np.array(roc["TAR"])
 
-        # --- ROC ---
+        # Publication style
+        plt.rcParams.update({
+            "font.family":      "DejaVu Sans",
+            "font.size":        11,
+            "axes.titlesize":   12,
+            "axes.labelsize":   11,
+            "xtick.labelsize":  10,
+            "ytick.labelsize":  10,
+            "legend.fontsize":  10,
+            "figure.dpi":       300,
+            "axes.spines.top":  False,
+            "axes.spines.right":False,
+        })
+
+        far = np.array(roc["FAR"])
+        frr = np.array(roc["FRR"])
+        tar = np.array(roc["TAR"])
+
+        # AUC (trapezoidal)
+        auc = float(np.trapz(tar[::-1], far[::-1]))
+
+        # EER index on dense curve
+        eer_idx = int(np.argmin(np.abs(far - frr)))
+
+        # ── ROC ──────────────────────────────────────────────────────────────
         fig, ax = plt.subplots(figsize=(5, 5))
-        ax.plot(far * 100, tar * 100, lw=2, label=f"ArcFace sim (EER={eer*100:.2f}%)")
-        ax.plot([0, 100], [0, 100], "k--", lw=0.8, alpha=0.4)
-        ax.set_xlabel("FAR (%)")
-        ax.set_ylabel("TAR (%)")
-        ax.set_title("ROC Curve — TRIsecure V2 (Simulation)")
-        ax.legend()
-        ax.grid(True, alpha=0.3)
+        ax.plot(far * 100, tar * 100, lw=2, color="#1f77b4",
+                label=f"ArcFace (AUC={auc:.4f})")
+        ax.plot([0, 100], [100, 0], color="gray", lw=0.8, ls="--",   # EER line
+                alpha=0.5, label=f"EER = {eer*100:.2f}%")
+        # Mark EER operating point
+        ax.scatter([far[eer_idx]*100], [tar[eer_idx]*100],
+                   color="#d62728", zorder=5, s=60,
+                   label=f"EER point ({far[eer_idx]*100:.2f}%, {tar[eer_idx]*100:.2f}%)")
+        # Mark TAR@1%FAR
+        idx_1pct = int(np.argmin(np.abs(far - 0.01)))
+        ax.scatter([far[idx_1pct]*100], [tar[idx_1pct]*100],
+                   color="#2ca02c", marker="^", zorder=5, s=60,
+                   label=f"TAR@1%FAR = {tar[idx_1pct]*100:.1f}%")
+        ax.set_xlim(-1, 101);  ax.set_ylim(-1, 101)
+        ax.set_xlabel("False Accept Rate — FAR (%)")
+        ax.set_ylabel("True Accept Rate — TAR (%)")
+        ax.set_title("ROC Curve — TRIsecure V2")
+        ax.legend(loc="lower right", framealpha=0.9)
+        ax.grid(True, alpha=0.25, linestyle=":")
         fig.tight_layout()
-        fig.savefig(_FIGURES_DIR / "roc_curve.png", dpi=150)
+        fig.savefig(_FIGURES_DIR / "roc_curve.png", dpi=300, bbox_inches="tight")
         plt.close(fig)
 
-        # --- DET ---
-        eps = 1e-6
-        far_pos = np.clip(far, eps, 1.0)
-        frr_pos = np.clip(frr, eps, 1.0)
+        # ── DET ──────────────────────────────────────────────────────────────
+        eps = 1e-4
+        far_pos = np.clip(far,  eps, 1.0)
+        frr_pos = np.clip(frr,  eps, 1.0)
+
         fig, ax = plt.subplots(figsize=(5, 5))
-        ax.plot(far_pos * 100, frr_pos * 100, lw=2)
-        ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_xlabel("FAR (%)")
-        ax.set_ylabel("FRR (%)")
-        ax.set_title("DET Curve — TRIsecure V2 (Simulation)")
-        ax.grid(True, which="both", alpha=0.3)
+        ax.plot(far_pos * 100, frr_pos * 100, lw=2, color="#1f77b4",
+                label="ArcFace (sim)")
+        # EER diagonal reference
+        ref = np.logspace(-2, 2, 200)
+        ax.plot(ref, ref, color="gray", lw=0.8, ls="--", alpha=0.5, label="EER line")
+        ax.scatter([far[eer_idx]*100], [frr[eer_idx]*100],
+                   color="#d62728", zorder=5, s=60,
+                   label=f"EER = {eer*100:.2f}%")
+        ax.set_xscale("log");  ax.set_yscale("log")
+        ax.set_xlim(1e-2, 1e2);  ax.set_ylim(1e-2, 1e2)
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"{x:g}"))
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"{x:g}"))
+        ax.set_xlabel("False Accept Rate — FAR (%)")
+        ax.set_ylabel("False Reject Rate — FRR (%)")
+        ax.set_title("DET Curve — TRIsecure V2")
+        ax.legend(loc="upper right", framealpha=0.9)
+        ax.grid(True, which="both", alpha=0.2, linestyle=":")
         fig.tight_layout()
-        fig.savefig(_FIGURES_DIR / "det_curve.png", dpi=150)
+        fig.savefig(_FIGURES_DIR / "det_curve.png", dpi=300, bbox_inches="tight")
         plt.close(fig)
 
-        # --- Score distribution ---
+        # ── Score distributions ──────────────────────────────────────────────
+        x_range = np.linspace(0.0, 1.0, 400)
+        kde_gen = gaussian_kde(genuine,  bw_method=0.15)
+        kde_imp = gaussian_kde(impostor, bw_method=0.15)
+
         fig, ax = plt.subplots(figsize=(6, 4))
-        ax.hist(genuine,  bins=50, alpha=0.6, label="Genuine",  density=True)
-        ax.hist(impostor, bins=50, alpha=0.6, label="Impostor", density=True)
+        ax.fill_between(x_range, kde_gen(x_range),  alpha=0.35, color="#1f77b4", label="Genuine")
+        ax.fill_between(x_range, kde_imp(x_range),  alpha=0.35, color="#ff7f0e", label="Impostor")
+        ax.plot(x_range, kde_gen(x_range),  lw=1.5, color="#1f77b4")
+        ax.plot(x_range, kde_imp(x_range),  lw=1.5, color="#ff7f0e")
+        # EER threshold line
+        ax.axvline(eer_threshold, color="#d62728", lw=1.5, ls="--",
+                   label=f"EER threshold = {eer_threshold:.3f}")
         ax.set_xlabel("Cosine similarity score")
         ax.set_ylabel("Density")
-        ax.set_title("Score Distributions — ArcFace (Simulation)")
-        ax.legend()
-        ax.grid(True, alpha=0.3)
+        ax.set_title("Genuine / Impostor Score Distributions — ArcFace")
+        ax.set_xlim(0.0, 1.0)
+        ax.legend(framealpha=0.9)
+        ax.grid(True, alpha=0.25, linestyle=":")
         fig.tight_layout()
-        fig.savefig(_FIGURES_DIR / "score_distributions.png", dpi=150)
+        fig.savefig(_FIGURES_DIR / "score_distributions.png", dpi=300, bbox_inches="tight")
+        plt.close(fig)
+
+        # ── Combined 2×2 panel for paper submission ──────────────────────────
+        fig, axes = plt.subplots(1, 3, figsize=(14, 4.5))
+
+        # Panel 1: ROC
+        axes[0].plot(far * 100, tar * 100, lw=2, color="#1f77b4",
+                     label=f"AUC={auc:.4f}")
+        axes[0].plot([0,100],[100,0], "gray", lw=0.8, ls="--", alpha=0.5)
+        axes[0].scatter([far[eer_idx]*100],[tar[eer_idx]*100],
+                        color="#d62728", zorder=5, s=50,
+                        label=f"EER={eer*100:.2f}%")
+        axes[0].set_xlim(-1,101); axes[0].set_ylim(-1,101)
+        axes[0].set_xlabel("FAR (%)"); axes[0].set_ylabel("TAR (%)")
+        axes[0].set_title("(a) ROC Curve")
+        axes[0].legend(loc="lower right", fontsize=9)
+        axes[0].grid(True, alpha=0.25, ls=":")
+
+        # Panel 2: DET
+        axes[1].plot(far_pos*100, frr_pos*100, lw=2, color="#1f77b4")
+        axes[1].plot(ref, ref, "gray", lw=0.8, ls="--", alpha=0.5)
+        axes[1].scatter([far[eer_idx]*100],[frr[eer_idx]*100],
+                        color="#d62728", zorder=5, s=50,
+                        label=f"EER={eer*100:.2f}%")
+        axes[1].set_xscale("log"); axes[1].set_yscale("log")
+        axes[1].set_xlim(1e-2,1e2); axes[1].set_ylim(1e-2,1e2)
+        axes[1].xaxis.set_major_formatter(ticker.FuncFormatter(lambda x,_: f"{x:g}"))
+        axes[1].yaxis.set_major_formatter(ticker.FuncFormatter(lambda x,_: f"{x:g}"))
+        axes[1].set_xlabel("FAR (%)"); axes[1].set_ylabel("FRR (%)")
+        axes[1].set_title("(b) DET Curve")
+        axes[1].legend(fontsize=9)
+        axes[1].grid(True, which="both", alpha=0.2, ls=":")
+
+        # Panel 3: Score distributions
+        axes[2].fill_between(x_range, kde_gen(x_range),  alpha=0.35, color="#1f77b4", label="Genuine")
+        axes[2].fill_between(x_range, kde_imp(x_range),  alpha=0.35, color="#ff7f0e", label="Impostor")
+        axes[2].plot(x_range, kde_gen(x_range),  lw=1.5, color="#1f77b4")
+        axes[2].plot(x_range, kde_imp(x_range),  lw=1.5, color="#ff7f0e")
+        axes[2].axvline(eer_threshold, color="#d62728", lw=1.5, ls="--",
+                        label=f"τ={eer_threshold:.3f}")
+        axes[2].set_xlabel("Cosine similarity"); axes[2].set_ylabel("Density")
+        axes[2].set_title("(c) Score Distributions")
+        axes[2].set_xlim(0.0, 1.0)
+        axes[2].legend(fontsize=9)
+        axes[2].grid(True, alpha=0.25, ls=":")
+
+        fig.suptitle("TRIsecure V2 — Biometric Evaluation (ArcFace, Simulation Mode)",
+                     fontsize=13, y=1.01)
+        fig.tight_layout()
+        fig.savefig(_FIGURES_DIR / "biometric_eval_panel.png", dpi=300, bbox_inches="tight")
         plt.close(fig)
 
         print(f"  Figures saved → {_FIGURES_DIR}/")
-    except ImportError:
-        print("  matplotlib not available — skipping figures")
+    except ImportError as e:
+        print(f"  matplotlib/scipy not available — skipping figures ({e})")
     except Exception as exc:
         print(f"  Figure generation failed: {exc}")
 
@@ -298,7 +405,7 @@ def run_biometric_evaluation(seed: int = 42) -> dict:
         json.dump(results, f, indent=2)
     print(f"\n  Results saved → {out_path}")
 
-    _try_plot(genuine, impostor, roc, eer)
+    _try_plot(genuine, impostor, roc, eer, eer_threshold)
 
     print("=" * 70 + "\n")
     return results
