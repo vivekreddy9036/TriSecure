@@ -7,7 +7,9 @@
       "Bash(python -c \"import pdfminer; print\\('pdfminer ok'\\)\")",
       "Bash(python -m pip install pdfplumber --quiet)",
       "Bash(python *)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(git *)",
+      "WebFetch(domain:amritacampuschennai-my.sharepoint.com)"
     ]
   }
 }
