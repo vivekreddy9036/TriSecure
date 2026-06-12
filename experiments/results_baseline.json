@@ -1,0 +1,114 @@
+{
+  "pbkdf2": {
+    "operation": "PBKDF2-HMAC-SHA256 (100k)",
+    "n": 100,
+    "mean_ms": 106.117,
+    "ci_low_ms": 105.101,
+    "ci_high_ms": 107.133
+  },
+  "argon2id": {
+    "operation": "Argon2id (t=3, m=64MB)",
+    "n": 20,
+    "mean_ms": 494.502,
+    "ci_low_ms": 492.675,
+    "ci_high_ms": 496.328
+  },
+  "aes_gcm": {
+    "operation": "AES-256-GCM encrypt (2 KB)",
+    "n": 1000,
+    "mean_ms": 0.0403,
+    "ci_low_ms": 0.0397,
+    "ci_high_ms": 0.0408
+  },
+  "hmac_sha256": {
+    "operation": "HMAC-SHA256 (256 B)",
+    "n": 10000,
+    "mean_ms": 0.0129,
+    "ci_low_ms": 0.0127,
+    "ci_high_ms": 0.013
+  },
+  "sha256_chain": [
+    {
+      "operation": "SHA-256 chain verify (n=10)",
+      "n_votes": 10,
+      "reps": 100,
+      "mean_ms": 0.044,
+      "ci_low_ms": 0.043,
+      "ci_high_ms": 0.044
+    },
+    {
+      "operation": "SHA-256 chain verify (n=100)",
+      "n_votes": 100,
+      "reps": 10,
+      "mean_ms": 0.428,
+      "ci_low_ms": 0.423,
+      "ci_high_ms": 0.433
+    },
+    {
+      "operation": "SHA-256 chain verify (n=1000)",
+      "n_votes": 1000,
+      "reps": 3,
+      "mean_ms": 4.545,
+      "ci_low_ms": 4.368,
+      "ci_high_ms": 4.723
+    },
+    {
+      "operation": "SHA-256 chain verify (n=10000)",
+      "n_votes": 10000,
+      "reps": 3,
+      "mean_ms": 45.806,
+      "ci_low_ms": 45.408,
+      "ci_high_ms": 46.204
+    }
+  ],
+  "merkle_proof": [
+    {
+      "operation": "Merkle prove+verify (n=10)",
+      "n_votes": 10,
+      "reps": 500,
+      "mean_ms": 0.0816,
+      "ci_low_ms": 0.0813,
+      "ci_high_ms": 0.0819
+    },
+    {
+      "operation": "Merkle prove+verify (n=100)",
+      "n_votes": 100,
+      "reps": 50,
+      "mean_ms": 0.5252,
+      "ci_low_ms": 0.5184,
+      "ci_high_ms": 0.5321
+    },
+    {
+      "operation": "Merkle prove+verify (n=1000)",
+      "n_votes": 1000,
+      "reps": 5,
+      "mean_ms": 4.8219,
+      "ci_low_ms": 4.7438,
+      "ci_high_ms": 4.9
+    },
+    {
+      "operation": "Merkle prove+verify (n=10000)",
+      "n_votes": 10000,
+      "reps": 3,
+      "mean_ms": 51.1595,
+      "ci_low_ms": 50.6237,
+      "ci_high_ms": 51.6953
+    }
+  ],
+  "dilithium3": {
+    "operation": "Ed25519 (fallback) sign+verify",
+    "n": 200,
+    "mean_ms": 0.532,
+    "ci_low_ms": 0.527,
+    "ci_high_ms": 0.538,
+    "sig_size_bytes": 64
+  },
+  "kyber768": {
+    "operation": "HybridKEM (X25519-only (liboqs unavailable)) keygen+encap+decap",
+    "n": 200,
+    "mean_ms": 1.022,
+    "ci_low_ms": 1.002,
+    "ci_high_ms": 1.042,
+    "ct_size_bytes": 32
+  }
+}

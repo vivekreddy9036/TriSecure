@@ -14,13 +14,14 @@ def mean_ci(data: np.ndarray, alpha: float = 0.05) -> Tuple[float, float, float]
     """
     n = len(data)
     m = float(np.mean(data))
+    if n < 2:
+        return m, m, m
     se = float(np.std(data, ddof=1)) / math.sqrt(n)
     try:
         from scipy import stats  # type: ignore
         t_crit = stats.t.ppf(1 - alpha / 2, df=n - 1)
     except ImportError:
-        # Normal approximation when scipy unavailable
-        t_crit = 1.96  # ~95% CI
+        t_crit = 1.96
     margin = t_crit * se
     return m, m - margin, m + margin
 

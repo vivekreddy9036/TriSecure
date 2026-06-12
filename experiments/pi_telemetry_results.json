@@ -1,0 +1,54 @@
+{
+  "resources_idle": {
+    "cpu_temp_c": 52.5
+  },
+  "resources_load": {
+    "cpu_temp_c": 52.5
+  },
+  "auth_latency": {
+    "n_runs": 50,
+    "total_ms": {
+      "mean": 110.7,
+      "ci_low": 110.66,
+      "ci_high": 110.75,
+      "p50": 110.67,
+      "p95": 110.93,
+      "p99": 111.27,
+      "min": 110.51,
+      "max": 111.36
+    },
+    "stages": {
+      "nfc_ms": {
+        "mean_ms": 15.1,
+        "ci_low": 15.09,
+        "ci_high": 15.111
+      },
+      "db_ms": {
+        "mean_ms": 0.043,
+        "ci_low": 0.037,
+        "ci_high": 0.048
+      },
+      "embedding_ms": {
+        "mean_ms": 95.22,
+        "ci_low": 95.2,
+        "ci_high": 95.241
+      },
+      "match_ms": {
+        "mean_ms": 0.284,
+        "ci_low": 0.271,
+        "ci_high": 0.297
+      },
+      "session_ms": {
+        "mean_ms": 0.057,
+        "ci_low": 0.054,
+        "ci_high": 0.06
+      }
+    }
+  },
+  "throughput": {
+    "completed_auths": 91,
+    "elapsed_s": 10.08,
+    "rate_per_minute": 541.6
+  },
+  "psutil_available": false
+}

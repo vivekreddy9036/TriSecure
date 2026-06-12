@@ -14,6 +14,12 @@ from models import Session, Voter
 
 logger = logging.getLogger(__name__)
 
+try:
+    from repositories.session_repository import SQLiteSessionRepository as _SessionRepo
+    _REPO_AVAILABLE = True
+except ImportError:
+    _REPO_AVAILABLE = False
+
 
 class SessionManager:
     """
@@ -38,16 +44,25 @@ class SessionManager:
         """Store SHA-256 of token as dict key, never the raw token."""
         return hashlib.sha256(token.encode()).hexdigest()
 
-    def __init__(self, duration_seconds: int = DEFAULT_SESSION_DURATION_SECONDS):
-        """
-        Initialize SessionManager.
-        
-        Args:
-            duration_seconds: How long session remains valid (default 60)
-        """
+    def __init__(
+        self,
+        duration_seconds: int = DEFAULT_SESSION_DURATION_SECONDS,
+        db_path: Optional[str] = None,
+    ):
         self.duration_seconds = duration_seconds
         self._active_sessions: dict[str, Session] = {}  # In-memory cache
-        logger.info(f"SessionManager initialized with {duration_seconds}s duration")
+
+        # Optional persistent backend — use default DB path when not overridden
+        self._repo = None
+        if _REPO_AVAILABLE:
+            try:
+                path = db_path or "data/sessions.db"
+                self._repo = _SessionRepo(path)
+            except Exception as exc:
+                logger.warning(f"SessionRepository unavailable ({exc}) — in-memory only")
+
+        logger.info(f"SessionManager initialized: {duration_seconds}s TTL, "
+                    f"persistent={'yes' if self._repo else 'no'}")
     
     def create_session(self, voter: Voter) -> Session:
         """
@@ -74,6 +89,11 @@ class SessionManager:
         )
 
         self._active_sessions[self._token_key(session.token)] = session
+        if self._repo:
+            try:
+                self._repo.save(session)
+            except Exception as exc:
+                logger.warning(f"Failed to persist session to DB: {exc}")
         logger.info(f"Session created for voter {voter.id}: {session.session_id}")
         return session
     
@@ -88,6 +108,11 @@ class SessionManager:
             True if token is valid and can be used for voting
         """
         session = self._active_sessions.get(self._token_key(token))
+        if not session and self._repo:
+            # Recover from restart — check persistent store
+            session = self._repo.find_by_token(token)
+            if session:
+                self._active_sessions[self._token_key(token)] = session
         if not session:
             logger.warning(f"Session token not found: {token[:8]}...")
             return False
@@ -116,6 +141,11 @@ class SessionManager:
             return None
         
         session.mark_as_used()
+        if self._repo:
+            try:
+                self._repo.mark_used(token)
+            except Exception as exc:
+                logger.warning(f"Failed to update session in DB: {exc}")
         logger.info(f"Session consumed: {session.session_id}")
         return session
     

@@ -130,7 +130,7 @@ def bench_sha256_chain(n_votes: List[int] = None) -> List[dict]:
                 _ = hashlib.sha256(f"candidate0{0}{p}".encode()).hexdigest()
                 p = h
 
-        reps = max(1, 100 // n * 10)
+        reps = max(3, 1000 // n)
         times = _timer_ms(_verify, reps)
         m, lo, hi = mean_ci(np.array(times))
         results.append({"operation": f"SHA-256 chain verify (n={n})", "n_votes": n, "reps": reps,
@@ -158,7 +158,7 @@ def bench_merkle_proof(n_votes: List[int] = None) -> List[dict]:
             proof = tree.get_proof(n // 2)
             VoteMerkleTree.verify_proof(leaves[n // 2], proof, root)
 
-        reps = max(1, 500 // n * 10)
+        reps = max(3, 5000 // n)
         times = _timer_ms(_prove_verify, reps)
         m, lo, hi = mean_ci(np.array(times))
         results.append({"operation": f"Merkle prove+verify (n={n})", "n_votes": n, "reps": reps,
@@ -219,7 +219,12 @@ def run_all_benchmarks() -> dict:
             results[label] = r
             if isinstance(r, list):
                 for row in r:
-                    print(f"\n    {row['operation']}: {row['mean_ms']:.3f} ms (95% CI [{row['ci_low_ms']:.3f}, {row['ci_high_ms']:.3f}])", end="")
+                    if "error" in row:
+                        print(f"\n    {row.get('operation', label)}: SKIP ({row['error']})", end="")
+                    else:
+                        print(f"\n    {row['operation']}: {row['mean_ms']:.3f} ms (95% CI [{row['ci_low_ms']:.3f}, {row['ci_high_ms']:.3f}])", end="")
+            elif "error" in r:
+                print(f"SKIP ({r['error']})", end="")
             else:
                 print(f"{r['mean_ms']:.3f} ms (95% CI [{r['ci_low_ms']:.3f}, {r['ci_high_ms']:.3f}])", end="")
             print()
