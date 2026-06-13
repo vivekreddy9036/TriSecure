@@ -79,6 +79,19 @@ D.~Sikeridis, P.~Kampanakis, M.~Devetsikiotis, Post-quantum authentication in
 \newblock \href {https://doi.org/10.6028/NIST.FIPS.204}
   {\path{doi:10.6028/NIST.FIPS.204}}.
 
+\bibitem{paquin2019oqs}
+C.~Paquin, D.~Stebila, G.~Tamvada, Benchmarking post-quantum cryptography in
+  {TLS}, in: Proc. Intl. Conf. on Post-Quantum Cryptography (PQCrypto), 2020,
+  pp. 72--91.
+\newblock \href {https://doi.org/10.1007/978-3-030-44223-1_5}
+  {\path{doi:10.1007/978-3-030-44223-1_5}}.
+
+\bibitem{kannwischer2019pqm4}
+M.~J. Kannwischer, J.~Rijneveld, P.~Schwabe, K.~Stoffelen,
+  \href{https://eprint.iacr.org/2019/844}{pqm4: Testing and benchmarking {NIST}
+  {PQC} on {ARM} {Cortex-M4}}, in: IACR Cryptology ePrint Archive, 2019.
+\newline\urlprefix\url{https://eprint.iacr.org/2019/844}
+
 \bibitem{iso30107}
 {ISO/IEC}, {ISO/IEC 30107-3:2023 Information Technology --- Biometric
   Presentation Attack Detection --- Part 3: Testing and Reporting} (2023).
@@ -102,6 +115,108 @@ S.~Meier, B.~Schmidt, C.~Cremers, D.~Basin, The {TAMARIN} prover for the
   Aided Verification (CAV), 2013, pp. 696--701.
 \newblock \href {https://doi.org/10.1007/978-3-642-39799-8_48}
   {\path{doi:10.1007/978-3-642-39799-8_48}}.
+
+\bibitem{adida2008helios}
+B.~Adida, Helios: Web-based open-audit voting, in: Proc. 17th USENIX Security
+  Symposium, 2008, pp. 335--348.
+
+\bibitem{clarkson2008civitas}
+M.~R. Clarkson, S.~Chong, A.~C. Myers, Civitas: Toward a secure voting system,
+  in: Proc. IEEE Symposium on Security and Privacy (S\&P), 2008, pp. 354--368.
+\newblock \href {https://doi.org/10.1109/SP.2008.32}
+  {\path{doi:10.1109/SP.2008.32}}.
+
+\bibitem{chaum2009scantegrity}
+D.~Chaum, R.~Carback, J.~Clark, A.~Essex, S.~Popoveniuc, R.~L. Rivest, P.~Y.
+  Ryan, E.~Shen, A.~T. Sherman, Scantegrity {II}: End-to-end verifiability by
+  voters of optical scan elections through confirmation codes, Vol.~4, 2009,
+  pp. 611--627.
+\newblock \href {https://doi.org/10.1109/TIFS.2009.2034919}
+  {\path{doi:10.1109/TIFS.2009.2034919}}.
+
+\bibitem{ryan2016selene}
+P.~Y. Ryan, T.~Shortall, Selene: Voting with transparent verifiability and
+  coercion-mitigation, in: Proc. Financial Cryptography and Data Security (FC)
+  Workshops, 2016, pp. 176--192.
+\newblock \href {https://doi.org/10.1007/978-3-662-53357-4_12}
+  {\path{doi:10.1007/978-3-662-53357-4_12}}.
+
+\bibitem{gjosteen2010norwegian}
+K.~Gj{\o}steen, \href{https://eprint.iacr.org/2013/473}{The {Norwegian}
+  internet voting protocol}, IACR Cryptology ePrint Archive 2013 (2013) 473.
+\newline\urlprefix\url{https://eprint.iacr.org/2013/473}
+
+\bibitem{ross2003multimodal}
+A.~Ross, A.~K. Jain, Information fusion in biometrics, Pattern Recognition
+  Letters 24~(13) (2003) 2115--2125.
+\newblock \href {https://doi.org/10.1016/S0167-8655(03)00079-5}
+  {\path{doi:10.1016/S0167-8655(03)00079-5}}.
+
+\bibitem{nandakumar2008fusion}
+K.~Nandakumar, Y.~Chen, S.~C. Dass, A.~K. Jain, Likelihood ratio-based
+  biometric score fusion, IEEE Transactions on Pattern Analysis and Machine
+  Intelligence 30~(2) (2008) 342--347.
+\newblock \href {https://doi.org/10.1109/TPAMI.2007.70796}
+  {\path{doi:10.1109/TPAMI.2007.70796}}.
+
+\bibitem{fierrez2005fusion}
+J.~Fierrez-Aguilar, J.~Ortega-Garcia, J.~Gonzalez-Rodriguez, J.~Bigun,
+  Discriminative multimodal biometric authentication based on quality measures,
+  Vol.~38, 2005, pp. 777--779.
+\newblock \href {https://doi.org/10.1016/j.patcog.2004.11.012}
+  {\path{doi:10.1016/j.patcog.2004.11.012}}.
+
+\bibitem{jain2011multimodal}
+A.~K. Jain, A.~A. Ross, K.~Nandakumar, Introduction to biometrics, Springer
+  (2011).
+\newblock \href {https://doi.org/10.1007/978-0-387-77326-1}
+  {\path{doi:10.1007/978-0-387-77326-1}}.
+
+\bibitem{liu2018learning}
+Y.~Liu, A.~Jourabloo, X.~Liu, Learning deep models for face anti-spoofing:
+  Binary or auxiliary supervision, in: Proc. IEEE/CVF Conf. on Computer Vision
+  and Pattern Recognition (CVPR), 2018, pp. 389--398.
+\newblock \href {https://doi.org/10.1109/CVPR.2018.00048}
+  {\path{doi:10.1109/CVPR.2018.00048}}.
+
+\bibitem{jourabloo2018desp}
+A.~Jourabloo, Y.~Liu, X.~Liu, Face de-spoofing: Anti-spoofing via noise
+  modeling, in: Proc. European Conf. on Computer Vision (ECCV), 2018, pp.
+  290--306.
+\newblock \href {https://doi.org/10.1007/978-3-030-01261-8_18}
+  {\path{doi:10.1007/978-3-030-01261-8_18}}.
+
+\bibitem{tan2010nuaa}
+X.~Tan, Y.~Li, J.~Liu, L.~Jiang, Face liveness detection from a single image
+  with sparse low rank bilinear discriminative model, in: Proc. European Conf.
+  on Computer Vision (ECCV), 2010, pp. 504--517.
+\newblock \href {https://doi.org/10.1007/978-3-642-15567-3_37}
+  {\path{doi:10.1007/978-3-642-15567-3_37}}.
+
+\bibitem{boulkenafet2017oulu}
+Z.~Boulkenafet, J.~Komulainen, L.~Li, X.~Feng, A.~Hadid, {OULU-NPU}: A mobile
+  face presentation attack database with real-world variations, in: Proc. IEEE
+  Intl. Conf. on Automatic Face and Gesture Recognition (FG), 2017, pp.
+  612--618.
+\newblock \href {https://doi.org/10.1109/FG.2017.77}
+  {\path{doi:10.1109/FG.2017.77}}.
+
+\bibitem{dodis2004fuzzy}
+Y.~Dodis, L.~Reyzin, A.~Smith, Fuzzy extractors: How to generate strong keys
+  from biometrics and other noisy data, in: Proc. Intl. Conf. on Advances in
+  Cryptology (EUROCRYPT), 2004, pp. 523--540.
+\newblock \href {https://doi.org/10.1007/978-3-540-24676-3_31}
+  {\path{doi:10.1007/978-3-540-24676-3_31}}.
+
+\bibitem{jain2008cancelable}
+A.~K. Jain, K.~Nandakumar, A.~Nagar, Biometric template security, EURASIP
+  Journal on Advances in Signal Processing 2008 (2008) 579416.
+\newblock \href {https://doi.org/10.1155/2008/579416}
+  {\path{doi:10.1155/2008/579416}}.
+
+\bibitem{iso24745}
+{ISO/IEC}, {ISO/IEC 24745:2022 Information Security --- Biometric Information
+  Protection} (2022).
 
 \bibitem{deng2019arcface}
 J.~Deng, J.~Guo, N.~Xue, S.~Zafeiriou, {ArcFace}: Additive angular margin loss
@@ -127,5 +242,12 @@ A.~Biryukov, D.~Dinu, D.~Khovratovich, Argon2: New generation of memory-hard
 {ISO/IEC}, {ISO/IEC 19795-1:2021 Information Technology --- Biometric
   Performance Testing and Reporting --- Part 1: Principles and Framework}
   (2021).
+
+\bibitem{grother2007biometric}
+P.~J. Grother, E.~Tabassi, Performance of biometric quality measures, Tech.
+  Rep.~4, IEEE Transactions on Pattern Analysis and Machine Intelligence
+  (2007).
+\newblock \href {https://doi.org/10.1109/TPAMI.2007.1019}
+  {\path{doi:10.1109/TPAMI.2007.1019}}.
 
 \end{thebibliography}

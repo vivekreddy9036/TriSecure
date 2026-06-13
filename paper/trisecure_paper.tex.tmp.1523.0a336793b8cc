@@ -244,16 +244,9 @@ on constrained hardware, showing Kyber-768 and Dilithium-3 to be feasible
 on ARM devices with the liboqs library. Bernstein and
 Lange~\cite{bernstein2017post} survey post-quantum alternatives to
 RSA/ECC. NIST finalised ML-KEM (Kyber-768, FIPS~203~\cite{nist_fips203})
-and ML-DSA (Dilithium-3, FIPS~204~\cite{nist_fips204}) in 2024.
-Paquin et al.~\cite{paquin2019oqs} benchmark the Open Quantum Safe liboqs
-library across x86 and ARM platforms, providing the reference performance
-figures against which TRIsecure~V2's Pi~4 measurements are calibrated.
-Kannwischer et al.~\cite{kannwischer2019pqm4} characterise PQC scheme
-performance on Cortex-M4 microcontrollers, establishing that Kyber-768
-key generation completes in under 100k cycles on constrained ARM cores.
-To our knowledge, TRIsecure~V2 is the first e-voting system to integrate a
-hybrid PQC layer at the credential and vote-signing level on sub-\$100 ARM64
-edge hardware.
+and ML-DSA (Dilithium-3, FIPS~204~\cite{nist_fips204}) in 2024. To our
+knowledge, TRIsecure~V2 is the first e-voting system to integrate a hybrid
+PQC layer at the credential and vote-signing level.
 
 \subsection{Presentation Attack Detection}
 
@@ -267,98 +260,30 @@ into a formally verified e-voting authentication pipeline.
 \subsection{Formal Verification of Authentication Protocols}
 
 ProVerif~\cite{blanchet2016proverif} and Tamarin~\cite{meier2013tamarin}
-are standard tools for symbolic protocol analysis using the applied-pi
-calculus and multiset rewriting, respectively. Prior biometric and
-voting systems have not applied automata-theoretic verification to the
-full multi-stage authentication pipeline. TRIsecure~V2 encodes its
-five-stage pipeline as a DFA and proves six security properties directly
-in the authentication logic, providing traceable, machine-checkable
-guarantees.
+are standard tools for symbolic protocol analysis operating in the
+applied-pi calculus; they excel at proving secrecy, authentication, and
+injective agreement goals under a Dolev-Yao adversary model.
+Prior biometric and voting systems have not applied formal verification
+to the full multi-stage authentication pipeline at the implementation level.
 
-We deliberately choose automata-theoretic verification over symbolic
-model checkers for three reasons. First, our security properties concern
-pipeline control-flow—ordering, completeness, determinism, and
-termination—rather than cryptographic secrecy or authentication goals
-targeted by the applied-pi calculus. Second, the DFA model is embedded
-in the deployed code (\texttt{security/formal\_verification.py}) and
-executes as part of the CI test suite; ProVerif or Tamarin would require
-maintaining a separate formal model that can diverge silently from the
-implementation. Third, the six properties we prove (P1–P6) are
-expressible as decidable DFA properties—reachability (BFS), cycle
-detection (DFS), and direct transition inspection—yielding short,
-human-auditable proofs without an external solver or specialised
-domain knowledge.
-
-\subsection{Verifiable and Privacy-Preserving E-Voting}
-
-Cryptographic e-voting has a distinct lineage focused on verifiability and
-coercion resistance rather than biometric identity binding.
-Adida~\cite{adida2008helios} introduces Helios, a web-based verifiable voting
-system using homomorphic encryption and bulletin-board auditing; it establishes
-strong integrity properties but relies entirely on login credentials with no
-biometric gate.
-Clarkson et al.~\cite{clarkson2008civitas} present Civitas, which achieves
-coercion resistance via plaintext equivalence tests and designated
-verifiers—but again without any biometric binding.
-Chaum et al.~\cite{chaum2009scantegrity} demonstrate Scantegrity~II, an
-end-to-end verifiable optical-scan system using invisible ink confirmation
-codes, deployed in a Takoma Park municipal election.
-Ryan et al.~\cite{ryan2016selene} propose Selene, which provides individual
-verifiability via trackers while hiding the vote-voter link, and
-Gjøsteen~\cite{gjosteen2010norwegian} describes the Norwegian internet voting
-return-code scheme deployed nationally in 2011.
-TRIsecure~V2 inherits the Merkle-proof receipt mechanism from this tradition
-while adding the biometric identity-binding layer these systems leave to
-the authentication infrastructure.
-
-\subsection{Multimodal Biometric Fusion}
-
-Ross and Jain~\cite{ross2003multimodal} establish the taxonomy of fusion
-levels (sensor, feature, score, rank, decision) and demonstrate that
-score-level fusion consistently outperforms unimodal baselines.
-Nandakumar et al.~\cite{nandakumar2008fusion} derive optimal likelihood-ratio
-score fusion under Gaussian density estimation, the approach adopted in
-TRIsecure~V2's Bayesian fusion stage.
-Fierrez-Aguilar et al.~\cite{fierrez2005fusion} extend this with quality-based
-weighting, showing that conditioning fusion weights on per-sample quality
-scores reduces error rates under degraded conditions.
-Jain et al.~\cite{jain2011multimodal} provide a comprehensive survey of
-multimodal biometric systems, covering fusion strategies, datasets, and
-open challenges.
-TRIsecure~V2 applies Bayesian LR fusion to combine NFC possession evidence
-with face verification scores, deriving a single joint accept/reject decision
-rather than chaining independent thresholds.
-
-\subsection{Face Anti-Spoofing and Liveness Detection}
-
-Beyond MiniFASNetV2~\cite{zhang2020minifasnet}, the face anti-spoofing
-literature encompasses depth-based and disentanglement-based approaches.
-Liu et al.~\cite{liu2018learning} leverage depth maps as auxiliary supervision
-signals, enabling 3D-aware liveness detection from a single RGB camera.
-Jourabloo et al.~\cite{jourabloo2018desp} model spoof noise as a signal to be
-disentangled from the genuine face, achieving state-of-the-art ACER on
-multiple benchmarks.
-Benchmark datasets driving this progress include the NUAA Imposter
-database~\cite{tan2010nuaa} (12,614 images, two attack types) and the
-OULU-NPU dataset~\cite{boulkenafet2017oulu} (4,950 videos, four protocols
-evaluating generalisation across unseen printers and displays).
-TRIsecure~V2 integrates MiniFASNetV2 for its 0.5~MB footprint and 92~ms
-inference time on ARM64, with APCER/BPCER/ACER metrics reported against
-ISO/IEC~30107-3.
-
-\subsection{Privacy-Preserving Biometric Template Protection}
-
-Dodis et al.~\cite{dodis2004fuzzy} formalise the fuzzy extractor primitive,
-enabling secure key derivation from noisy biometric measurements with
-information-theoretic security guarantees.
-Jain et al.~\cite{jain2008cancelable} survey cancelable biometrics—transformations
-that produce revocable, unlinkable templates—and outline the ISO/IEC~24745
-framework for biometric information protection~\cite{iso24745}.
-TRIsecure~V2 protects face embeddings via AES-256-GCM encryption at rest, with
-per-voter keys derived from the session credential. This provides secrecy and
-revocability (re-enrolment regenerates a new encrypted blob) but stops short
-of the unlinkability guarantees of cancelable schemes; extending to a
-cancelable representation is identified as future work.
+TRIsecure~V2 takes a different, complementary approach: it encodes the
+authentication pipeline as a Deterministic Finite Automaton (DFA) and
+proves six security properties directly in the deployed code.
+We deliberately choose automata-theoretic verification over symbolic tools
+for three reasons.
+First, our security properties concern \emph{pipeline control-flow}—stage
+ordering, completeness, determinism, and termination—rather than
+cryptographic secrecy or authentication goals that the applied-pi calculus
+is designed for.
+Second, the DFA model is \emph{embedded in the production code}
+(\texttt{security/formal\_verification.py}) and executes as part of the
+CI test suite; ProVerif and Tamarin would require maintaining a separate
+formal model in a different language, creating a risk of model-code
+divergence as the system evolves.
+Third, the six properties we prove (P1--P6 in Section~\ref{sec:dfa})
+are expressible as decidable DFA properties—reachability (BFS), cycle
+detection (DFS), and direct transition table inspection—yielding short,
+human-auditable proofs without an external solver dependency.
 
 \subsection{Comparison of Prior Work}
 \label{sec:related_comparison}
@@ -780,40 +705,10 @@ the published ArcFace (buffalo\_sc) LFW benchmark~\cite{deng2019arcface}:
 $\mathcal{N}(\mu_G{=}0.72,\sigma_G{=}0.08)$ and
 $\mathcal{N}(\mu_I{=}0.28,\sigma_I{=}0.12)$, $n{=}1{,}000$ each.
 This approach is standard for system-design papers where a field trial dataset
-is not yet available~\cite{nandakumar2012biometric}, and is explicitly
-permitted by ISO/IEC~19795-6 \S5.2 when field data are unavailable.
-Gaussian parameter selection is further grounded in the NIST biometric
-quality benchmarking study of Grother and Tabassi~\cite{grother2007biometric}.
-PAD metrics are derived from published MiniFASNetV2 / CelebA-Spoof reported
-rates~\cite{zhang2020minifasnet}.
+is not yet available~\cite{nandakumar2012biometric}. PAD metrics are derived
+from published MiniFASNetV2 / CelebA-Spoof reported rates~\cite{zhang2020minifasnet}.
 All biometric simulation results are clearly labelled as such throughout; a
 live field trial is proposed as future work.
-
-To assess sensitivity to the Gaussian parameter choice,
-Table~\ref{tab:sensitivity} reports EER and AUC under $\pm10\%$ variation
-of $\sigma_G$ and $\sigma_I$ from their nominal values.
-
-\begin{table}[htbp]
-\centering
-\caption{Sensitivity of biometric metrics to $\pm10\%$ Gaussian parameter
-  variation. Nominal: $\sigma_G=0.08$, $\sigma_I=0.12$.}
-\label{tab:sensitivity}
-\small
-\begin{tabular}{ccrr}
-  \toprule
-  $\sigma_G$ & $\sigma_I$ & EER (\%) & AUC \\
-  \midrule
-  0.072 ($-10\%$) & 0.108 ($-10\%$) & 1.38 & 0.9993 \\
-  0.080 (nominal) & 0.120 (nominal) & 1.55 & 0.9991 \\
-  0.088 ($+10\%$) & 0.132 ($+10\%$) & 1.71 & 0.9988 \\
-  \bottomrule
-\end{tabular}
-\end{table}
-
-The EER varies by $\pm0.17$ percentage points and the AUC by $\pm0.0002$
-across the full range, confirming that the reported metrics are stable with
-respect to the parameter choice and that the conclusions hold under
-conservative estimates of inter-session score variability.
 
 \subsubsection{Evaluation Metrics}
 

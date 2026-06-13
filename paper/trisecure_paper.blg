@@ -3,56 +3,63 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: trisecure_paper.aux
 The style file: elsarticle-num.bst
 Database file #1: references.bib
+Warning--entry type for "iso24745" isn't style-file defined
+--line 171 of file references.bib
 Warning--entry type for "iso30107" isn't style-file defined
---line 90 of file references.bib
+--line 294 of file references.bib
 Warning--entry type for "iso19795" isn't style-file defined
---line 98 of file references.bib
+--line 302 of file references.bib
 Warning--entry type for "fido2_webauthn" isn't style-file defined
---line 200 of file references.bib
+--line 404 of file references.bib
 Warning--empty pages in benaloh2011e2e
+Warning--empty pages in kannwischer2019pqm4
 Warning--empty booktitle in blanchet2016proverif
 Warning--can't use both volume and number fields in blanchet2016proverif
+Warning--empty booktitle in chaum2009scantegrity
+Warning--can't use both volume and number fields in chaum2009scantegrity
+Warning--empty booktitle in fierrez2005fusion
+Warning--can't use both volume and number fields in fierrez2005fusion
 Warning--empty booktitle in nandakumar2012biometric
 Warning--can't use both volume and number fields in nandakumar2012biometric
-You've used 20 entries,
+You've used 39 entries,
             2952 wiz_defined-function locations,
-            792 strings with 9189 characters,
-and the built_in function-call counts, 7194 in all, are:
-= -- 709
-> -- 179
-< -- 13
-+ -- 73
-- -- 53
-* -- 460
-:= -- 896
-add.period$ -- 35
-call.type$ -- 20
-change.case$ -- 20
+            907 strings with 12913 characters,
+and the built_in function-call counts, 14766 in all, are:
+= -- 1456
+> -- 378
+< -- 27
++ -- 152
+- -- 113
+* -- 959
+:= -- 1803
+add.period$ -- 69
+call.type$ -- 39
+change.case$ -- 39
 chr.to.int$ -- 0
-cite$ -- 25
-duplicate$ -- 258
-empty$ -- 848
-format.name$ -- 67
-if$ -- 1916
+cite$ -- 49
+duplicate$ -- 544
+empty$ -- 1731
+format.name$ -- 143
+if$ -- 3942
 int.to.chr$ -- 0
-int.to.str$ -- 20
-missing$ -- 15
-newline$ -- 84
-num.names$ -- 20
-pop$ -- 148
+int.to.str$ -- 39
+missing$ -- 32
+newline$ -- 158
+num.names$ -- 39
+pop$ -- 294
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 536
+skip$ -- 1102
 stack$ -- 0
-substring$ -- 377
-swap$ -- 120
-text.length$ -- 13
+substring$ -- 804
+swap$ -- 261
+text.length$ -- 27
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 5
-while$ -- 55
-width$ -- 22
-write$ -- 206
-(There were 8 warnings)
+warning$ -- 10
+while$ -- 113
+width$ -- 41
+write$ -- 401
+(There were 14 warnings)
