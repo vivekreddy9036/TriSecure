@@ -3,37 +3,51 @@
 \citation{ayed2017conceptual,hardwick2018voting}
 \citation{bernstein2017post}
 \citation{fido2_webauthn}
-\citation{bello2021biometric}
-\citation{sanchez2020biometric}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
 \newlabel{sec:intro}{{I}{1}{}{section.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
-\newlabel{sec:related}{{II}{1}{}{section.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Biometric E-Voting Systems}{1}{}\protected@file@percent }
+\citation{bello2021biometric}
+\citation{sanchez2020biometric}
+\citation{nist_sp800_63b}
+\citation{schroff2015facenet}
+\citation{wang2018cosface}
+\citation{deng2019arcface}
+\citation{wang2021face}
+\citation{fujioka1992practical}
+\citation{benaloh1994receipt}
+\citation{nakamoto2008bitcoin}
 \citation{ayed2017conceptual}
 \citation{hardwick2018voting}
 \citation{hjalmarsson2018blockchain}
+\citation{juels2010coercion}
 \citation{sikeridis2020pqc}
 \citation{paquin2019oqs}
 \citation{kannwischer2019pqm4}
 \citation{nist_fips203}
 \citation{nist_fips204}
+\citation{shor1994algorithms}
+\citation{grover1996fast}
 \citation{iso30107}
 \citation{zhang2020minifasnet}
 \citation{liu2018learning}
 \citation{jourabloo2018desp}
 \citation{tan2010nuaa}
 \citation{boulkenafet2017oulu}
+\citation{dolev1983security}
 \citation{blanchet2016proverif}
 \citation{meier2013tamarin}
+\citation{lowe1996breaking}
+\citation{sipser2012introduction}
 \citation{adida2008helios}
 \citation{clarkson2008civitas}
 \citation{chaum2009scantegrity}
 \citation{ryan2016selene}
 \citation{gjosteen2010norwegian}
+\citation{kusters2010accountability}
+\citation{benaloh2011e2e}
 \citation{dodis2004fuzzy}
 \citation{jain2008cancelable}
 \citation{iso24745}
+\citation{nandakumar2012biometric}
 \citation{ross2003multimodal}
 \citation{nandakumar2008fusion}
 \citation{fierrez2005fusion}
@@ -44,42 +58,43 @@
 \citation{hardwick2018voting}
 \citation{deng2019arcface}
 \citation{fido2_webauthn}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{}\protected@file@percent }
+\newlabel{sec:related}{{II}{2}{}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Biometric E-Voting Systems}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Blockchain-Based Voting}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Post-Quantum Cryptography on Edge}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Presentation Attack Detection}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}Formal Verification of Authentication Protocols}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-F}}Verifiable E-Voting and Biometric Template Protection}{2}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces TRIsecure V2 six-layer clean architecture. Arrows indicate upward dependency direction.}}{2}{}\protected@file@percent }
-\newlabel{fig:architecture}{{1}{2}{}{figure.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-G}}Multimodal Biometric Fusion}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-H}}Comparison of Prior Work}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {III}System Architecture}{2}{}\protected@file@percent }
-\newlabel{sec:architecture}{{III}{2}{}{section.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Design Goals and Threat Model}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}System Overview}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Multi-Factor Authentication Pipeline}{2}{}\protected@file@percent }
-\newlabel{sec:pipeline}{{\mbox  {III-C}}{2}{}{subsection.3.3}{}}
 \citation{deng2019arcface}
-\citation{bernstein2017post}
-\citation{nist_fips204}
-\citation{biryukov2015argon2}
 \@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison of related e-voting and biometric authentication systems. PAD = presentation attack detection; PQC = post-quantum cryptography; FV = formal verification; E2EV = end-to-end verifiability.}}{3}{}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:related_comparison}{{I}{3}{}{table.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces TRIsecure V2 authentication DFA. Double-circle = accepting state (\textsc  {Session}). Any failure transitions to \textsc  {Rejected} (trap state). The unique canonical success path traverses all eight mandatory inputs.}}{3}{}\protected@file@percent }
-\newlabel{fig:dfa}{{2}{3}{}{figure.2}{}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces TRIsecure HybridKEM.Encapsulate(\(pk\))}}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces TRIsecure V2 six-layer clean architecture. Arrows indicate upward dependency direction.}}{3}{}\protected@file@percent }
+\newlabel{fig:architecture}{{1}{3}{}{figure.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}System Architecture}{3}{}\protected@file@percent }
+\newlabel{sec:architecture}{{III}{3}{}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Design Goals and Threat Model}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}System Overview}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Multi-Factor Authentication Pipeline}{3}{}\protected@file@percent }
+\newlabel{sec:pipeline}{{\mbox  {III-C}}{3}{}{subsection.3.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Bayesian Score-Level Fusion}{3}{}\protected@file@percent }
 \newlabel{sec:fusion}{{\mbox  {III-D}}{3}{}{subsection.3.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Post-Quantum Cryptographic Layer}{3}{}\protected@file@percent }
-\newlabel{sec:pqc}{{\mbox  {III-E}}{3}{}{subsection.3.5}{}}
+\citation{bernstein2017post}
+\citation{nist_fips204}
+\citation{biryukov2015argon2}
 \citation{kusters2010accountability,benaloh2011e2e}
-\citation{iso19795}
-\citation{deng2019arcface,grother2007biometric}
-\citation{zhang2020minifasnet}
-\citation{zhang2020minifasnet}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces TRIsecure V2 authentication DFA. Double-circle = accepting state (\textsc  {Session}). Any failure transitions to \textsc  {Rejected} (trap state). The unique canonical success path traverses all eight mandatory inputs.}}{4}{}\protected@file@percent }
+\newlabel{fig:dfa}{{2}{4}{}{figure.2}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces TRIsecure HybridKEM.Encapsulate(\(pk\))}}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Post-Quantum Cryptographic Layer}{4}{}\protected@file@percent }
+\newlabel{sec:pqc}{{\mbox  {III-E}}{4}{}{subsection.3.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Vote Integrity and Verifiability}{4}{}\protected@file@percent }
 \newlabel{sec:vote_integrity}{{\mbox  {III-F}}{4}{}{subsection.3.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Threat model coverage matrix. Green (\(\text  {$\mathsurround \z@ \mathchar "458$}\), score~2) = full mitigation; yellow (\(\sim \), score~1) = partial; red (\(\times \), score~0) = no mitigation by that layer. Column sums show total defence contribution.}}{4}{}\protected@file@percent }
+\newlabel{fig:threat_heatmap}{{3}{4}{}{figure.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Formal Security Analysis}{4}{}\protected@file@percent }
 \newlabel{sec:security}{{IV}{4}{}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}DFA Verification}{4}{}\protected@file@percent }
@@ -88,92 +103,111 @@
 \newlabel{sec:threat_matrix}{{\mbox  {IV-B}}{4}{}{subsection.4.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}End-to-End Verifiability}{4}{}\protected@file@percent }
 \newlabel{sec:e2e}{{\mbox  {IV-C}}{4}{}{subsection.4.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Threat model coverage matrix. Green (\(\text  {$\mathsurround \z@ \mathchar "458$}\), score~2) = full mitigation; yellow (\(\sim \), score~1) = partial; red (\(\times \), score~0) = no mitigation by that layer. Column sums show total defence contribution.}}{4}{}\protected@file@percent }
-\newlabel{fig:threat_heatmap}{{3}{4}{}{figure.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Sensitivity of biometric metrics to \(\pm 10\%\) Gaussian parameter variation. Nominal: \(\sigma _G{=}0.08\), \(\sigma _I{=}0.12\).}}{4}{}\protected@file@percent }
-\newlabel{tab:sensitivity}{{II}{4}{}{table.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Experimental Evaluation}{4}{}\protected@file@percent }
-\newlabel{sec:evaluation}{{V}{4}{}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Biometric Performance (ISO/IEC~19795-1)}{4}{}\protected@file@percent }
-\newlabel{sec:biometric_results}{{\mbox  {V-B}}{4}{}{subsection.5.2}{}}
+\citation{iso19795_6}
+\citation{deng2019arcface,grother2007biometric}
+\citation{zhang2020minifasnet}
+\citation{zhang2020minifasnet}
 \citation{deng2019arcface}
 \citation{deng2019arcface}
 \citation{iso19795}
-\citation{sikeridis2020pqc}
-\citation{sikeridis2020pqc}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Sensitivity of biometric metrics to \(\pm 10\%\) Gaussian parameter variation. Nominal: \(\sigma _G{=}0.08\), \(\sigma _I{=}0.12\).}}{5}{}\protected@file@percent }
+\newlabel{tab:sensitivity}{{II}{5}{}{table.2}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Biometric performance (\(n{=}1{,}000\) genuine/impostor, ArcFace priors).}}{5}{}\protected@file@percent }
 \newlabel{tab:biometric}{{III}{5}{}{table.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Experimental Evaluation}{5}{}\protected@file@percent }
+\newlabel{sec:evaluation}{{V}{5}{}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Biometric Performance (ISO/IEC~19795-1)}{5}{}\protected@file@percent }
+\newlabel{sec:biometric_results}{{\mbox  {V-B}}{5}{}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Presentation Attack Detection (ISO/IEC~30107-3)}{5}{}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Threshold sweep (15 operating points). Bold = EER point.}}{5}{}\protected@file@percent }
 \newlabel{tab:threshold_sweep}{{IV}{5}{}{table.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Presentation Attack Detection (ISO/IEC~30107-3)}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Biometric evaluation panel. Left: ROC (AUC\(=0.9991\), EER marked). Centre: DET curve (EER\(=1.55\%\)). Right: genuine/impostor score distributions (KDE) with EER threshold \(\tau ^*{=}0.539\).}}{5}{}\protected@file@percent }
+\newlabel{fig:biometric_panel}{{4}{5}{}{figure.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Ablation Study}{5}{}\protected@file@percent }
 \newlabel{sec:ablation}{{\mbox  {V-D}}{5}{}{subsection.5.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Cryptographic Benchmarks}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Edge System Performance}{5}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Comparative Analysis}{5}{}\protected@file@percent }
 \newlabel{sec:comparison}{{\mbox  {V-G}}{5}{}{subsection.5.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Biometric evaluation panel. Left: ROC (AUC\(=0.9991\), EER marked). Centre: DET curve (EER\(=1.55\%\)). Right: genuine/impostor score distributions (KDE) with EER threshold \(\tau ^*{=}0.539\).}}{5}{}\protected@file@percent }
-\newlabel{fig:biometric_panel}{{4}{5}{}{figure.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces PAD metrics per ISO/IEC~30107-3.}}{5}{}\protected@file@percent }
-\newlabel{tab:pad}{{V}{5}{}{table.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{5}{}\protected@file@percent }
-\newlabel{sec:discussion}{{VI}{5}{}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Limitations}{5}{}\protected@file@percent }
-\newlabel{sec:limitations}{{\mbox  {VI-A}}{5}{}{subsection.6.1}{}}
+\citation{sikeridis2020pqc}
+\citation{sikeridis2020pqc}
 \bibstyle{IEEEtran}
 \bibdata{references}
 \bibcite{bello2021biometric}{1}
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces PAD metrics per ISO/IEC~30107-3.}}{6}{}\protected@file@percent }
+\newlabel{tab:pad}{{V}{6}{}{table.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Ablation study: cumulative component contribution. \(^\dagger \) at system default threshold \(\tau {=}0.55\).}}{6}{}\protected@file@percent }
+\newlabel{tab:ablation}{{VI}{6}{}{table.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{6}{}\protected@file@percent }
+\newlabel{sec:discussion}{{VI}{6}{}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Limitations}{6}{}\protected@file@percent }
+\newlabel{sec:limitations}{{\mbox  {VI-A}}{6}{}{subsection.6.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{6}{}\protected@file@percent }
+\newlabel{sec:conclusion}{{VII}{6}{}{section.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Ablation results. Left: EER across configurations. Centre: latency breakdown by stage. Right: attack vectors fully mitigated (of~12).}}{6}{}\protected@file@percent }
+\newlabel{fig:ablation}{{5}{6}{}{figure.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI.}}{6}{}\protected@file@percent }
+\newlabel{tab:crypto}{{VII}{6}{}{table.7}{}}
 \bibcite{sanchez2020biometric}{2}
 \bibcite{ayed2017conceptual}{3}
 \bibcite{hardwick2018voting}{4}
 \bibcite{bernstein2017post}{5}
 \bibcite{fido2_webauthn}{6}
-\bibcite{hjalmarsson2018blockchain}{7}
-\bibcite{sikeridis2020pqc}{8}
-\bibcite{paquin2019oqs}{9}
-\bibcite{kannwischer2019pqm4}{10}
-\bibcite{nist_fips203}{11}
-\bibcite{nist_fips204}{12}
-\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Ablation study: cumulative component contribution. \(^\dagger \) at system default threshold \(\tau {=}0.55\).}}{6}{}\protected@file@percent }
-\newlabel{tab:ablation}{{VI}{6}{}{table.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Ablation results. Left: EER across configurations. Centre: latency breakdown by stage. Right: attack vectors fully mitigated (of~12).}}{6}{}\protected@file@percent }
-\newlabel{fig:ablation}{{5}{6}{}{figure.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{6}{}\protected@file@percent }
-\newlabel{sec:conclusion}{{VII}{6}{}{section.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI.}}{6}{}\protected@file@percent }
-\newlabel{tab:crypto}{{VII}{6}{}{table.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces End-to-end authentication latency on Raspberry Pi~4, \(n{=}50\).}}{6}{}\protected@file@percent }
-\newlabel{tab:pi}{{VIII}{6}{}{table.8}{}}
-\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
-\bibcite{iso30107}{13}
-\bibcite{zhang2020minifasnet}{14}
-\bibcite{liu2018learning}{15}
-\bibcite{jourabloo2018desp}{16}
-\bibcite{tan2010nuaa}{17}
-\bibcite{boulkenafet2017oulu}{18}
-\bibcite{blanchet2016proverif}{19}
-\bibcite{meier2013tamarin}{20}
-\bibcite{adida2008helios}{21}
-\bibcite{clarkson2008civitas}{22}
-\bibcite{chaum2009scantegrity}{23}
-\bibcite{ryan2016selene}{24}
-\bibcite{gjosteen2010norwegian}{25}
-\bibcite{dodis2004fuzzy}{26}
-\bibcite{jain2008cancelable}{27}
-\bibcite{iso24745}{28}
-\bibcite{ross2003multimodal}{29}
-\bibcite{nandakumar2008fusion}{30}
-\bibcite{fierrez2005fusion}{31}
-\bibcite{jain2011multimodal}{32}
-\bibcite{deng2019arcface}{33}
-\bibcite{biryukov2015argon2}{34}
-\bibcite{kusters2010accountability}{35}
-\bibcite{benaloh2011e2e}{36}
-\bibcite{iso19795}{37}
-\bibcite{grother2007biometric}{38}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Feature comparison heatmap. TRIsecure~V2 is the only system supporting all six binary capability flags simultaneously.}}{7}{}\protected@file@percent }
-\newlabel{fig:comparison_heatmap}{{6}{7}{}{figure.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces EER (left) and authentication latency (right) across systems. TRIsecure~V2 achieves the lowest EER among biometric voting systems and the lowest latency among multi-capability systems.}}{7}{}\protected@file@percent }
-\newlabel{fig:comparison_bar}{{7}{7}{}{figure.7}{}}
-\gdef \@abspage@last{7}
+\bibcite{nist_sp800_63b}{7}
+\bibcite{schroff2015facenet}{8}
+\bibcite{wang2018cosface}{9}
+\bibcite{deng2019arcface}{10}
+\bibcite{wang2021face}{11}
+\bibcite{fujioka1992practical}{12}
+\bibcite{benaloh1994receipt}{13}
+\bibcite{nakamoto2008bitcoin}{14}
+\bibcite{hjalmarsson2018blockchain}{15}
+\bibcite{juels2010coercion}{16}
+\bibcite{sikeridis2020pqc}{17}
+\bibcite{paquin2019oqs}{18}
+\bibcite{kannwischer2019pqm4}{19}
+\bibcite{nist_fips203}{20}
+\bibcite{nist_fips204}{21}
+\bibcite{shor1994algorithms}{22}
+\bibcite{grover1996fast}{23}
+\bibcite{iso30107}{24}
+\bibcite{zhang2020minifasnet}{25}
+\bibcite{liu2018learning}{26}
+\bibcite{jourabloo2018desp}{27}
+\bibcite{tan2010nuaa}{28}
+\newlabel{fig:comparison_heatmap}{{6a}{7}{}{subfigure.6.1}{}}
+\newlabel{sub@fig:comparison_heatmap}{{a}{7}{}{subfigure.6.1}{}}
+\newlabel{fig:comparison_bar}{{6b}{7}{}{subfigure.6.2}{}}
+\newlabel{sub@fig:comparison_bar}{{b}{7}{}{subfigure.6.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Comparative analysis against five reference systems across capability flags and quantitative metrics.}}{7}{}\protected@file@percent }
+\newlabel{fig:comparison_combined}{{6}{7}{}{figure.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces End-to-end authentication latency on Raspberry Pi~4, \(n{=}50\).}}{7}{}\protected@file@percent }
+\newlabel{tab:pi}{{VIII}{7}{}{table.8}{}}
+\@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
+\bibcite{boulkenafet2017oulu}{29}
+\bibcite{dolev1983security}{30}
+\bibcite{blanchet2016proverif}{31}
+\bibcite{meier2013tamarin}{32}
+\bibcite{lowe1996breaking}{33}
+\bibcite{sipser2012introduction}{34}
+\bibcite{adida2008helios}{35}
+\bibcite{clarkson2008civitas}{36}
+\bibcite{chaum2009scantegrity}{37}
+\bibcite{ryan2016selene}{38}
+\bibcite{gjosteen2010norwegian}{39}
+\bibcite{kusters2010accountability}{40}
+\bibcite{benaloh2011e2e}{41}
+\bibcite{dodis2004fuzzy}{42}
+\bibcite{jain2008cancelable}{43}
+\bibcite{iso24745}{44}
+\bibcite{nandakumar2012biometric}{45}
+\bibcite{ross2003multimodal}{46}
+\bibcite{nandakumar2008fusion}{47}
+\bibcite{fierrez2005fusion}{48}
+\bibcite{jain2011multimodal}{49}
+\bibcite{biryukov2015argon2}{50}
+\bibcite{iso19795_6}{51}
+\bibcite{grother2007biometric}{52}
+\bibcite{iso19795}{53}
+\gdef \@abspage@last{8}

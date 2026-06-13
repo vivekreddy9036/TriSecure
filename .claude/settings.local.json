@@ -21,7 +21,10 @@
       "Bash(bibtex trisecure_paper)",
       "Bash(grep -oP '@\\\\w+\\\\{[^,]+' references.bib)",
       "Bash(pdflatex -interaction=nonstopmode trisecure_ieee.tex)",
-      "Bash(bibtex trisecure_ieee)"
+      "Bash(bibtex trisecure_ieee)",
+      "Bash(pdfinfo /home/vivek/TriSecure/paper/trisecure_ieee.pdf)",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 *)"
     ]
   }
 }

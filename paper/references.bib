@@ -1,6 +1,5 @@
 % ============================================================
 % TRIsecure V2 — Bibliography
-% Target: Computers & Security (Elsevier)
 % ============================================================
 
 % --- Verifiable and privacy-preserving e-voting ---
@@ -22,12 +21,12 @@
   doi       = {10.1109/SP.2008.32},
 }
 
-@inproceedings{chaum2009scantegrity,
+@article{chaum2009scantegrity,
   author    = {Chaum, David and Carback, Richard and Clark, Jeremy and Essex, Aleksander
                and Popoveniuc, Stefan and Rivest, Ronald L. and Ryan, Peter Y.A.
                and Shen, Emily and Sherman, Alan T.},
-  title     = {Scantegrity {II}: End-to-End Verifiability by Voters of Optical Scan Elections
-               Through Confirmation Codes},
+  title     = {Scantegrity {II}: End-to-End Verifiability by Voters of Optical Scan
+               Elections Through Confirmation Codes},
   journal   = {IEEE Transactions on Information Forensics and Security},
   volume    = {4},
   number    = {4},
@@ -64,6 +63,25 @@
   doi       = {10.1145/1102199.1102213},
 }
 
+@inproceedings{fujioka1992practical,
+  author    = {Fujioka, Atsushi and Okamoto, Tatsuaki and Ohta, Kazuo},
+  title     = {A Practical Secret Voting Scheme for Large Scale Elections},
+  booktitle = {Proc. Workshop on the Theory and Application of Cryptographic Techniques
+               (AUSCRYPT)},
+  pages     = {244--251},
+  year      = {1992},
+  doi       = {10.1007/3-540-57220-1_66},
+}
+
+@inproceedings{benaloh1994receipt,
+  author    = {Benaloh, Josh and Tuinstra, Dwight},
+  title     = {Receipt-Free Secret-Ballot Elections},
+  booktitle = {Proc. 26th ACM Symposium on Theory of Computing (STOC)},
+  pages     = {544--553},
+  year      = {1994},
+  doi       = {10.1145/195058.195407},
+}
+
 % --- Multimodal biometric fusion ---
 
 @article{ross2003multimodal,
@@ -88,10 +106,11 @@
   doi       = {10.1109/TPAMI.2007.70796},
 }
 
-@inproceedings{fierrez2005fusion,
-  author    = {Fierrez-Aguilar, Julian and Ortega-Garcia, Javier and Gonzalez-Rodriguez, Joaquin
-               and Bigun, Josef},
-  title     = {Discriminative Multimodal Biometric Authentication Based on Quality Measures},
+@article{fierrez2005fusion,
+  author    = {Fierrez-Aguilar, Julian and Ortega-Garcia, Javier and
+               Gonzalez-Rodriguez, Joaquin and Bigun, Josef},
+  title     = {Discriminative Multimodal Biometric Authentication Based on
+               Quality Measures},
   journal   = {Pattern Recognition},
   volume    = {38},
   number    = {5},
@@ -130,7 +149,8 @@
 
 @inproceedings{tan2010nuaa,
   author    = {Tan, Xiaoyang and Li, Yi and Liu, Jun and Jiang, Lin},
-  title     = {Face Liveness Detection from a Single Image with Sparse Low Rank Bilinear Discriminative Model},
+  title     = {Face Liveness Detection from a Single Image with Sparse Low Rank
+               Bilinear Discriminative Model},
   booktitle = {Proc. European Conf. on Computer Vision (ECCV)},
   pages     = {504--517},
   year      = {2010},
@@ -138,20 +158,53 @@
 }
 
 @inproceedings{boulkenafet2017oulu,
-  author    = {Boulkenafet, Zinelabidine and Komulainen, Jukka and Li, Lei and Feng, Xiaoyi and
-               Hadid, Abdenour},
-  title     = {{OULU-NPU}: A Mobile Face Presentation Attack Database with Real-World Variations},
+  author    = {Boulkenafet, Zinelabidine and Komulainen, Jukka and Li, Lei and
+               Feng, Xiaoyi and Hadid, Abdenour},
+  title     = {{OULU-NPU}: A Mobile Face Presentation Attack Database with
+               Real-World Variations},
   booktitle = {Proc. IEEE Intl. Conf. on Automatic Face and Gesture Recognition (FG)},
   pages     = {612--618},
   year      = {2017},
   doi       = {10.1109/FG.2017.77},
 }
 
+% --- Face recognition ---
+
+@inproceedings{schroff2015facenet,
+  author    = {Schroff, Florian and Kalenichenko, Dmitry and Philbin, James},
+  title     = {{FaceNet}: A Unified Embedding for Face Recognition and Clustering},
+  booktitle = {Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {815--823},
+  year      = {2015},
+  doi       = {10.1109/CVPR.2015.7298682},
+}
+
+@inproceedings{wang2018cosface,
+  author    = {Wang, Hao and Wang, Yitong and Zhou, Zheng and Ji, Xing and
+               Gong, Dihong and Zhou, Jingchao and Li, Zhifeng and Liu, Wei},
+  title     = {{CosFace}: Large Margin Cosine Loss for Deep Face Recognition},
+  booktitle = {Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {5265--5274},
+  year      = {2018},
+  doi       = {10.1109/CVPR.2018.00552},
+}
+
+@article{wang2021face,
+  author    = {Wang, Mei and Deng, Weihong},
+  title     = {Deep Face Recognition: A Survey},
+  journal   = {Neurocomputing},
+  volume    = {429},
+  pages     = {215--244},
+  year      = {2021},
+  doi       = {10.1016/j.neucom.2020.10.081},
+}
+
 % --- Privacy-preserving biometric templates ---
 
 @inproceedings{dodis2004fuzzy,
   author    = {Dodis, Yevgeniy and Reyzin, Leonid and Smith, Adam},
-  title     = {Fuzzy Extractors: How to Generate Strong Keys from Biometrics and Other Noisy Data},
+  title     = {Fuzzy Extractors: How to Generate Strong Keys from Biometrics
+               and Other Noisy Data},
   booktitle = {Proc. Intl. Conf. on Advances in Cryptology (EUROCRYPT)},
   pages     = {523--540},
   year      = {2004},
@@ -170,7 +223,8 @@
 
 @standard{iso24745,
   author       = {{ISO/IEC}},
-  title        = {{ISO/IEC 24745:2022 Information Security --- Biometric Information Protection}},
+  title        = {{ISO/IEC 24745:2022 Information Security --- Biometric Information
+                  Protection}},
   year         = {2022},
   organization = {International Organization for Standardization},
 }
@@ -187,11 +241,30 @@
 }
 
 @inproceedings{kannwischer2019pqm4,
-  author    = {Kannwischer, Matthias J. and Rijneveld, Joost and Schwabe, Peter and Stoffelen, Ko},
+  author    = {Kannwischer, Matthias J. and Rijneveld, Joost and Schwabe, Peter
+               and Stoffelen, Ko},
   title     = {pqm4: Testing and Benchmarking {NIST} {PQC} on {ARM} {Cortex-M4}},
   booktitle = {IACR Cryptology ePrint Archive},
   year      = {2019},
   url       = {https://eprint.iacr.org/2019/844},
+}
+
+@inproceedings{shor1994algorithms,
+  author    = {Shor, Peter W.},
+  title     = {Algorithms for Quantum Computation: Discrete Logarithms and Factoring},
+  booktitle = {Proc. 35th Annual Symposium on Foundations of Computer Science (FOCS)},
+  pages     = {124--134},
+  year      = {1994},
+  doi       = {10.1109/SFCS.1994.365700},
+}
+
+@inproceedings{grover1996fast,
+  author    = {Grover, Lov K.},
+  title     = {A Fast Quantum Mechanical Algorithm for Database Search},
+  booktitle = {Proc. 28th Annual ACM Symposium on Theory of Computing (STOC)},
+  pages     = {212--219},
+  year      = {1996},
+  doi       = {10.1145/237814.237866},
 }
 
 % --- Biometric simulation methodology ---
@@ -221,8 +294,10 @@
 
 @inproceedings{sanchez2020biometric,
   author    = {S{\'a}nchez-Reillo, Ra{\'u}l and Liu-Jimenez, Judith and Entrena, Luis},
-  title     = {Biometric Verification in Constrained Environments: Edge-device Considerations},
-  booktitle = {Proc. IEEE Intl. Conf. on Biometrics Theory, Applications and Systems (BTAS)},
+  title     = {Biometric Verification in Constrained Environments: Edge-device
+               Considerations},
+  booktitle = {Proc. IEEE Intl. Conf. on Biometrics Theory, Applications and Systems
+               (BTAS)},
   year      = {2020},
   pages     = {1--8},
 }
@@ -239,9 +314,10 @@
 }
 
 @article{hardwick2018voting,
-  author    = {Hardwick, Freya Sheer and Akram, Raja Naeem and Markantonakis, Konstantinos
-               and Watkins, Martin},
-  title     = {E-voting with Blockchain: An E-voting Protocol with Decentralisation and Voter Privacy},
+  author    = {Hardwick, Freya Sheer and Akram, Raja Naeem and Markantonakis,
+               Konstantinos and Watkins, Martin},
+  title     = {E-voting with Blockchain: An E-voting Protocol with Decentralisation
+               and Voter Privacy},
   journal   = {IEEE Access},
   volume    = {6},
   pages     = {47663--47673},
@@ -250,8 +326,9 @@
 }
 
 @inproceedings{hjalmarsson2018blockchain,
-  author    = {Hj{\'a}lmarsson, Friðrik Þ{\'o}r and Hrei{\dh}arsson, Gunnlaugur Kr. and
-               Hamdaqa, Mohammad and Hjálmt{\'{y}}sson, G{\'{i}}sli},
+  author    = {Hj{\'a}lmarsson, Fri{\dh}rik {\TH}{\'o}r and Hrei{\dh}arsson,
+               Gunnlaugur Kr. and Hamdaqa, Mohammad and Hjálmt{\'{y}}sson,
+               G{\'{i}}sli},
   title     = {Blockchain-Based E-Voting System},
   booktitle = {Proc. IEEE 11th Intl. Conf. on Cloud Computing (CLOUD)},
   pages     = {983--986},
@@ -270,22 +347,13 @@
   doi       = {10.1109/CVPR.2019.00482},
 }
 
-@article{wang2021face,
-  author    = {Wang, Mei and Deng, Weihong},
-  title     = {Deep Face Recognition: A Survey},
-  journal   = {Neurocomputing},
-  volume    = {429},
-  pages     = {215--244},
-  year      = {2021},
-  doi       = {10.1016/j.neucom.2020.10.081},
-}
-
 % --- Presentation attack detection (PAD / liveness) ---
 
 @inproceedings{zhang2020minifasnet,
   author    = {Zhang, Kaihua and Wang, Linchao and Han, Jiangqun and Ding, Shouhong},
   title     = {Face Anti-Spoofing Defense against Half-Face Attacks via Local Supervision},
-  booktitle = {Proc. IEEE Intl. Conf. on Acoustics, Speech, and Signal Processing (ICASSP)},
+  booktitle = {Proc. IEEE Intl. Conf. on Acoustics, Speech, and Signal Processing
+               (ICASSP)},
   pages     = {2547--2551},
   year      = {2020},
   doi       = {10.1109/ICASSP40776.2020.9053678},
@@ -301,8 +369,8 @@
 
 @standard{iso19795,
   author    = {{ISO/IEC}},
-  title     = {{ISO/IEC 19795-1:2021 Information Technology --- Biometric Performance Testing
-               and Reporting --- Part 1: Principles and Framework}},
+  title     = {{ISO/IEC 19795-1:2021 Information Technology --- Biometric Performance
+               Testing and Reporting --- Part 1: Principles and Framework}},
   year      = {2021},
   organization = {International Organization for Standardization},
 }
@@ -350,9 +418,10 @@
 
 % --- Formal verification of protocols ---
 
-@inproceedings{blanchet2016proverif,
+@article{blanchet2016proverif,
   author    = {Blanchet, Bruno},
-  title     = {Modeling and Verifying Security Protocols with the Applied Pi Calculus and {ProVerif}},
+  title     = {Modeling and Verifying Security Protocols with the Applied Pi Calculus
+               and {ProVerif}},
   journal   = {Foundations and Trends in Privacy and Security},
   volume    = {1},
   number    = {1--2},
@@ -370,6 +439,36 @@
   doi       = {10.1007/978-3-642-39799-8_48},
 }
 
+@article{dolev1983security,
+  author    = {Dolev, Danny and Yao, Andrew Chi-Chih},
+  title     = {On the Security of Public Key Protocols},
+  journal   = {IEEE Transactions on Information Theory},
+  volume    = {29},
+  number    = {2},
+  pages     = {198--208},
+  year      = {1983},
+  doi       = {10.1109/TIT.1983.1056650},
+}
+
+@book{sipser2012introduction,
+  author    = {Sipser, Michael},
+  title     = {Introduction to the Theory of Computation},
+  edition   = {3rd},
+  publisher = {Cengage Learning},
+  year      = {2012},
+}
+
+@inproceedings{lowe1996breaking,
+  author    = {Lowe, Gavin},
+  title     = {Breaking and Fixing the {Needham-Schroeder} Public-Key Protocol
+               Using {FDR}},
+  booktitle = {Proc. Intl. Workshop on Tools and Algorithms for the Construction
+               and Analysis of Systems (TACAS)},
+  pages     = {147--166},
+  year      = {1996},
+  doi       = {10.1007/3-540-61042-1_43},
+}
+
 % --- E2E verifiability in e-voting ---
 
 @inproceedings{kusters2010accountability,
@@ -382,8 +481,8 @@
 }
 
 @inproceedings{benaloh2011e2e,
-  author    = {Benaloh, Josh and Rivest, Ronald and Ryan, Peter Y. A. and Stark, Philip
-               and Teague, Vanessa and Vora, Poorvi},
+  author    = {Benaloh, Josh and Rivest, Ronald and Ryan, Peter Y. A. and
+               Stark, Philip and Teague, Vanessa and Vora, Poorvi},
   title     = {End-to-End Verifiability},
   booktitle = {USENIX EVT/WOTE Workshop on Electronic Voting Technology},
   year      = {2011},
@@ -393,8 +492,8 @@
 
 @techreport{nist_sp800_63b,
   author      = {{NIST}},
-  title       = {{NIST SP 800-63B}: Digital Identity Guidelines --- Authentication and
-                 Lifecycle Management},
+  title       = {{NIST SP 800-63B}: Digital Identity Guidelines --- Authentication
+                 and Lifecycle Management},
   institution = {National Institute of Standards and Technology},
   year        = {2020},
   number      = {SP 800-63B},
@@ -430,8 +529,8 @@
 
 @inproceedings{biryukov2015argon2,
   author    = {Biryukov, Alex and Dinu, Daniel and Khovratovich, Dmitry},
-  title     = {Argon2: New Generation of Memory-Hard Functions for Password Hashing and Other
-               Applications},
+  title     = {Argon2: New Generation of Memory-Hard Functions for Password Hashing
+               and Other Applications},
   booktitle = {Proc. IEEE European Symposium on Security and Privacy (EuroS\&P)},
   pages     = {33--47},
   year      = {2016},
@@ -441,7 +540,8 @@
 % --- Edge computing and IoT security ---
 
 @article{lin2017survey,
-  author    = {Lin, Jie and Yu, Wei and Zhang, Nan and Yang, Xinyu and Zhang, Hanlin and Zhao, Wei},
+  author    = {Lin, Jie and Yu, Wei and Zhang, Nan and Yang, Xinyu and Zhang, Hanlin
+               and Zhao, Wei},
   title     = {A Survey on Internet of Things: Architecture, Enabling Technologies,
                Security and Privacy, and Applications},
   journal   = {IEEE Internet of Things Journal},
@@ -452,12 +552,23 @@
   doi       = {10.1109/JIOT.2017.2683200},
 }
 
+% --- ISO standards ---
+
+@standard{iso19795_6,
+  author       = {{ISO/IEC}},
+  title        = {{ISO/IEC 19795-6:2012 Information Technology --- Biometric Performance
+                  Testing and Reporting --- Part 6: Testing Methodologies for Operational
+                  Evaluation}},
+  year         = {2012},
+  organization = {International Organization for Standardization},
+}
+
 % --- Simulation methodology ---
 
 @inproceedings{nandakumar2012biometric,
   author    = {Nandakumar, Karthik and Jain, Anil K.},
-  title     = {Biometric Template Protection: Bridging the Performance Gap Between Theory
-               and Practice},
+  title     = {Biometric Template Protection: Bridging the Performance Gap Between
+               Theory and Practice},
   journal   = {IEEE Signal Processing Magazine},
   volume    = {32},
   number    = {5},

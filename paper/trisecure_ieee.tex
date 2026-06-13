@@ -4,6 +4,8 @@
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
 
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
 \usepackage{algorithm,algpseudocode}
@@ -62,10 +64,10 @@ verified five-stage DFA authentication protocol with six proved security
 properties. Simulation-based evaluation achieves EER~\(=1.55\%\),
 AUC~\(=0.9991\), TAR@1\%FAR~\(=97.7\%\), and ACER~\(=4.25\%\).
 On-device benchmarking delivers 110.7~ms end-to-end authentication latency
-(p99~\(=111.3\)~ms) and 541.6~voters/min throughput. To our knowledge,
-TRIsecure~V2 is the first e-voting system to simultaneously provide formal
-protocol verification, post-quantum cryptography, liveness detection, and
-end-to-end verifiability on sub-\$100 edge hardware.
+(p99~\(=111.3\)~ms) and 541.6~voters/min throughput. No prior e-voting system
+we are aware of simultaneously provides formal protocol verification,
+post-quantum cryptography, liveness detection, and end-to-end verifiability
+on sub-\$100 edge hardware.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -125,9 +127,17 @@ We address these gaps with \textbf{TRIsecure V2}:
         CPU~\(52.5\,^\circ\)C under load.
 \end{enumerate}
 
-No individual component is algorithmically novel in isolation; the
-contribution is their \emph{principled co-design} within a single formally
-verified pipeline on sub-\$100 hardware.
+No individual component is algorithmically novel in isolation.
+The \textbf{novel contribution} is their \emph{principled co-design}:
+(i)~Bayesian LR fusion of face and NFC modalities reduces the effective FAR
+by three orders of magnitude without increasing biometric EER—an attack requiring
+a valid NFC card \emph{and} a face spoof simultaneously;
+(ii)~the DFA verification executes \emph{in the deployed code} (not as an
+offline proof), so removing it breaks pipeline functionality, creating a tight
+coupling between formal security and operational correctness;
+and (iii)~all five mechanisms—fusion, PAD, PQC, DFA verification, and Merkle
+verifiability—fit within the latency (\(<200\)~ms) and cost (\(<\$100\))
+budget of commodity edge hardware, demonstrated on a Raspberry Pi~4.
 
 %% ============================================================
 \section{Related Work}
@@ -138,17 +148,34 @@ verified pipeline on sub-\$100 hardware.
 Bello et al.~\cite{bello2021biometric} achieve EER~\(=2.5\%\) at 950~ms
 authentication latency with no PAD, PQC, or formal verification.
 Sánchez-Reillo et al.~\cite{sanchez2020biometric} report EER~\(=3.2\%\)
-at 480~ms on constrained hardware. TRIsecure~V2 achieves lower EER
-(\(1.55\%\)) on ARM64 while additionally providing formal guarantees and
-PQC readiness.
+at 480~ms on constrained hardware.
+NIST SP~800-63B~\cite{nist_sp800_63b} defines three authenticator assurance
+levels (AAL1–3) but does not prescribe biometric liveness detection or
+formal protocol verification for voting contexts.
+Face recognition systems based on FaceNet~\cite{schroff2015facenet},
+CosFace~\cite{wang2018cosface}, and ArcFace~\cite{deng2019arcface} achieve
+sub-1\% EER on LFW but require GPU-class hardware and include no voting
+infrastructure. Wang and Deng~\cite{wang2021face} survey deep face recognition
+across 50+ architectures; none are integrated with formal verification or
+e-voting pipelines.
+TRIsecure~V2 achieves competitive EER (\(1.55\%\)) on ARM64 while
+additionally providing formal protocol guarantees and PQC readiness.
 
 \subsection{Blockchain-Based Voting}
 
+Fujioka et al.~\cite{fujioka1992practical} proposed the foundational
+blind-signature-based secret ballot scheme; Benaloh and
+Tuinstra~\cite{benaloh1994receipt} formalised receipt-freeness.
+Nakamoto's Bitcoin~\cite{nakamoto2008bitcoin} demonstrated append-only hash
+chaining, inspiring blockchain voting proposals.
 Ayed~\cite{ayed2017conceptual} proposes Ethereum-based voting
 (\(>2{,}100\)~ms) with PIN-only authentication.
-Hardwick et al.~\cite{hardwick2018voting} and Hjálmarsson et
+Hardwick et al.~\cite{hardwick2018voting} and Hj\'{a}lmarsson et
 al.~\cite{hjalmarsson2018blockchain} extend this with anonymisation and
 Hyperledger Fabric, but provide no biometric gate or anti-spoofing.
+Juels et al.~\cite{juels2010coercion} formalise coercion-resistance,
+a property TRIsecure~V2 partially addresses through in-person biometric
+binding (Section~\ref{sec:limitations}).
 TRIsecure~V2 achieves equivalent vote integrity via hash chaining and Merkle
 proofs without blockchain overhead, while adding biometric authentication.
 
@@ -161,9 +188,11 @@ providing the reference figures against which our Pi~4 measurements are
 calibrated. Kannwischer et al.~\cite{kannwischer2019pqm4} characterise PQC
 on Cortex-M4, establishing Kyber-768 key generation under 100k cycles.
 NIST finalised ML-KEM (FIPS~203~\cite{nist_fips203}) and ML-DSA
-(FIPS~204~\cite{nist_fips204}) in 2024. To our knowledge, TRIsecure~V2 is
-the first e-voting system to integrate a hybrid PQC layer on sub-\$100 ARM64
-edge hardware.
+(FIPS~204~\cite{nist_fips204}) in 2024. Shor's algorithm~\cite{shor1994algorithms}
+threatens RSA and ECC; Grover's algorithm~\cite{grover1996fast} halves symmetric
+key security—motivating hybrid PQC even for edge deployments. No prior e-voting
+system we are aware of integrates a hybrid PQC layer on sub-\$100 ARM64 edge
+hardware.
 
 \subsection{Presentation Attack Detection}
 
@@ -178,24 +207,44 @@ OULU-NPU~\cite{boulkenafet2017oulu}.
 
 \subsection{Formal Verification of Authentication Protocols}
 
+The Dolev-Yao model~\cite{dolev1983security} formalises the Dolev-Yao
+adversary capable of intercepting and replaying all network messages,
+providing the theoretical basis for protocol security analysis.
 ProVerif~\cite{blanchet2016proverif} and Tamarin~\cite{meier2013tamarin}
 target cryptographic secrecy and authentication goals via the applied-pi
-calculus. We instead use automata-theoretic verification because our
-properties concern pipeline control-flow (ordering, completeness,
-determinism, termination), the DFA model executes \emph{in the deployed
-code}, and all six properties are decidable by BFS/DFS—yielding
-human-auditable proofs without an external solver.
+calculus. Lowe~\cite{lowe1996breaking} used model checking (FDR) to find
+and fix an attack on the Needham-Schroeder protocol.
+DFA theory, formalised in Sipser~\cite{sipser2012introduction},
+provides decidable analysis for pipeline control-flow properties.
+TRIsecure~V2 uses automata-theoretic verification because the properties
+of interest—ordering, completeness, determinism, termination,
+double-vote prevention, rate-limit enforcement—concern pipeline control-flow
+rather than cryptographic secrecy, the DFA executes \emph{in the deployed
+code}, and all six properties are decidable by BFS/DFS without an external
+solver, yielding human-auditable proofs embedded in the production codebase.
 
 \subsection{Verifiable E-Voting and Biometric Template Protection}
 
-Helios~\cite{adida2008helios}, Civitas~\cite{clarkson2008civitas},
-Scantegrity~II~\cite{chaum2009scantegrity}, Selene~\cite{ryan2016selene},
-and the Norwegian scheme~\cite{gjosteen2010norwegian} provide strong
-verifiability properties but leave identity binding to external
-authentication infrastructure with no biometric gate.
+Helios~\cite{adida2008helios} pioneered web-based open-audit voting via
+homomorphic encryption.
+Civitas~\cite{clarkson2008civitas} provides strong coercion-resistance using
+threshold cryptography.
+Scantegrity~II~\cite{chaum2009scantegrity} achieves optical-scan E2E
+verifiability through confirmation codes.
+Selene~\cite{ryan2016selene} introduces tracker-number-based verifiability
+with coercion mitigation.
+The Norwegian scheme~\cite{gjosteen2010norwegian} deployed return-code
+verifiability at national scale.
+All five provide strong verifiability properties but leave identity binding
+to external authentication infrastructure with no biometric gate.
+K\"{u}sters et al.~\cite{kusters2010accountability} and
+Benaloh et al.~\cite{benaloh2011e2e} formalise individual and universal
+verifiability, which TRIsecure~V2 satisfies via Merkle receipts.
 Dodis et al.~\cite{dodis2004fuzzy} formalise fuzzy extractors for
 biometric key derivation; Jain et al.~\cite{jain2008cancelable} survey
-cancelable biometrics per ISO/IEC~24745~\cite{iso24745}. TRIsecure~V2
+cancelable biometrics per ISO/IEC~24745~\cite{iso24745};
+Nandakumar and Jain~\cite{nandakumar2012biometric} survey the gap between
+biometric template protection theory and practice. TRIsecure~V2
 protects face embeddings via AES-256-GCM with per-voter keys; extending
 to cancelable representations is identified as future work.
 
@@ -548,8 +597,9 @@ PN532 NFC module (SPI).
 reproducible via \texttt{experiments/}.
 
 \textit{Dataset.} Biometric metrics are generated via validated simulation
-following ISO/IEC~19795-6~\cite{iso19795}, explicitly permitted when field
-data are unavailable (\S5.2). Genuine and impostor face cosine similarity
+following ISO/IEC~19795-6~\cite{iso19795_6} (operational evaluation
+methodology), which explicitly permits simulation when field
+data are unavailable. Genuine and impostor face cosine similarity
 scores sampled from Gaussians calibrated to published ArcFace LFW
 statistics~\cite{deng2019arcface,grother2007biometric}:
 \(\mathcal{N}(\mu_G{=}0.72, \sigma_G{=}0.08)\) and
@@ -749,30 +799,34 @@ and 541.6~voters/min confirm feasibility for small-to-medium polling stations.
 \subsection{Comparative Analysis}
 \label{sec:comparison}
 
-Figs.~\ref{fig:comparison_heatmap} and \ref{fig:comparison_bar} compare
-TRIsecure~V2 against five reference systems across 11 axes. TRIsecure~V2
-is the only system to simultaneously provide formal verification, PQC
-readiness, PAD, edge deployment, and voter-verifiable receipts.
+Fig.~\ref{fig:comparison_combined} compares TRIsecure~V2 against five
+reference systems across capability flags and quantitative metrics.
+TRIsecure~V2 is the only system to simultaneously provide formal verification,
+PQC readiness, PAD, edge deployment, and voter-verifiable receipts.
 EER (\(1.55\%\)) is competitive with all prior biometric voting systems,
 exceeded only by standalone ArcFace on a GPU server
 (\(0.76\%\)~\cite{deng2019arcface})—which lacks all other listed capabilities.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\linewidth]{../experiments/figures/comparison_table.png}
-  \caption{Feature comparison heatmap. TRIsecure~V2 is the only system
-    supporting all six binary capability flags simultaneously.}
-  \label{fig:comparison_heatmap}
-\end{figure}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{../experiments/figures/comparison_bar.png}
-  \caption{EER (left) and authentication latency (right) across systems.
-    TRIsecure~V2 achieves the lowest EER among biometric voting systems
-    and the lowest latency among multi-capability systems.}
-  \label{fig:comparison_bar}
-\end{figure}
+  \begin{subfigure}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{../experiments/figures/comparison_table.png}
+    \caption{Feature comparison heatmap. TRIsecure~V2 is the only system
+      supporting all six binary capability flags simultaneously.}
+    \label{fig:comparison_heatmap}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{../experiments/figures/comparison_bar.png}
+    \caption{EER (left) and authentication latency (right) across systems.
+      TRIsecure~V2 achieves the lowest EER among biometric voting systems
+      and the lowest latency among multi-capability systems.}
+    \label{fig:comparison_bar}
+  \end{subfigure}
+  \caption{Comparative analysis against five reference systems across capability
+    flags and quantitative metrics.}
+  \label{fig:comparison_combined}
+\end{figure*}
 
 %% ============================================================
 \section{Discussion}
@@ -830,9 +884,9 @@ three end-to-end verifiability properties are machine-verified. The ablation
 study confirms Bayesian NFC\(+\)face fusion reduces the effective combined
 attack FAR by three orders of magnitude relative to face-only authentication.
 
-To our knowledge, TRIsecure~V2 is the first e-voting system to jointly
-provide formal protocol verification, quantum-resistant cryptography,
-liveness detection, and edge deployability on sub-\$100 hardware.
+No prior work we are aware of jointly provides formal protocol verification,
+quantum-resistant cryptography, liveness detection, and edge deployability
+on sub-\$100 hardware.
 
 Future work includes: live field trial with demographic analysis per
 ISO/IEC~19795-1 Clause~8; native Kyber-768/Dilithium-3 benchmarks after

@@ -53,10 +53,56 @@ D.~J. Bernstein and T.~Lange, ``Post-quantum cryptography,'' \emph{Nature},
   \url{https://www.w3.org/TR/webauthn-2/}
 \BIBentrySTDinterwordspacing
 
+\bibitem{nist_sp800_63b}
+{NIST}, ``{NIST SP 800-63B}: Digital identity guidelines --- authentication and
+  lifecycle management,'' National Institute of Standards and Technology, Tech.
+  Rep. SP 800-63B, 2020.
+
+\bibitem{schroff2015facenet}
+F.~Schroff, D.~Kalenichenko, and J.~Philbin, ``{FaceNet}: A unified embedding
+  for face recognition and clustering,'' in \emph{Proc. IEEE/CVF Conf. on
+  Computer Vision and Pattern Recognition (CVPR)}, 2015, pp. 815--823.
+
+\bibitem{wang2018cosface}
+H.~Wang, Y.~Wang, Z.~Zhou, X.~Ji, D.~Gong, J.~Zhou, Z.~Li, and W.~Liu,
+  ``{CosFace}: Large margin cosine loss for deep face recognition,'' in
+  \emph{Proc. IEEE/CVF Conf. on Computer Vision and Pattern Recognition
+  (CVPR)}, 2018, pp. 5265--5274.
+
+\bibitem{deng2019arcface}
+J.~Deng, J.~Guo, N.~Xue, and S.~Zafeiriou, ``{ArcFace}: Additive angular margin
+  loss for deep face recognition,'' in \emph{Proc. IEEE/CVF Conf. on Computer
+  Vision and Pattern Recognition (CVPR)}, 2019, pp. 4690--4699.
+
+\bibitem{wang2021face}
+M.~Wang and W.~Deng, ``Deep face recognition: A survey,''
+  \emph{Neurocomputing}, vol. 429, pp. 215--244, 2021.
+
+\bibitem{fujioka1992practical}
+A.~Fujioka, T.~Okamoto, and K.~Ohta, ``A practical secret voting scheme for
+  large scale elections,'' in \emph{Proc. Workshop on the Theory and
+  Application of Cryptographic Techniques (AUSCRYPT)}, 1992, pp. 244--251.
+
+\bibitem{benaloh1994receipt}
+J.~Benaloh and D.~Tuinstra, ``Receipt-free secret-ballot elections,'' in
+  \emph{Proc. 26th ACM Symposium on Theory of Computing (STOC)}, 1994, pp.
+  544--553.
+
+\bibitem{nakamoto2008bitcoin}
+\BIBentryALTinterwordspacing
+S.~Nakamoto, ``Bitcoin: A peer-to-peer electronic cash system,'' 2008.
+  [Online]. Available: \url{https://bitcoin.org/bitcoin.pdf}
+\BIBentrySTDinterwordspacing
+
 \bibitem{hjalmarsson2018blockchain}
-F.~√. Hj{\'a}lmarsson, G.~K. Hrei{\dh}arsson, M.~Hamdaqa, and
+F.~{\TH}. Hj{\'a}lmarsson, G.~K. Hrei{\dh}arsson, M.~Hamdaqa, and
   G.~Hj√°lmt{\'{y}}sson, ``Blockchain-based e-voting system,'' in \emph{Proc.
   IEEE 11th Intl. Conf. on Cloud Computing (CLOUD)}, 2018, pp. 983--986.
+
+\bibitem{juels2010coercion}
+A.~Juels, D.~Catalano, and M.~Jakobsson, ``Coercion-resistant electronic
+  elections,'' in \emph{Proc. Workshop on Privacy in the Electronic Society
+  (WPES)}, 2005, pp. 61--70.
 
 \bibitem{sikeridis2020pqc}
 D.~Sikeridis, P.~Kampanakis, and M.~Devetsikiotis, ``Post-quantum
@@ -85,6 +131,16 @@ M.~J. Kannwischer, J.~Rijneveld, P.~Schwabe, and K.~Stoffelen, ``pqm4: Testing
 ------, ``{FIPS 204}: Module-lattice-based digital signature standard
   ({ML-DSA}, formerly {Dilithium}),'' National Institute of Standards and
   Technology, Tech. Rep. FIPS 204, 2024.
+
+\bibitem{shor1994algorithms}
+P.~W. Shor, ``Algorithms for quantum computation: Discrete logarithms and
+  factoring,'' in \emph{Proc. 35th Annual Symposium on Foundations of Computer
+  Science (FOCS)}, 1994, pp. 124--134.
+
+\bibitem{grover1996fast}
+L.~K. Grover, ``A fast quantum mechanical algorithm for database search,'' in
+  \emph{Proc. 28th Annual ACM Symposium on Theory of Computing (STOC)}, 1996,
+  pp. 212--219.
 
 \bibitem{iso30107}
 {ISO/IEC}, \emph{{ISO/IEC 30107-3:2023 Information Technology --- Biometric
@@ -117,14 +173,29 @@ Z.~Boulkenafet, J.~Komulainen, L.~Li, X.~Feng, and A.~Hadid, ``{OULU-NPU}: A
   \emph{Proc. IEEE Intl. Conf. on Automatic Face and Gesture Recognition (FG)},
   2017, pp. 612--618.
 
+\bibitem{dolev1983security}
+D.~Dolev and A.~C.-C. Yao, ``On the security of public key protocols,''
+  \emph{IEEE Transactions on Information Theory}, vol.~29, no.~2, pp. 198--208,
+  1983.
+
 \bibitem{blanchet2016proverif}
 B.~Blanchet, ``Modeling and verifying security protocols with the applied pi
-  calculus and {ProVerif},'' vol.~1, no. 1--2, 2016, pp. 1--135.
+  calculus and {ProVerif},'' \emph{Foundations and Trends in Privacy and
+  Security}, vol.~1, no. 1--2, pp. 1--135, 2016.
 
 \bibitem{meier2013tamarin}
 S.~Meier, B.~Schmidt, C.~Cremers, and D.~Basin, ``The {TAMARIN} prover for the
   symbolic analysis of security protocols,'' in \emph{Proc. Intl. Conf. on
   Computer Aided Verification (CAV)}, 2013, pp. 696--701.
+
+\bibitem{lowe1996breaking}
+G.~Lowe, ``Breaking and fixing the {Needham-Schroeder} public-key protocol
+  using {FDR},'' in \emph{Proc. Intl. Workshop on Tools and Algorithms for the
+  Construction and Analysis of Systems (TACAS)}, 1996, pp. 147--166.
+
+\bibitem{sipser2012introduction}
+M.~Sipser, \emph{Introduction to the Theory of Computation}, 3rd~ed.\hskip 1em
+  plus 0.5em minus 0.4em\relax Cengage Learning, 2012.
 
 \bibitem{adida2008helios}
 B.~Adida, ``Helios: Web-based open-audit voting,'' in \emph{Proc. 17th USENIX
@@ -139,7 +210,8 @@ M.~R. Clarkson, S.~Chong, and A.~C. Myers, ``Civitas: Toward a secure voting
 D.~Chaum, R.~Carback, J.~Clark, A.~Essex, S.~Popoveniuc, R.~L. Rivest, P.~Y.
   Ryan, E.~Shen, and A.~T. Sherman, ``Scantegrity {II}: End-to-end
   verifiability by voters of optical scan elections through confirmation
-  codes,'' vol.~4, no.~4, 2009, pp. 611--627.
+  codes,'' \emph{IEEE Transactions on Information Forensics and Security},
+  vol.~4, no.~4, pp. 611--627, 2009.
 
 \bibitem{ryan2016selene}
 P.~Y. Ryan and T.~Shortall, ``Selene: Voting with transparent verifiability and
@@ -152,6 +224,15 @@ K.~Gj{\o}steen, ``The {Norwegian} internet voting protocol,'' \emph{IACR
   Cryptology ePrint Archive}, vol. 2013, p. 473, 2013. [Online]. Available:
   \url{https://eprint.iacr.org/2013/473}
 \BIBentrySTDinterwordspacing
+
+\bibitem{kusters2010accountability}
+R.~K{\"u}sters, T.~Truderung, and A.~Vogt, ``Accountability: Definition and
+  relationship to verifiability,'' in \emph{Proc. ACM CCS}, 2010, pp. 526--535.
+
+\bibitem{benaloh2011e2e}
+J.~Benaloh, R.~Rivest, P.~Y.~A. Ryan, P.~Stark, V.~Teague, and P.~Vora,
+  ``End-to-end verifiability,'' in \emph{USENIX EVT/WOTE Workshop on Electronic
+  Voting Technology}, 2011.
 
 \bibitem{dodis2004fuzzy}
 Y.~Dodis, L.~Reyzin, and A.~Smith, ``Fuzzy extractors: How to generate strong
@@ -168,6 +249,11 @@ A.~K. Jain, K.~Nandakumar, and A.~Nagar, ``Biometric template security,''
   Information Protection}}, International Organization for Standardization
   Std., 2022.
 
+\bibitem{nandakumar2012biometric}
+K.~Nandakumar and A.~K. Jain, ``Biometric template protection: Bridging the
+  performance gap between theory and practice,'' vol.~32, no.~5, 2015, pp.
+  88--100.
+
 \bibitem{ross2003multimodal}
 A.~Ross and A.~K. Jain, ``Information fusion in biometrics,'' \emph{Pattern
   Recognition Letters}, vol.~24, no.~13, pp. 2115--2125, 2003.
@@ -180,16 +266,11 @@ K.~Nandakumar, Y.~Chen, S.~C. Dass, and A.~K. Jain, ``Likelihood ratio-based
 \bibitem{fierrez2005fusion}
 J.~Fierrez-Aguilar, J.~Ortega-Garcia, J.~Gonzalez-Rodriguez, and J.~Bigun,
   ``Discriminative multimodal biometric authentication based on quality
-  measures,'' vol.~38, no.~5, 2005, pp. 777--779.
+  measures,'' \emph{Pattern Recognition}, vol.~38, no.~5, pp. 777--779, 2005.
 
 \bibitem{jain2011multimodal}
 A.~K. Jain, A.~A. Ross, and K.~Nandakumar, ``Introduction to biometrics,''
   \emph{Springer}, 2011.
-
-\bibitem{deng2019arcface}
-J.~Deng, J.~Guo, N.~Xue, and S.~Zafeiriou, ``{ArcFace}: Additive angular margin
-  loss for deep face recognition,'' in \emph{Proc. IEEE/CVF Conf. on Computer
-  Vision and Pattern Recognition (CVPR)}, 2019, pp. 4690--4699.
 
 \bibitem{biryukov2015argon2}
 A.~Biryukov, D.~Dinu, and D.~Khovratovich, ``Argon2: New generation of
@@ -197,23 +278,20 @@ A.~Biryukov, D.~Dinu, and D.~Khovratovich, ``Argon2: New generation of
   \emph{Proc. IEEE European Symposium on Security and Privacy (EuroS\&P)},
   2016, pp. 33--47.
 
-\bibitem{kusters2010accountability}
-R.~K{\"u}sters, T.~Truderung, and A.~Vogt, ``Accountability: Definition and
-  relationship to verifiability,'' in \emph{Proc. ACM CCS}, 2010, pp. 526--535.
-
-\bibitem{benaloh2011e2e}
-J.~Benaloh, R.~Rivest, P.~Y.~A. Ryan, P.~Stark, V.~Teague, and P.~Vora,
-  ``End-to-end verifiability,'' in \emph{USENIX EVT/WOTE Workshop on Electronic
-  Voting Technology}, 2011.
-
-\bibitem{iso19795}
-{ISO/IEC}, \emph{{ISO/IEC 19795-1:2021 Information Technology --- Biometric
-  Performance Testing and Reporting --- Part 1: Principles and Framework}},
-  International Organization for Standardization Std., 2021.
+\bibitem{iso19795_6}
+{ISO/IEC}, \emph{{ISO/IEC 19795-6:2012 Information Technology --- Biometric
+  Performance Testing and Reporting --- Part 6: Testing Methodologies for
+  Operational Evaluation}}, International Organization for Standardization
+  Std., 2012.
 
 \bibitem{grother2007biometric}
 P.~J. Grother and E.~Tabassi, ``Performance of biometric quality measures,''
   IEEE Transactions on Pattern Analysis and Machine Intelligence, Tech. Rep.~4,
   2007.
+
+\bibitem{iso19795}
+{ISO/IEC}, \emph{{ISO/IEC 19795-1:2021 Information Technology --- Biometric
+  Performance Testing and Reporting --- Part 1: Principles and Framework}},
+  International Organization for Standardization Std., 2021.
 
 \end{thebibliography}
