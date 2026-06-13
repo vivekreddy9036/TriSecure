@@ -9,7 +9,15 @@
       "Bash(python *)",
       "Bash(git stash *)",
       "Bash(git *)",
-      "WebFetch(domain:amritacampuschennai-my.sharepoint.com)"
+      "WebFetch(domain:amritacampuschennai-my.sharepoint.com)",
+      "Bash(dpkg -l)",
+      "Bash(kpsewhich elsarticle.cls)",
+      "Bash(awk '{print $2, $3}')",
+      "Bash(pdflatex --version)",
+      "Bash(sudo apt-get install -y texlive-publishers)",
+      "Bash(sudo dpkg --configure -a)",
+      "Bash(pdflatex -interaction=nonstopmode trisecure_paper.tex)",
+      "Bash(fmtutil-user --all)"
     ]
   }
 }

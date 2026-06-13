@@ -1,0 +1,131 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{bello2021biometric}
+U.~G. Bello, M.~Salihu, M.~Dawaki, Biometric-based secure electronic voting
+  system using fingerprint, IEEE Access 9 (2021) 98405--98418.
+\newblock \href {https://doi.org/10.1109/ACCESS.2021.3095800}
+  {\path{doi:10.1109/ACCESS.2021.3095800}}.
+
+\bibitem{sanchez2020biometric}
+R.~S{\'a}nchez-Reillo, J.~Liu-Jimenez, L.~Entrena, Biometric verification in
+  constrained environments: Edge-device considerations, in: Proc. IEEE Intl.
+  Conf. on Biometrics Theory, Applications and Systems (BTAS), 2020, pp. 1--8.
+
+\bibitem{ayed2017conceptual}
+A.~B. Ayed, A conceptual secure blockchain-based electronic voting system,
+  International Journal of Network Security \& Its Applications (IJNSA) 9~(3)
+  (2017) 1--9.
+\newblock \href {https://doi.org/10.5121/ijnsa.2017.9301}
+  {\path{doi:10.5121/ijnsa.2017.9301}}.
+
+\bibitem{hardwick2018voting}
+F.~S. Hardwick, R.~N. Akram, K.~Markantonakis, M.~Watkins, E-voting with
+  blockchain: An e-voting protocol with decentralisation and voter privacy,
+  IEEE Access 6 (2018) 47663--47673.
+\newblock \href {https://doi.org/10.1109/ACCESS.2018.2871916}
+  {\path{doi:10.1109/ACCESS.2018.2871916}}.
+
+\bibitem{bernstein2017post}
+D.~J. Bernstein, T.~Lange, Post-quantum cryptography, Nature 549~(7671) (2017)
+  188--194.
+\newblock \href {https://doi.org/10.1038/nature23461}
+  {\path{doi:10.1038/nature23461}}.
+
+\bibitem{fido2_webauthn}
+{FIDO Alliance}, {W3C}, \href{https://www.w3.org/TR/webauthn-2/}{{Web
+  Authentication (WebAuthn) Level 2}} (2021).
+\newline\urlprefix\url{https://www.w3.org/TR/webauthn-2/}
+
+\bibitem{kusters2010accountability}
+R.~K{\"u}sters, T.~Truderung, A.~Vogt, Accountability: Definition and
+  relationship to verifiability, in: Proc. ACM CCS, 2010, pp. 526--535.
+\newblock \href {https://doi.org/10.1145/1866307.1866366}
+  {\path{doi:10.1145/1866307.1866366}}.
+
+\bibitem{benaloh2011e2e}
+J.~Benaloh, R.~Rivest, P.~Y.~A. Ryan, P.~Stark, V.~Teague, P.~Vora, End-to-end
+  verifiability, in: USENIX EVT/WOTE Workshop on Electronic Voting Technology,
+  2011.
+
+\bibitem{hjalmarsson2018blockchain}
+F.~√. Hj{\'a}lmarsson, G.~K. Hrei{\dh}arsson, M.~Hamdaqa,
+  G.~Hj√°lmt{\'{y}}sson, Blockchain-based e-voting system, in: Proc. IEEE 11th
+  Intl. Conf. on Cloud Computing (CLOUD), 2018, pp. 983--986.
+\newblock \href {https://doi.org/10.1109/CLOUD.2018.00151}
+  {\path{doi:10.1109/CLOUD.2018.00151}}.
+
+\bibitem{sikeridis2020pqc}
+D.~Sikeridis, P.~Kampanakis, M.~Devetsikiotis, Post-quantum authentication in
+  {TLS} 1.3: A performance study, NDSS Symposium (2020).
+\newblock \href {https://doi.org/10.14722/ndss.2020.24203}
+  {\path{doi:10.14722/ndss.2020.24203}}.
+
+\bibitem{nist_fips203}
+{NIST}, {FIPS 203}: Module-lattice-based key-encapsulation mechanism standard
+  ({ML-KEM}, formerly {Kyber}), Tech. Rep. FIPS 203, National Institute of
+  Standards and Technology (2024).
+\newblock \href {https://doi.org/10.6028/NIST.FIPS.203}
+  {\path{doi:10.6028/NIST.FIPS.203}}.
+
+\bibitem{nist_fips204}
+{NIST}, {FIPS 204}: Module-lattice-based digital signature standard ({ML-DSA},
+  formerly {Dilithium}), Tech. Rep. FIPS 204, National Institute of Standards
+  and Technology (2024).
+\newblock \href {https://doi.org/10.6028/NIST.FIPS.204}
+  {\path{doi:10.6028/NIST.FIPS.204}}.
+
+\bibitem{iso30107}
+{ISO/IEC}, {ISO/IEC 30107-3:2023 Information Technology --- Biometric
+  Presentation Attack Detection --- Part 3: Testing and Reporting} (2023).
+
+\bibitem{zhang2020minifasnet}
+K.~Zhang, L.~Wang, J.~Han, S.~Ding, Face anti-spoofing defense against
+  half-face attacks via local supervision, in: Proc. IEEE Intl. Conf. on
+  Acoustics, Speech, and Signal Processing (ICASSP), 2020, pp. 2547--2551.
+\newblock \href {https://doi.org/10.1109/ICASSP40776.2020.9053678}
+  {\path{doi:10.1109/ICASSP40776.2020.9053678}}.
+
+\bibitem{blanchet2016proverif}
+B.~Blanchet, Modeling and verifying security protocols with the applied pi
+  calculus and {ProVerif}, Vol.~1, 2016, pp. 1--135.
+\newblock \href {https://doi.org/10.1561/3300000004}
+  {\path{doi:10.1561/3300000004}}.
+
+\bibitem{meier2013tamarin}
+S.~Meier, B.~Schmidt, C.~Cremers, D.~Basin, The {TAMARIN} prover for the
+  symbolic analysis of security protocols, in: Proc. Intl. Conf. on Computer
+  Aided Verification (CAV), 2013, pp. 696--701.
+\newblock \href {https://doi.org/10.1007/978-3-642-39799-8_48}
+  {\path{doi:10.1007/978-3-642-39799-8_48}}.
+
+\bibitem{deng2019arcface}
+J.~Deng, J.~Guo, N.~Xue, S.~Zafeiriou, {ArcFace}: Additive angular margin loss
+  for deep face recognition, in: Proc. IEEE/CVF Conf. on Computer Vision and
+  Pattern Recognition (CVPR), 2019, pp. 4690--4699.
+\newblock \href {https://doi.org/10.1109/CVPR.2019.00482}
+  {\path{doi:10.1109/CVPR.2019.00482}}.
+
+\bibitem{nandakumar2012biometric}
+K.~Nandakumar, A.~K. Jain, Biometric template protection: Bridging the
+  performance gap between theory and practice, Vol.~32, 2015, pp. 88--100.
+\newblock \href {https://doi.org/10.1109/MSP.2015.2427852}
+  {\path{doi:10.1109/MSP.2015.2427852}}.
+
+\bibitem{biryukov2015argon2}
+A.~Biryukov, D.~Dinu, D.~Khovratovich, Argon2: New generation of memory-hard
+  functions for password hashing and other applications, in: Proc. IEEE
+  European Symposium on Security and Privacy (EuroS\&P), 2016, pp. 33--47.
+\newblock \href {https://doi.org/10.1109/EuroSP.2016.31}
+  {\path{doi:10.1109/EuroSP.2016.31}}.
+
+\bibitem{iso19795}
+{ISO/IEC}, {ISO/IEC 19795-1:2021 Information Technology --- Biometric
+  Performance Testing and Reporting --- Part 1: Principles and Framework}
+  (2021).
+
+\end{thebibliography}

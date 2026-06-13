@@ -1,0 +1,72 @@
+[
+  {
+    "name": "C1: Face Threshold\n(\u03c4=0.55, baseline)",
+    "label": "C1",
+    "components": [
+      "Face cosine\nthreshold"
+    ],
+    "EER (%)": 1.45,
+    "FAR_operational (%)": 1.22,
+    "FRR_operational (%)": 1.68,
+    "Effective FAR (%)": 1.2224,
+    "ACER (%)": null,
+    "Latency (ms)": 95.2,
+    "DFA props verified": 4,
+    "Attacks defended": 3,
+    "description": "Face cosine similarity \u2265 0.55, no fusion, no PAD, no PQC."
+  },
+  {
+    "name": "C2: + Bayesian\nNFC Fusion",
+    "label": "C2",
+    "components": [
+      "Face cosine\nthreshold",
+      "Bayesian\nlog-LR fusion"
+    ],
+    "EER (%)": 1.55,
+    "FAR_operational (%)": 1.0,
+    "FRR_operational (%)": 2.3,
+    "Effective FAR (%)": 0.001,
+    "ACER (%)": null,
+    "Latency (ms)": 95.5,
+    "DFA props verified": 6,
+    "Attacks defended": 6,
+    "description": "Bayesian score-level fusion: log\u2081\u2080(LR_face \u00d7 LR_NFC) > 1.0. Attacker must spoof both modalities simultaneously."
+  },
+  {
+    "name": "C3: + PAD\nLiveness",
+    "label": "C3",
+    "components": [
+      "Face cosine\nthreshold",
+      "Bayesian\nlog-LR fusion",
+      "PAD / liveness\n(MiniFASNetV2)"
+    ],
+    "EER (%)": 1.55,
+    "FAR_operational (%)": 1.0,
+    "FRR_operational (%)": 2.3,
+    "Effective FAR (%)": 0.001,
+    "ACER (%)": 4.25,
+    "Latency (ms)": 110.7,
+    "DFA props verified": 6,
+    "Attacks defended": 9,
+    "description": "ISO/IEC 30107-3 PAD: BPCER=1.0%, APCER_print=5.0%, APCER_replay=10.0%, ACER=4.25%."
+  },
+  {
+    "name": "C4: Full TRIsecure\n(+ PQC)",
+    "label": "C4",
+    "components": [
+      "Face cosine\nthreshold",
+      "Bayesian\nlog-LR fusion",
+      "PAD / liveness\n(MiniFASNetV2)",
+      "PQC signatures\n(Dilithium-3)"
+    ],
+    "EER (%)": 1.55,
+    "FAR_operational (%)": 1.0,
+    "FRR_operational (%)": 2.3,
+    "Effective FAR (%)": 0.001,
+    "ACER (%)": 4.25,
+    "Latency (ms)": 125.1,
+    "DFA props verified": 6,
+    "Attacks defended": 12,
+    "description": "Hybrid Kyber-768+X25519 KEM + Dilithium-3+Ed25519 vote signatures. Quantum-resistant. All 12 attack vectors mitigated."
+  }
+]

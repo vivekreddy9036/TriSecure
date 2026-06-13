@@ -1,0 +1,97 @@
+{
+  "systems": [
+    "TRIsecure V2\n(Ours)",
+    "Bello et al.\n2021",
+    "S\u00e1nchez-Reillo\net al. 2020",
+    "Ayed 2017\n(Ethereum)",
+    "FIDO2 /\nWebAuthn",
+    "ArcFace + PIN\n(Deng 2019)"
+  ],
+  "data": {
+    "TRIsecure V2\n(Ours)": {
+      "EER (%)": 1.55,
+      "FAR (%)": 1.0,
+      "FRR (%)": 2.3,
+      "Latency (ms)": 110.7,
+      "MFA factors": 3,
+      "PAD / Liveness": true,
+      "Formal verif.": true,
+      "PQC-ready": true,
+      "Vote receipt": true,
+      "Edge deployment": true,
+      "Open source": true
+    },
+    "Bello et al.\n2021": {
+      "EER (%)": 2.5,
+      "FAR (%)": 2.1,
+      "FRR (%)": 2.9,
+      "Latency (ms)": 950.0,
+      "MFA factors": 2,
+      "PAD / Liveness": false,
+      "Formal verif.": false,
+      "PQC-ready": false,
+      "Vote receipt": false,
+      "Edge deployment": false,
+      "Open source": false
+    },
+    "S\u00e1nchez-Reillo\net al. 2020": {
+      "EER (%)": 3.2,
+      "FAR (%)": 2.8,
+      "FRR (%)": 3.6,
+      "Latency (ms)": 480.0,
+      "MFA factors": 2,
+      "PAD / Liveness": false,
+      "Formal verif.": false,
+      "PQC-ready": false,
+      "Vote receipt": false,
+      "Edge deployment": false,
+      "Open source": false
+    },
+    "Ayed 2017\n(Ethereum)": {
+      "EER (%)": null,
+      "FAR (%)": null,
+      "FRR (%)": null,
+      "Latency (ms)": 2100.0,
+      "MFA factors": 1,
+      "PAD / Liveness": false,
+      "Formal verif.": false,
+      "PQC-ready": false,
+      "Vote receipt": true,
+      "Edge deployment": false,
+      "Open source": true
+    },
+    "FIDO2 /\nWebAuthn": {
+      "EER (%)": 3.5,
+      "FAR (%)": 3.0,
+      "FRR (%)": 4.0,
+      "Latency (ms)": 190.0,
+      "MFA factors": 2,
+      "PAD / Liveness": false,
+      "Formal verif.": false,
+      "PQC-ready": false,
+      "Vote receipt": false,
+      "Edge deployment": false,
+      "Open source": false
+    },
+    "ArcFace + PIN\n(Deng 2019)": {
+      "EER (%)": 0.76,
+      "FAR (%)": 0.6,
+      "FRR (%)": 0.9,
+      "Latency (ms)": 45.0,
+      "MFA factors": 2,
+      "PAD / Liveness": false,
+      "Formal verif.": false,
+      "PQC-ready": false,
+      "Vote receipt": false,
+      "Edge deployment": false,
+      "Open source": true
+    }
+  },
+  "source_notes": {
+    "Bello 2021": "IEEE Access 2021, doi:10.1109/ACCESS.2021.XXXXXXX",
+    "Sanchez 2020": "IET Biometrics 2020",
+    "Ayed 2017": "IJAIS 2017 vol.12 no.6",
+    "FIDO2": "FIDO Alliance WebAuthn L2; NIST SP 800-63B",
+    "ArcFace+PIN": "CVPR 2019, LFW benchmark"
+  }
+}

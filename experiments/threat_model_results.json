@@ -1,0 +1,459 @@
+{
+  "attacks": [
+    "Replay attack",
+    "Spoofing / presentation attack",
+    "Man-in-the-middle",
+    "Brute-force / dictionary",
+    "Double-voting",
+    "Ballot stuffing",
+    "Vote coercion",
+    "Insider threat",
+    "Denial of service",
+    "Quantum adversary",
+    "Physical device theft",
+    "Audit trail tampering"
+  ],
+  "defences": [
+    "Rate limiter\n(DFA stage 1)",
+    "PAD liveness\n(Stage 5)",
+    "Bayesian\nfusion (NFC+face)",
+    "AES-256-GCM\n+ Argon2id",
+    "Hash-chain\n+ Merkle proof",
+    "PQC signatures\n(Dilithium-3)"
+  ],
+  "matrix": [
+    [
+      2,
+      1,
+      2,
+      1,
+      1,
+      0
+    ],
+    [
+      1,
+      2,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      2,
+      1,
+      2
+    ],
+    [
+      2,
+      1,
+      2,
+      2,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      2,
+      0,
+      2,
+      1
+    ],
+    [
+      2,
+      1,
+      2,
+      0,
+      2,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      1,
+      2,
+      2,
+      1
+    ],
+    [
+      2,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      2,
+      2,
+      2
+    ],
+    [
+      0,
+      1,
+      2,
+      2,
+      1,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      2,
+      2
+    ]
+  ],
+  "rationale": {
+    "Replay attack": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 2,
+        "rationale": "Sliding-window rate limiter blocks rapid replay; DFA enforces IDLE\u2192RATE_CHECK before any replay attempt."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 1,
+        "rationale": "Replayed video/photo blocked by PAD; physical credential replay (NFC cloning) not covered."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 2,
+        "rationale": "Session tokens are 60s TTL, one-time-use (used flag in DB); NFC UID required fresh per session."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 1,
+        "rationale": "Encrypted embeddings prevent offline replay; bearer token replay still possible within TTL."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 1,
+        "rationale": "Hash chain detects duplicate vote records; does not prevent token replay before recording."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 0,
+        "rationale": "PQC does not directly mitigate replay; session layer handles it."
+      }
+    },
+    "Spoofing / presentation attack": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 1,
+        "rationale": "Limits spoof attempt rate; determined attacker can retry after cooldown."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 2,
+        "rationale": "MiniFASNetV2 detects printed photo and video replay attacks; APCER_print=5%, APCER_replay=10%."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 1,
+        "rationale": "Requires valid NFC card in addition to face; reduces but does not eliminate spoofing risk."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 0,
+        "rationale": "Encryption at rest does not defend against live spoofing."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 0,
+        "rationale": "Integrity layer does not defend against input spoofing."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 0,
+        "rationale": "Signature layer does not defend against biometric spoofing."
+      }
+    },
+    "Man-in-the-middle": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 0,
+        "rationale": "Rate limiter does not address network-layer MITM."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 0,
+        "rationale": "PAD is local; does not address MITM on session transport."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 1,
+        "rationale": "Local biometric decision reduces reliance on network auth; session token still transmittable."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 2,
+        "rationale": "AES-256-GCM with authenticated encryption; session token sent over TLS (assumed channel)."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 1,
+        "rationale": "Hash-chained votes detect tampering post-record; MITM during submission window is not covered."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 2,
+        "rationale": "Dilithium-3 vote signatures prevent forged or altered votes in transit; quantum-resistant."
+      }
+    },
+    "Brute-force / dictionary": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 2,
+        "rationale": "DFA stage 1: 5 failures per 300 s per NFC UID; attacker blocked before reaching biometric stage."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 1,
+        "rationale": "PAD prevents rapid face-image cycling; latency overhead also limits throughput."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 2,
+        "rationale": "Requires physical NFC card; brute-force on face alone is rejected without card."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 2,
+        "rationale": "Argon2id (64 MB, t=3) makes offline brute-force on stolen encrypted embeddings infeasible."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 0,
+        "rationale": "Brute-force at auth stage; vote integrity layer not relevant here."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 0,
+        "rationale": "PQC does not address online brute-force on biometric system."
+      }
+    },
+    "Double-voting": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 1,
+        "rationale": "Rate limiter slows repeated attempts but does not prevent a second auth for a different NFC clone."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 0,
+        "rationale": "PAD verifies liveness but not has_voted status."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 2,
+        "rationale": "DFA ELIGIBILITY_CHECK: has_voted=True \u2192 REJECTED before face stage. Formally proved (property 5)."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 0,
+        "rationale": "Encryption does not address double-vote logic."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 2,
+        "rationale": "Append-only hash chain with unique vote_id; duplicate submission breaks chain integrity."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 1,
+        "rationale": "Signed vote_id prevents silent substitution; chain-level uniqueness is primary defence."
+      }
+    },
+    "Ballot stuffing": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 2,
+        "rationale": "Rate limiter + one-voter-one-ballot enforced by DFA eligibility stage."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 1,
+        "rationale": "PAD prevents dummy face images; requires physical voter presence."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 2,
+        "rationale": "Each NFC card is unique; registered voter set is closed at enrollment."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 0,
+        "rationale": "Encryption does not address ballot stuffing."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 2,
+        "rationale": "External verifier can audit Merkle root against registered voter count; stuffed votes break consistency."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 1,
+        "rationale": "Signed ballots traceable; stuffed unsigned ballots would fail signature verification."
+      }
+    },
+    "Vote coercion": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 0,
+        "rationale": "Rate limiter does not address coercion."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 1,
+        "rationale": "Physical presence at camera makes remote coercion harder; does not prevent in-person coercion."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 1,
+        "rationale": "Face biometric confirms voter identity; does not prevent coerced compliance."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 0,
+        "rationale": "Encryption does not address coercion."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 0,
+        "rationale": "Vote integrity does not address coercion."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 0,
+        "rationale": "PQC does not address coercion. (Future: deniable voting / panic PIN.)"
+      }
+    },
+    "Insider threat": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 1,
+        "rationale": "Rate limiter applies equally to insiders; privileged access still possible."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 0,
+        "rationale": "Insider with DB access can bypass PAD."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 1,
+        "rationale": "Biometric binding reduces insider ability to vote as another person without physical card+face."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 2,
+        "rationale": "Encrypted embeddings + Argon2id: insider cannot extract plaintext templates without voter PIN/key."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 2,
+        "rationale": "Immutable append-only audit log; insider modifications break hash chain and are detectable."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 1,
+        "rationale": "Vote signatures non-repudiable; insider cannot forge signed votes without signing key."
+      }
+    },
+    "Denial of service": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 2,
+        "rationale": "Per-UID sliding window prevents single-UID exhaustion; PAD latency limits throughput of DoS via face."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 1,
+        "rationale": "PAD adds 15 ms overhead; limits face-submission DoS rate."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 0,
+        "rationale": "Fusion computation is lightweight; does not defend against network-level DoS."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 0,
+        "rationale": "Crypto layer does not address DoS."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 0,
+        "rationale": "Integrity layer does not address DoS."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 0,
+        "rationale": "PQC does not address DoS."
+      }
+    },
+    "Quantum adversary": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 0,
+        "rationale": "Rate limiter is not cryptographic; not relevant to quantum threat."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 0,
+        "rationale": "PAD is not cryptographic."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 0,
+        "rationale": "Biometric fusion not cryptographic; quantum adversary could break classical session KEM."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 2,
+        "rationale": "AES-256-GCM is quantum-resistant (Grover's requires 2^128 work); Argon2id key derivation unaffected."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 2,
+        "rationale": "SHA-256 is quantum-resistant (128-bit post-quantum security); Merkle proofs remain secure."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 2,
+        "rationale": "Dilithium-3 (NIST FIPS 204, ML-DSA-65) and Kyber-768 (FIPS 203, ML-KEM-768) are quantum-resistant."
+      }
+    },
+    "Physical device theft": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 0,
+        "rationale": "Rate limiter does not prevent physical access."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 1,
+        "rationale": "Stolen device still requires live face at camera; printed photo attempts blocked by PAD."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 2,
+        "rationale": "Stolen device without voter's NFC card and live face cannot authenticate."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 2,
+        "rationale": "All data at rest encrypted; stolen SD card yields only ciphertext without voter-derived key."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 1,
+        "rationale": "Past votes are immutably recorded; stolen device does not allow retroactive modification."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 1,
+        "rationale": "Signing keys stored encrypted; physical access without key derivation does not yield signing capability."
+      }
+    },
+    "Audit trail tampering": {
+      "Rate limiter\n(DFA stage 1)": {
+        "score": 0,
+        "rationale": "Rate limiter logs events but does not protect the audit store."
+      },
+      "PAD liveness\n(Stage 5)": {
+        "score": 0,
+        "rationale": "PAD does not protect audit store."
+      },
+      "Bayesian\nfusion (NFC+face)": {
+        "score": 0,
+        "rationale": "Fusion does not protect audit store."
+      },
+      "AES-256-GCM\n+ Argon2id": {
+        "score": 1,
+        "rationale": "Audit events in SQLite; encryption of DB at OS level partial defence; no HMAC on audit rows."
+      },
+      "Hash-chain\n+ Merkle proof": {
+        "score": 2,
+        "rationale": "Vote records hash-chained; any modification breaks chain. External Merkle root can be published for verification."
+      },
+      "PQC signatures\n(Dilithium-3)": {
+        "score": 2,
+        "rationale": "Dilithium-3 signatures on vote records; forged entries lack valid signature and break chain."
+      }
+    }
+  },
+  "row_totals": {
+    "Replay attack": 7,
+    "Spoofing / presentation attack": 4,
+    "Man-in-the-middle": 6,
+    "Brute-force / dictionary": 7,
+    "Double-voting": 6,
+    "Ballot stuffing": 8,
+    "Vote coercion": 2,
+    "Insider threat": 7,
+    "Denial of service": 3,
+    "Quantum adversary": 6,
+    "Physical device theft": 7,
+    "Audit trail tampering": 5
+  },
+  "col_totals": {
+    "Rate limiter\n(DFA stage 1)": 11,
+    "PAD liveness\n(Stage 5)": 8,
+    "Bayesian\nfusion (NFC+face)": 14,
+    "AES-256-GCM\n+ Argon2id": 12,
+    "Hash-chain\n+ Merkle proof": 13,
+    "PQC signatures\n(Dilithium-3)": 10
+  },
+  "overall_coverage_pct": 47.2
+}
