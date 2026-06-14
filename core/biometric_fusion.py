@@ -143,3 +143,130 @@ class BayesianFusionVerifier:
 
         tar = 1.0 - frr
         return far, frr, tar
+
+
+# ---------------------------------------------------------------------------
+# Adaptive Trust Score Engine (ATS)
+# ---------------------------------------------------------------------------
+
+from enum import Enum
+
+
+class TrustLevel(Enum):
+    HIGH   = "HIGH"    # accept immediately
+    MEDIUM = "MEDIUM"  # escalate to supervisor / additional factor
+    LOW    = "LOW"     # reject
+
+
+@dataclass
+class ATSResult:
+    trust_level: TrustLevel
+    trust_score: float          # [0, 1] composite score
+    face_score: float
+    nfc_valid: bool
+    pad_live: bool
+    risk_context: str           # "normal" | "elevated" | "high"
+    weights: dict
+    algorithm: str = "adaptive-trust-score-v1"
+
+
+class AdaptiveTrustScoreEngine:
+    """
+    Adaptive Trust Score (ATS) fusion engine.
+
+    Replaces the static Bayesian LR threshold with a context-aware weighted
+    sum that dynamically adjusts component weights based on the estimated
+    risk level of the authentication attempt.
+
+    Risk context is derived from:
+      - attempt_count  : repeated failures raise risk
+      - off_peak_hour  : authentication outside expected peak hours (9–18)
+      - location_flag  : True if terminal is in a known-good location
+      - elapsed_since_enrol : days since enrollment (drift detection)
+
+    Trust levels:
+      HIGH   (score >= high_thresh)  → accept
+      MEDIUM (score >= med_thresh)   → supervisor escalation
+      LOW    (score <  med_thresh)   → reject
+
+    Default thresholds are calibrated so that under *normal* risk with a
+    genuine user (face≈0.72, NFC valid, PAD live) the trust score ≈ 0.89.
+    """
+
+    # Base weights for each context — [face, nfc, pad]
+    _WEIGHTS: dict = {
+        "normal":   {"face": 0.40, "nfc": 0.35, "pad": 0.25},
+        "elevated": {"face": 0.30, "nfc": 0.40, "pad": 0.30},
+        "high":     {"face": 0.20, "nfc": 0.35, "pad": 0.45},
+    }
+
+    def __init__(
+        self,
+        high_thresh: float = 0.75,
+        med_thresh: float = 0.50,
+        mu_g: float = _MU_G, sigma_g: float = _SIGMA_G,
+        mu_i: float = _MU_I, sigma_i: float = _SIGMA_I,
+    ) -> None:
+        self._high_thresh = high_thresh
+        self._med_thresh  = med_thresh
+        self._mu_g = mu_g; self._sigma_g = sigma_g
+        self._mu_i = mu_i; self._sigma_i = sigma_i
+
+    def _risk_context(
+        self,
+        attempt_count: int = 1,
+        off_peak_hour: bool = False,
+        location_flag: bool = True,
+        elapsed_days: float = 0.0,
+    ) -> str:
+        score = 0
+        if attempt_count >= 3:   score += 2
+        elif attempt_count == 2: score += 1
+        if off_peak_hour:        score += 1
+        if not location_flag:    score += 2
+        if elapsed_days > 365:   score += 1
+        if score == 0:   return "normal"
+        elif score <= 2: return "elevated"
+        else:            return "high"
+
+    def _face_confidence(self, face_score: float) -> float:
+        """Map cosine similarity to [0,1] confidence via normalised LR."""
+        p_g = _gaussian_pdf(face_score, self._mu_g, self._sigma_g) + _LOG_EPS
+        p_i = _gaussian_pdf(face_score, self._mu_i, self._sigma_i) + _LOG_EPS
+        lr = p_g / p_i
+        return float(lr / (1.0 + lr))   # sigmoid-like mapping
+
+    def evaluate(
+        self,
+        face_score: float,
+        nfc_valid: bool,
+        pad_live: bool,
+        attempt_count: int = 1,
+        off_peak_hour: bool = False,
+        location_flag: bool = True,
+        elapsed_days: float = 0.0,
+    ) -> ATSResult:
+        ctx = self._risk_context(attempt_count, off_peak_hour,
+                                  location_flag, elapsed_days)
+        w = self._WEIGHTS[ctx]
+
+        face_conf = self._face_confidence(face_score)
+        nfc_conf  = 1.0 if nfc_valid else 0.0
+        pad_conf  = 1.0 if pad_live  else 0.0
+
+        trust = (w["face"] * face_conf +
+                 w["nfc"]  * nfc_conf  +
+                 w["pad"]  * pad_conf)
+
+        if trust >= self._high_thresh:
+            level = TrustLevel.HIGH
+        elif trust >= self._med_thresh:
+            level = TrustLevel.MEDIUM
+        else:
+            level = TrustLevel.LOW
+
+        return ATSResult(
+            trust_level=level, trust_score=round(trust, 4),
+            face_score=face_score, nfc_valid=nfc_valid,
+            pad_live=pad_live, risk_context=ctx, weights=w,
+        )

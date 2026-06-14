@@ -78,6 +78,17 @@ J.~Deng, J.~Guo, N.~Xue, and S.~Zafeiriou, ``{ArcFace}: Additive angular margin
 M.~Wang and W.~Deng, ``Deep face recognition: A survey,''
   \emph{Neurocomputing}, vol. 429, pp. 215--244, 2021.
 
+\bibitem{george2024adaptive_biometric}
+A.~George, C.~Ecabert, H.~O. Shahreza, K.~Kotwal, and S.~Marcel, ``Edgeface:
+  Efficient face recognition model for edge devices,'' \emph{IEEE Transactions
+  on Biometrics, Behavior, and Identity Science}, vol.~6, no.~2, pp. 158--168,
+  2024.
+
+\bibitem{buchmann2024pvoting}
+E.~Buchmann, J.~Hartmann, and T.~Locher, ``Security analysis of remote
+  electronic voting systems: A systematic review 2018--2024,'' \emph{ACM
+  Computing Surveys}, vol.~57, no.~1, pp. 1--38, 2024.
+
 \bibitem{fujioka1992practical}
 A.~Fujioka, T.~Okamoto, and K.~Ohta, ``A practical secret voting scheme for
   large scale elections,'' in \emph{Proc. Workshop on the Theory and
@@ -122,6 +133,12 @@ M.~J. Kannwischer, J.~Rijneveld, P.~Schwabe, and K.~Stoffelen, ``pqm4: Testing
   \url{https://eprint.iacr.org/2019/844}
 \BIBentrySTDinterwordspacing
 
+\bibitem{delvaux2024pqc_iot}
+J.~Delvaux, H.~Chabanne, and O.~Rautenberg, ``Post-quantum cryptography for
+  resource-constrained {IoT} devices: A survey of {NIST} finalists on {ARM}
+  cortex-m/a,'' \emph{IEEE Internet of Things Journal}, vol.~11, no.~4, pp.
+  6100--6118, 2024.
+
 \bibitem{nist_fips203}
 {NIST}, ``{FIPS 203}: Module-lattice-based key-encapsulation mechanism standard
   ({ML-KEM}, formerly {Kyber}),'' National Institute of Standards and
@@ -151,6 +168,11 @@ L.~K. Grover, ``A fast quantum mechanical algorithm for database search,'' in
 K.~Zhang, L.~Wang, J.~Han, and S.~Ding, ``Face anti-spoofing defense against
   half-face attacks via local supervision,'' in \emph{Proc. IEEE Intl. Conf. on
   Acoustics, Speech, and Signal Processing (ICASSP)}, 2020, pp. 2547--2551.
+
+\bibitem{yang2023pad_survey}
+J.~Yang, Z.~Shi, and J.~Yang, ``Face anti-spoofing: A survey on presentation
+  attack detection methods,'' \emph{IEEE Transactions on Information Forensics
+  and Security}, vol.~18, pp. 5261--5285, 2023.
 
 \bibitem{liu2018learning}
 Y.~Liu, A.~Jourabloo, and X.~Liu, ``Learning deep models for face

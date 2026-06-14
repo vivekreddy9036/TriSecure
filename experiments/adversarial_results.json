@@ -1,0 +1,49 @@
+{
+  "print_photo_attack": {
+    "after_face_threshold": 110,
+    "after_PAD": 7,
+    "after_NFC_fusion": 0,
+    "total_attempts": 1000
+  },
+  "video_replay_attack": {
+    "after_face_threshold": 267,
+    "after_PAD": 22,
+    "after_NFC_fusion": 0,
+    "total_attempts": 1000
+  },
+  "deepfake_attack": {
+    "after_face_threshold": 597,
+    "after_PAD": 140,
+    "after_NFC_fusion": 0,
+    "total_attempts": 1000
+  },
+  "nfc_uid_clone": {
+    "after_uid_check": 1000,
+    "after_AES_GCM": 0,
+    "total_attempts": 1000
+  },
+  "session_replay": {
+    "within_ttl": 120,
+    "after_one_time": 0,
+    "total_attempts": 1000
+  },
+  "database_tamper": {
+    "tamper_attempts": 1000,
+    "undetected": 0,
+    "detection_rate": 1.0
+  },
+  "metadata": {
+    "n_per_attack": 1000,
+    "face_threshold": 0.539,
+    "gaussian_priors": {
+      "genuine": [
+        0.72,
+        0.08
+      ],
+      "impostor": [
+        0.28,
+        0.12
+      ]
+    }
+  }
+}

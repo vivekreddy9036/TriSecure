@@ -15,45 +15,45 @@ Warning--empty journal in nakamoto2008bitcoin
 Warning--empty booktitle in nandakumar2012biometric
 
 Done.
-You've used 53 entries,
+You've used 57 entries,
             4087 wiz_defined-function locations,
-            1096 strings with 16584 characters,
-and the built_in function-call counts, 40527 in all, are:
-= -- 3237
-> -- 899
-< -- 355
-+ -- 509
-- -- 155
-* -- 1874
-:= -- 5893
-add.period$ -- 101
-call.type$ -- 53
-change.case$ -- 48
-chr.to.int$ -- 870
-cite$ -- 55
-duplicate$ -- 2885
-empty$ -- 3393
-format.name$ -- 180
-if$ -- 9537
+            1118 strings with 17421 characters,
+and the built_in function-call counts, 44336 in all, are:
+= -- 3563
+> -- 992
+< -- 399
++ -- 562
+- -- 169
+* -- 2064
+:= -- 6445
+add.period$ -- 109
+call.type$ -- 57
+change.case$ -- 52
+chr.to.int$ -- 969
+cite$ -- 59
+duplicate$ -- 3143
+empty$ -- 3654
+format.name$ -- 198
+if$ -- 10427
 int.to.chr$ -- 0
-int.to.str$ -- 53
-missing$ -- 500
-newline$ -- 190
-num.names$ -- 53
-pop$ -- 1174
+int.to.str$ -- 57
+missing$ -- 541
+newline$ -- 202
+num.names$ -- 57
+pop$ -- 1253
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 3172
+skip$ -- 3466
 stack$ -- 0
-substring$ -- 2112
-swap$ -- 2326
-text.length$ -- 65
+substring$ -- 2346
+swap$ -- 2567
+text.length$ -- 76
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 53
+type$ -- 57
 warning$ -- 2
-while$ -- 200
-width$ -- 55
-write$ -- 520
+while$ -- 220
+width$ -- 59
+write$ -- 563
 (There were 2 warnings)
