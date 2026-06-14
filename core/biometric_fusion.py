@@ -189,15 +189,23 @@ class AdaptiveTrustScoreEngine:
       MEDIUM (score >= med_thresh)   → supervisor escalation
       LOW    (score <  med_thresh)   → reject
 
-    Default thresholds are calibrated so that under *normal* risk with a
-    genuine user (face≈0.72, NFC valid, PAD live) the trust score ≈ 0.89.
+    Weights are derived by constrained EER minimisation (SLSQP, seed=42, N=20000
+    per class) over context-specific simulated score distributions, subject to:
+      sum(w) = 1,  w_k >= 0.10,
+      w_p(high) >= w_p(elev) >= w_p(norm)  [PAD rises with spoofing risk]
+      w_n(elev) >= w_n(norm)               [NFC anchors elevated context]
+    See experiments/ats_weight_optimization.py for the derivation.
+
+    d' analysis motivates the NFC dominance in normal context (d'_NFC=31.58
+    vs d'_face=9.38); as attacker sophistication increases, d'_NFC collapses
+    to 3.39 (high context), shifting weight back toward face and PAD.
     """
 
-    # Base weights for each context — [face, nfc, pad]
+    # Weights derived by constrained EER minimisation — see docstring above
     _WEIGHTS: dict = {
-        "normal":   {"face": 0.40, "nfc": 0.35, "pad": 0.25},
-        "elevated": {"face": 0.30, "nfc": 0.40, "pad": 0.30},
-        "high":     {"face": 0.20, "nfc": 0.35, "pad": 0.45},
+        "normal":   {"face": 0.30, "nfc": 0.40, "pad": 0.30},
+        "elevated": {"face": 0.20, "nfc": 0.40, "pad": 0.40},
+        "high":     {"face": 0.25, "nfc": 0.35, "pad": 0.40},
     }
 
     def __init__(

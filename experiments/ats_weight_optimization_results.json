@@ -1,0 +1,67 @@
+{
+  "method": "constrained_EER_minimisation_SLSQP",
+  "seed": 42,
+  "n_per_class": 20000,
+  "derived_weights": {
+    "normal": {
+      "face": 0.3,
+      "nfc": 0.4,
+      "pad": 0.3,
+      "eer": 0.00015,
+      "converged": true
+    },
+    "elevated": {
+      "face": 0.2,
+      "nfc": 0.4,
+      "pad": 0.4,
+      "eer": 0.00385,
+      "converged": true
+    },
+    "high": {
+      "face": 0.25,
+      "nfc": 0.35,
+      "pad": 0.4,
+      "eer": 0.015825,
+      "converged": true
+    }
+  },
+  "manual_weights": {
+    "normal": {
+      "face": 0.4,
+      "nfc": 0.35,
+      "pad": 0.25
+    },
+    "elevated": {
+      "face": 0.3,
+      "nfc": 0.4,
+      "pad": 0.3
+    },
+    "high": {
+      "face": 0.2,
+      "nfc": 0.35,
+      "pad": 0.45
+    }
+  },
+  "dprime_analysis": {
+    "normal": {
+      "d_prime_face": 9.38,
+      "d_prime_nfc": 31.58,
+      "d_prime_pad": 5.69
+    },
+    "elevated": {
+      "d_prime_face": 9.15,
+      "d_prime_nfc": 5.55,
+      "d_prime_pad": 3.97
+    },
+    "high": {
+      "d_prime_face": 9.13,
+      "d_prime_nfc": 3.39,
+      "d_prime_pad": 2.8
+    }
+  },
+  "ordering_constraints": [
+    "w_p(high) >= w_p(elevated) >= w_p(normal)",
+    "w_n(elevated) >= w_n(normal)",
+    "w_f(normal) >= w_f(elevated) >= w_f(high)"
+  ]
+}

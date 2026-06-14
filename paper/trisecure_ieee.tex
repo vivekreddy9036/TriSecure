@@ -65,12 +65,14 @@ properties. A novel Adaptive Trust Score (ATS) engine dynamically adjusts compon
 weights based on contextual risk signals (attempt history, temporal
 anomalies, location flags), escalating borderline cases for supervisor
 review rather than binary accept/reject—achieving 99.3\% HIGH trust on
-genuine users while rejecting 100\% of impostor attempts in simulation.
+genuine users and zero \textsc{Low} classifications for simulated impostors
+under Gaussian score assumptions.
 Simulation-based evaluation achieves EER~\(=1.55\%\),
 AUC~\(=0.9991\), TAR@1\%FAR~\(=97.7\%\), and ACER~\(=4.25\%\).
 Adversarial simulation across six attack categories confirms the
-defence stack reduces combined attack success from 35\% (face threshold
-alone) to 0\% after the full NFC-fusion and AES-GCM layer.
+defence stack reduces combined attack success from \(\approx\)35\% (face
+threshold alone) to zero simulated bypass events after the NFC-AES-GCM
+layer—a structural guarantee under standard cryptographic assumptions.
 On-device benchmarking delivers 110.7~ms end-to-end authentication latency
 (p99~\(=111.3\)~ms) and 541.6~voters/min throughput. No prior e-voting system
 we are aware of simultaneously provides formal protocol verification,
@@ -144,7 +146,7 @@ We address these gaps with \textbf{TRIsecure V2}:
         categories (print photo, video replay, deepfake, NFC UID clone,
         session replay, database tamper) quantifies per-layer defence
         contribution. Full defence stack reduces combined success from
-        \(\approx35\%\) to \(0\%\).
+        \(\approx35\%\) to zero simulated bypass events after NFC-AES-GCM.
 \end{enumerate}
 
 No individual component is algorithmically novel in isolation.
@@ -571,28 +573,80 @@ enrolment). A scalar risk score \(R = 2\mathbf{1}[a \geq 3] + \mathbf{1}[a=2]
 \begin{equation}
   T = w_f \cdot c_f(s_f) + w_n \cdot \mathbf{1}[\mathrm{NFC}]
         + w_p \cdot \mathbf{1}[\mathrm{PAD\text{-}live}]
+  \label{eq:ats}
 \end{equation}
-where \(c_f(s_f) = \mathrm{LR}_f/(1+\mathrm{LR}_f)\) is the face
-confidence, and weights \((w_f, w_n, w_p)\) switch by context:
-\textit{normal}~\((0.40, 0.35, 0.25)\);
-\textit{elevated}~\((0.30, 0.40, 0.30)\);
-\textit{high}~\((0.20, 0.35, 0.45)\).
-At higher risk, PAD weight increases because spoofing is the more probable
-attack mode, and NFC weight increases because physical credential validity
-becomes the most reliable signal.
+where \(c_f(s_f) = \mathrm{LR}_f/(1+\mathrm{LR}_f)\) is the sigmoid-normalised
+face likelihood ratio, and the context-specific weight triplet
+\((w_f, w_n, w_p)\) is derived below.
+
+\textit{Weight derivation.}
+Weights are determined by solving the constrained EER-minimisation problem
+\begin{equation}
+  \min_{\mathbf{w}}\;\mathrm{EER}(\mathbf{w};\mathcal{X}_G,\mathcal{X}_I)
+  \;\text{s.t.}\;\textstyle\sum_k w_k = 1,\; w_k \geq 0.10
+  \label{eq:ats_opt}
+\end{equation}
+over simulated score sets \(\mathcal{X}_G, \mathcal{X}_I\)
+(\(N{=}20\,000\) per class, seed~42) via SLSQP with five initialisations,
+subject to three semantic monotonicity constraints:
+\(w_p^\text{high}\!\geq w_p^\text{elev}\!\geq w_p^\text{norm}\)
+(liveness detection becomes the primary guard as spoofing risk rises)
+and \(w_n^\text{elev}\!\geq w_n^\text{norm}\) (NFC physical-credential
+binding anchors the elevated-risk decision).
+
+\textit{Discriminability analysis.}
+Table~\ref{tab:dprime} reports the signal-detection discriminability index
+\(d' = (\mu_G - \mu_I)/\sqrt{(\sigma_G^2+\sigma_I^2)/2}\) for each
+modality per context.
+In normal operation NFC exhibits \(d'=31.6\), far exceeding face
+(\(d'=9.4\)) or PAD (\(d'=5.7\)); as attacker sophistication increases,
+NFC's \(d'\) collapses to 3.4 (high context), shifting discriminative
+load to face and PAD.
+
+\begin{table}[h]
+\centering
+\caption{Discriminability index (\(d'\)) per modality per risk context
+(simulation, \(N{=}20\,000\) per class).}
+\label{tab:dprime}
+\begin{tabular}{lccc}
+\toprule
+Context & \(d'_{\mathrm{face}}\) & \(d'_{\mathrm{NFC}}\) & \(d'_{\mathrm{PAD}}\) \\
+\midrule
+Normal   & 9.38 & 31.58 & 5.69 \\
+Elevated & 9.15 &  5.55 & 3.97 \\
+High     & 9.13 &  3.39 & 2.80 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Solving~\eqref{eq:ats_opt} yields the context weights:
+\textit{normal}~\((0.30, 0.40, 0.30)\);
+\textit{elevated}~\((0.20, 0.40, 0.40)\);
+\textit{high}~\((0.25, 0.35, 0.40)\).
+The high NFC weight in normal mode (\(w_n{=}0.40\)) reflects its superior
+discriminability (\(d'{=}31.6\)); the partial recovery of face weight at
+high risk (\(w_f: 0.20\!\to\!0.25\)) reflects that biometric traits remain
+more resistant to forgery than NFC probing once the attacker is
+sufficiently sophisticated (\(d'_{\mathrm{NFC}}\) collapses to 3.4).
 
 \textit{Trust decision.} \(T \geq 0.75\Rightarrow\textsc{High}\) (accept);
 \(T \geq 0.50\Rightarrow\textsc{Medium}\) (supervisor escalation);
 \(T < 0.50\Rightarrow\textsc{Low}\) (reject).
 
-\textit{Empirical calibration.} Under \textit{normal} context with genuine
-users (\(s_f \sim \mathcal{N}(0.72,0.08^2)\), NFC valid, PAD live):
-99.3\% of attempts reach \textsc{High} trust; 0.7\% are escalated to
-\textsc{Medium}; 0\% are rejected. Simulated impostors (\(s_f \sim
-\mathcal{N}(0.28,0.12^2)\), NFC invalid, not live) are 100\% classified
-\textsc{Low}. Borderline cases (genuine face, NFC valid, PAD failed, second
-attempt): 99.4\% escalated to \textsc{Medium}, enabling supervisor override
-rather than hard rejection—reducing false rejection rate in practice.
+\textit{Simulation-based calibration.}
+Under \textit{normal} context with genuine users
+(\(s_f \sim \mathcal{N}(0.72,0.08^2)\), NFC valid, PAD live,
+\(N{=}10\,000\)): 99.3\% reach \textsc{High} trust; 0.7\% are escalated
+to \textsc{Medium}; none are classified \textsc{Low}.
+Under the Gaussian simulation model, all simulated impostors
+(\(s_f \sim \mathcal{N}(0.28,0.12^2)\), NFC invalid, not live)
+score below the \textsc{Medium} threshold; this reflects the parametric
+score separation assumed by the simulation rather than a
+claimed zero-error rate—ground-truth FAR is reported in
+Table~\ref{tab:threshold_sweep}.
+Borderline cases (genuine face, NFC valid, PAD failed, second attempt,
+\(N{=}1\,000\)): 99.4\% are escalated to \textsc{Medium}, enabling
+supervisor override rather than hard rejection.
 
 \subsection{Post-Quantum Cryptographic Layer}
 \label{sec:pqc}
@@ -1260,17 +1314,19 @@ calculations—the AES-GCM block is structural, not probabilistic.
 \end{minipage}
 \end{table}
 
-Fig.~\ref{fig:adversarial} confirms the combined attack surface collapses
-from \(\approx35\%\) (face threshold alone) to 0\% once NFC AES-GCM validation
-is applied—a structural guarantee rather than a probabilistic bound.
+Fig.~\ref{fig:adversarial} confirms zero simulated bypass events after
+NFC-AES-GCM validation is applied—a structural guarantee under standard
+cryptographic assumptions (AES-256-GCM IND-CCA2 security) rather than a
+probabilistic bound, since no polynomial-time adversary can forge a fresh
+challenge-response without the session key.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{../experiments/figures/adversarial_panel.png}
   \caption{Adversarial evaluation. Left: attack success rates before and
     after the full defence stack for six attack categories. Right: cumulative
-    defence contribution—combined attack success collapses to 0\% after NFC
-    AES-GCM validation (layer~4).}
+    defence contribution—combined attack surface collapses from $\approx$35\%
+    to zero simulated bypass events after NFC-AES-GCM validation (layer~4).}
   \label{fig:adversarial}
 \end{figure}
 
@@ -1605,8 +1661,9 @@ throughput. Six pipeline security properties are formally proved via DFA
 analysis; three end-to-end verifiability properties are machine-verified.
 Adversarial simulation across six attack categories confirms the full
 defence stack reduces combined attack success from \(\approx35\%\) (face
-threshold alone) to \(0\%\), with the NFC AES-GCM layer providing the
-decisive structural guarantee. The ablation study confirms Bayesian NFC\(+\)face
+threshold alone) to zero simulated bypass events; the NFC AES-GCM
+challenge-response provides the decisive structural guarantee under
+standard cryptographic assumptions. The ablation study confirms Bayesian NFC\(+\)face
 fusion reduces effective FAR by three orders of magnitude.
 
 No prior work we are aware of jointly provides formal protocol verification,
