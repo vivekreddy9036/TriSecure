@@ -76,7 +76,8 @@ events (221 genuine, 35 impostor, 15 replay).
 Adversarial simulation across six attack categories confirms the
 defence stack reduces combined attack success from \(\approx\)35\% (face
 threshold alone) to zero simulated bypass events after the NFC-AES-GCM
-layer—a structural guarantee under standard cryptographic assumptions.
+layer—a robust defence-in-depth property under standard cryptographic
+assumptions within the evaluated threat model.
 On-device benchmarking delivers 110.7~ms end-to-end authentication latency
 (p99~\(=111.3\)~ms) and 541.6~voters/min throughput. No prior e-voting system
 we are aware of simultaneously provides formal protocol verification,
@@ -131,7 +132,9 @@ We address these gaps with \textbf{TRIsecure V2}:
         face cosine similarity and NFC channel evidence (EER\(=1.55\%\),
         AUC\(=0.9991\), TAR@1\%FAR\(=97.7\%\)).
   \item \textbf{Hybrid post-quantum layer.} Kyber-768\(+\)X25519 KEM (FIPS~203)
-        and Dilithium-3\(+\)Ed25519 signatures (FIPS~204).
+        and Dilithium-3\(+\)Ed25519 signatures (FIPS~204); classical
+        Ed25519/X25519 fallback measured on-device (0.532~ms/1.022~ms);
+        PQC overhead projected from published ARM benchmarks.
   \item \textbf{ISO/IEC~30107-3 PAD.} MiniFASNetV2 liveness detection
         (BPCER\(=1.0\%\), ACER\(=4.25\%\)).
   \item \textbf{End-to-end verifiability.} SHA-256 receipts and \(O(\log n)\)
@@ -161,7 +164,13 @@ We address these gaps with \textbf{TRIsecure V2}:
 No individual component is algorithmically novel in isolation.
 The \textbf{novel contributions} are: (i)~the ATS engine, which introduces
 dynamic risk-adaptive weight adjustment absent from all prior biometric
-e-voting systems; and (ii)~their \emph{principled co-design}:
+e-voting systems; (ii)~their \emph{principled co-design}; and
+(iii)~the \emph{complete systems security architecture}—a fully
+deployable secure voting terminal on sub-\$100 edge hardware,
+validated end-to-end on real hardware with \(N{=}20\) participants.
+No prior e-voting system delivers all six security properties
+simultaneously on a Raspberry Pi class device. In detail, the
+co-design provides:
 (i)~Bayesian LR fusion of face and NFC modalities reduces the effective FAR
 by three orders of magnitude without increasing biometric EER—an attack requiring
 a valid NFC card \emph{and} a face spoof simultaneously;
@@ -1300,8 +1309,9 @@ Face score distributions for spoof attacks are calibrated to published
 MiniFASNetV2/CelebA-Spoof~\cite{zhang2020minifasnet} penetration rates;
 NFC and session attacks use protocol-level analysis.
 
-Table~\ref{tab:adversarial} summarises results. The key finding: no attack
-category achieves non-zero success after the full stack. The NFC
+Table~\ref{tab:adversarial} summarises results. The key finding: within
+the evaluated threat model, no attack category achieved successful
+bypass of the full stack. The NFC
 AES-GCM layer (Stage~2 payload check) is the decisive gate: it unconditionally
 blocks all face-spoof attacks that pass the face threshold and evade PAD,
 because the attacker cannot forge the AES-128-GCM authenticated ciphertext
@@ -1336,11 +1346,13 @@ calculations—the AES-GCM block is structural, not probabilistic.
 \end{minipage}
 \end{table}
 
-Fig.~\ref{fig:adversarial} confirms zero simulated bypass events after
-NFC-AES-GCM validation is applied—a structural guarantee under standard
-cryptographic assumptions (AES-256-GCM IND-CCA2 security) rather than a
-probabilistic bound, since no polynomial-time adversary can forge a fresh
-challenge-response without the session key.
+Fig.~\ref{fig:adversarial} confirms no successful bypass events within
+the evaluated threat model after NFC-AES-GCM validation is applied.
+This property follows from AES-256-GCM IND-CCA2 security: no
+polynomial-time adversary can forge a fresh challenge-response without
+the session key under standard cryptographic assumptions. Future
+evaluations should extend the attack corpus to novel attack classes
+not covered in this study.
 
 \begin{figure}[t]
   \centering
@@ -1489,25 +1501,29 @@ ISO/IEC~30107-3 metric definitions.
 
 \begin{table}[t]
 \centering
-\caption{Proof-of-concept pilot results (\(N{=}20\) participants, real hardware).}
+\caption{Proof-of-concept pilot results (\(N{=}20\) participants, real hardware).
+  95\% CI: one-sided Clopper--Pearson upper bound for zero-failure
+  observations; ``—'' where CI is not applicable.}
 \label{tab:pilot}
-\begin{tabular}{lc}
+\begin{tabular}{lcc}
   \toprule
-  Metric & Value \\
+  Metric & Observed & 95\% CI Upper \\
   \midrule
-  Participants       & 20 \\
-  Sessions           & 5 (over 3 days) \\
-  Genuine attempts   & 221 \\
-  Impostor attempts  & 35 \\
-  Replay attacks     & 15 \\
+  \multicolumn{3}{l}{\textit{Study parameters}} \\
+  \quad Participants       & 20  & — \\
+  \quad Sessions           & 5 (3 days) & — \\
+  \quad Genuine attempts   & 221 & — \\
+  \quad Impostor attempts  & 35  & — \\
+  \quad Replay attacks     & 15  & — \\
   \midrule
-  FAR                & 0.00\% \\
-  FRR                & 0.00\% \\
-  APCER (print)      & n/a \\
-  APCER (replay)     & 0.00\% \\
-  APCER (combined)   & 0.00\% \\
-  BPCER              & 0.00\% \\
-  ACER               & 0.00\% \\
+  \multicolumn{3}{l}{\textit{ISO/IEC~30107-3 metrics}} \\
+  \quad FAR                & 0.00\% & \(\leq\)8.20\% \\
+  \quad FRR                & 0.00\% & \(\leq\)1.35\% \\
+  \quad APCER (print)      & n/a    & — \\
+  \quad APCER (replay)     & 0.00\% & \(\leq\)18.10\% \\
+  \quad APCER (combined)   & 0.00\% & \(\leq\)5.82\% \\
+  \quad BPCER              & 0.00\% & \(\leq\)1.35\% \\
+  \quad ACER               & 0.00\% & \(\leq\)3.58\% \\
   \bottomrule
 \end{tabular}
 \end{table}
@@ -1520,6 +1536,14 @@ the ATS to 0.6 (\textsc{Escalate}) rather than the full 1.0
 PAD limitations under video replay conditions. High-face-score
 impostor attempts (\(s_f{>}0.87\)) were similarly escalated,
 validating the tri-factor fusion design.
+
+Since all observed error counts are zero, we report one-sided
+Clopper--Pearson 95\% confidence interval upper bounds rather than
+point estimates alone. For FAR: 0 failures in 35 impostor attempts
+gives an upper bound of \(\leq8.20\%\) (rule of three: \(3/35
+\approx 8.57\%\)). For FRR: 0 failures in 221 genuine attempts gives
+\(\leq1.35\%\). These bounds are conservative by construction;
+larger pilot samples would tighten them substantially.
 
 These results confirm end-to-end pipeline correctness on the target
 hardware. The sample (\(N{=}20\)) is insufficient for ISO/IEC~19795-1
@@ -1740,9 +1764,9 @@ throughput. Six pipeline security properties are formally proved via DFA
 analysis; three end-to-end verifiability properties are machine-verified.
 Adversarial simulation across six attack categories confirms the full
 defence stack reduces combined attack success from \(\approx35\%\) (face
-threshold alone) to zero simulated bypass events; the NFC AES-GCM
-challenge-response provides the decisive structural guarantee under
-standard cryptographic assumptions. The ablation study confirms Bayesian NFC\(+\)face
+threshold alone) to zero observed bypass events within the evaluated
+threat model; the NFC AES-GCM challenge-response provides the
+decisive security gate under standard cryptographic assumptions. The ablation study confirms Bayesian NFC\(+\)face
 fusion reduces effective FAR by three orders of magnitude.
 
 A proof-of-concept pilot on real hardware (\(N{=}20\), 271 events)
