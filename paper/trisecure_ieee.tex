@@ -79,8 +79,8 @@ threshold alone) to zero simulated bypass events after the NFC-AES-GCM
 layer—a robust defence-in-depth property under standard cryptographic
 assumptions within the evaluated threat model.
 On-device benchmarking delivers 110.7~ms end-to-end authentication latency
-(p99~\(=111.3\)~ms) and 541.6~voters/min throughput. No prior e-voting system
-we are aware of simultaneously provides formal protocol verification,
+(p99~\(=111.3\)~ms) and 541.6~voters/min throughput. To the best of our knowledge, no prior e-voting system simultaneously
+provides formal protocol verification,
 post-quantum cryptography, adaptive context-aware trust scoring, liveness
 detection, and end-to-end verifiability on sub-\$100 edge hardware.
 \end{abstract}
@@ -113,7 +113,8 @@ multi-factor authentication standards (FIDO2/WebAuthn~\cite{fido2_webauthn})
 are not designed for the one-time-per-election voting constraint and do not
 incorporate formal liveness detection or voter-verifiable receipts.
 
-No existing e-voting system we are aware of jointly provides: (i)~multi-factor
+To the best of our knowledge, no existing e-voting system jointly provides:
+(i)~multi-factor
 biometric authentication with liveness detection, (ii)~formally verified
 protocol security, (iii)~post-quantum cryptographic readiness, and
 (iv)~end-to-end voter verifiability—all on sub-\$100 edge hardware without
@@ -148,8 +149,8 @@ We address these gaps with \textbf{TRIsecure V2}:
         dynamically based on risk signals (attempt history, temporal
         anomalies, location flags), producing HIGH/MEDIUM/LOW trust
         decisions. Genuine users achieve 99.3\% HIGH trust; 100\% of
-        simulated impostor attempts are rejected. No prior e-voting system
-        incorporates dynamic risk-adaptive trust scoring.
+        simulated impostor attempts are rejected. To the best of our knowledge,
+        no prior e-voting system incorporates dynamic risk-adaptive trust scoring.
   \item \textbf{Adversarial attack evaluation.} Simulation of six attack
         categories (print photo, video replay, deepfake, NFC UID clone,
         session replay, database tamper) quantifies per-layer defence
@@ -169,8 +170,8 @@ e-voting systems; (ii)~their \emph{principled co-design}; and
 (iii)~the \emph{complete systems security architecture}—a fully
 deployable secure voting terminal on sub-\$100 edge hardware,
 validated end-to-end on real hardware with \(N{=}20\) participants.
-No prior e-voting system delivers all six security properties
-simultaneously on a Raspberry Pi class device. In detail, the
+To the best of our knowledge, no prior e-voting system delivers all six
+security properties simultaneously on a Raspberry Pi class device. In detail, the
 co-design provides:
 (i)~Bayesian LR fusion of face and NFC modalities reduces the effective FAR
 by three orders of magnitude without increasing biometric EER—an attack requiring
@@ -243,9 +244,8 @@ estimate for the Cortex-A72 (higher IPC).
 NIST finalised ML-KEM (FIPS~203~\cite{nist_fips203}) and ML-DSA
 (FIPS~204~\cite{nist_fips204}) in 2024. Shor's algorithm~\cite{shor1994algorithms}
 threatens RSA and ECC; Grover's algorithm~\cite{grover1996fast} halves symmetric
-key security—motivating hybrid PQC even for edge deployments. No prior e-voting
-system we are aware of integrates a hybrid PQC layer on sub-\$100 ARM64 edge
-hardware.
+key security—motivating hybrid PQC even for edge deployments. To the best of our knowledge, no prior e-voting system integrates a
+hybrid PQC layer on sub-\$100 ARM64 edge hardware.
 
 \subsection{Presentation Attack Detection}
 
@@ -1013,6 +1013,14 @@ and four additional transitions cover rate-limiting branches and NFC
 error types (P6). \textsc{Rejected} is a true trap: no escape transition
 exists, enforcing the liveness property (P4) that every run terminates.
 
+\textit{Scope delimitation.} These six properties concern
+\emph{control-flow correctness}—that stages execute in the mandated
+order and that bypass is structurally impossible. They do not constitute
+proofs of cryptographic secrecy or entity authentication in the
+Dolev-Yao sense; those properties are delegated to the underlying
+primitives (AES-256-GCM, Argon2id, ML-KEM-768, ML-DSA-65) whose
+security is established by their respective NIST standards.
+
 \subsection{Threat Model Analysis}
 \label{sec:threat_matrix}
 
@@ -1541,9 +1549,15 @@ No attack produced an \textsc{Accept} decision (FAR\(=0.00\%\),
 APCER\(=0.00\%\)), yielding ACER\(=0.00\%\). Replay attacks drove
 the ATS to 0.6 (\textsc{Escalate}) rather than the full 1.0
 (\textsc{Accept}), confirming the ATS layer compensates for
-PAD limitations under video replay conditions. High-face-score
-impostor attempts (\(s_f{>}0.87\)) were similarly escalated,
-validating the tri-factor fusion design.
+PAD limitations under video replay conditions. Of the 35 impostor attempts, 8 were re-vote attempts by registered
+participants (same person, own NFC card after \texttt{has\_voted} was
+set): face scores against the participant's own enrolled embedding were
+\(0.87\)–\(0.99\), correctly escalated by ATS rather than rejected by
+the face gate. The remaining 27 true cross-person attempts (different
+face against the target card's enrolled embedding) produced face scores
+of \(0.01\)–\(0.04\), all hard-rejected at the biometric stage.
+This clean score separation confirms the system distinguishes policy
+violations from biometric impostors at the decision layer.
 
 Since all observed error counts are zero, we report one-sided
 Clopper--Pearson 95\% confidence interval upper bounds rather than
@@ -1554,10 +1568,15 @@ gives an upper bound of \(\leq8.20\%\) (rule of three: \(3/35
 larger pilot samples would tighten them substantially.
 
 These results confirm end-to-end pipeline correctness on the target
-hardware. The sample (\(N{=}20\)) is insufficient for ISO/IEC~19795-1
-certification, which requires \(\geq\)400 subjects per demographic
-stratum; a full demographic field trial is identified as future work
-(Section~\ref{sec:limitations}).
+hardware. The pilot is not designed to replace the simulation-based
+biometric discriminability evaluation (Section~\ref{sec:biometric_results}):
+the six enrolled subjects show inter-subject cosine similarities up to
+\(0.99\) within a subgroup, indicating insufficient demographic diversity
+for a valid EER measurement. Simulation-based EER (\(1.55\%\)) calibrated
+to published ArcFace LFW statistics therefore remains the primary
+discriminability estimate. A full demographic field trial with
+\(\geq\)400 subjects is required for ISO/IEC~19795-1 certification
+and is identified as future work (Section~\ref{sec:limitations}).
 
 %% ============================================================
 \section{Discussion}
@@ -1761,8 +1780,8 @@ face/NFC/PAD component weights dynamically based on contextual risk signals,
 it converts the binary accept/reject decision into a graduated
 HIGH/MEDIUM/LOW trust scale, routing 99.3\% of genuine users to immediate
 acceptance while escalating borderline cases for supervisor review rather
-than hard rejection. No prior biometric e-voting system incorporates
-risk-adaptive weight adjustment.
+than hard rejection. To the best of our knowledge, no prior biometric e-voting system
+incorporates risk-adaptive weight adjustment.
 
 The system achieves EER~\(=1.55\%\), AUC~\(=0.9991\), 110.7~ms
 end-to-end authentication latency (p99\(=111.3\)~ms), and 541.6~voters/min
@@ -1781,9 +1800,9 @@ were accepted (FRR\(=0.00\%\)) and all 50 attack attempts were
 blocked (FAR\(=\)ACER\(=0.00\%\)), confirming that the multi-layer
 defence stack performs correctly end-to-end on the target platform.
 
-No prior work we are aware of jointly provides formal protocol verification,
-quantum-resistant cryptography, risk-adaptive trust scoring, liveness
-detection, and edge deployability on sub-\$100 hardware.
+To the best of our knowledge, no prior work jointly provides formal protocol
+verification, quantum-resistant cryptography, risk-adaptive trust scoring,
+liveness detection, and edge deployability on sub-\$100 hardware.
 
 Future work includes: (i)~full-scale demographic field trial per
 ISO/IEC~19795-1 Clause~8 (minimum 400 subjects/group; proof-of-concept
