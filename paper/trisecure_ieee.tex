@@ -18,7 +18,24 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds}
 \usepackage{enumitem}
-\usepackage{url}
+%% ---- Hyperlinks (load LAST, after cite and all other packages) ----
+%% [1] in text → click → jumps to that reference in the bibliography.
+%% DOI / URL in the reference list → click → opens in browser.
+\usepackage[
+  colorlinks   = true,
+  linkcolor    = blue,       % internal cross-refs
+  citecolor    = blue,       % [1] citation numbers ← click → bib entry
+  urlcolor     = blue,       % external links
+  pdftitle     = {TRIsecure: A Formally Verified, Post-Quantum-Ready
+                  Biometric E-Voting System for Edge Deployment},
+  pdfauthor    = {Vivek Reddy},
+  pdfkeywords  = {biometric authentication, e-voting, formal verification,
+                  post-quantum cryptography, Raspberry Pi},
+  pdfstartview = FitH,
+  breaklinks   = true,
+]{hyperref}
+%% doi package: turns doi={10.xxxx/...} bib fields into live https://doi.org/ links
+\usepackage{doi}
 
 \newtheorem{theorem}{Theorem}
 
@@ -104,11 +121,15 @@ deployable, affordable hardware.
 
 Existing systems leave at least one requirement unsatisfied.
 Fingerprint- and face-based voting systems~\cite{bello2021biometric,
-sanchez2020biometric} report biometric error rates without formal protocol
+sanchez2020biometric,komatineni2020biometric,nagaraj2022voting} report
+biometric error rates without formal protocol
 verification or post-quantum (PQC) readiness. Blockchain-based
-approaches~\cite{ayed2017conceptual,hardwick2018voting} provide strong vote
+approaches~\cite{ayed2017conceptual,hardwick2018voting,faruk2024transforming}
+provide strong vote
 integrity but lack biometric authentication and rely on classical cryptography
-vulnerable to quantum adversaries~\cite{bernstein2017post}. Industry
+vulnerable to quantum adversaries~\cite{bernstein2017post}; a
+comprehensive review of 81~blockchain voting systems by Huang et
+al.~\cite{huang2022blockchain_voting} confirms this gap. Industry
 multi-factor authentication standards (FIDO2/WebAuthn~\cite{fido2_webauthn})
 are not designed for the one-time-per-election voting constraint and do not
 incorporate formal liveness detection or voter-verifiable receipts.
@@ -193,6 +214,21 @@ Bello et al.~\cite{bello2021biometric} achieve EER~\(=2.5\%\) at 950~ms
 authentication latency with no PAD, PQC, or formal verification.
 Sánchez-Reillo et al.~\cite{sanchez2020biometric} report EER~\(=3.2\%\)
 at 480~ms on constrained hardware.
+Komatineni and Lingala~\cite{komatineni2020biometric} combine
+machine-learning face detection with biometric scanning for duplicate-vote
+prevention in a two-factor architecture.
+Nagaraj et al.~\cite{nagaraj2022voting} integrate facial recognition with
+fingerprint authentication to strengthen polling station security.
+Revathy et al.~\cite{revathy2022cnn_evoting} integrate CNN-based face
+recognition with blockchain and blind signatures, showing that combining
+deep learning classifiers with immutable vote records improves both
+authentication accuracy and tamper evidence.
+Ashok Kumar et al.~\cite{ashokkumar2023smart} demonstrate an online smart
+voting platform using face recognition for voter identification.
+Faruk et al.~\cite{faruk2024transforming} deploy blockchain and biometric
+verification (fingerprint\(+\)face) over Hyperledger Fabric, demonstrating
+87\% biometric registration success across 100~participants but relying on
+classical cryptography with no formal protocol verification.
 NIST SP~800-63B~\cite{nist_sp800_63b} defines three authenticator assurance
 levels (AAL1–3) but does not prescribe biometric liveness detection or
 formal protocol verification for voting contexts.
@@ -226,6 +262,13 @@ Hyperledger Fabric, but provide no biometric gate or anti-spoofing.
 Juels et al.~\cite{juels2010coercion} formalise coercion-resistance,
 a property TRIsecure~V2 partially addresses through in-person biometric
 binding (Section~\ref{sec:limitations}).
+Huang et al.~\cite{huang2022blockchain_voting} survey blockchain applications
+in voting across 81~prior works (ACM Computing Surveys 2022), identifying
+voter authentication and anti-spoofing as the primary unresolved gaps.
+Hajian et al.~\cite{hajian2024blockchain} survey blockchain e-voting
+architectures with emphasis on smart-contract ballot processing
+(Electronics 2024), confirming that biometric identity binding is absent
+from current blockchain deployments.
 TRIsecure~V2 achieves equivalent vote integrity via hash chaining and Merkle
 proofs without blockchain overhead, while adding biometric authentication.
 
@@ -259,7 +302,11 @@ the additional NFC gate for complete mitigation.
 Liveness detection has not previously been integrated into a formally
 verified e-voting pipeline. Liu et al.~\cite{liu2018learning} leverage
 depth maps; Jourabloo et al.~\cite{jourabloo2018desp} use spoof-noise
-disentanglement. Key benchmark datasets include NUAA~\cite{tan2010nuaa}
+disentanglement. Zhang et al.~\cite{zhang2019autoGAN} show that
+GAN-generated fake images carry spectral artefacts introduced by the
+up-sampling pipeline, motivating frequency-domain analysis as a complement
+to depth-based liveness.
+Key benchmark datasets include NUAA~\cite{tan2010nuaa}
 and OULU-NPU~\cite{boulkenafet2017oulu}.
 
 \subsection{Formal Verification of Authentication Protocols}

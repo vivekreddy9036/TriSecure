@@ -14,19 +14,36 @@
 \usepackage{algorithm,algpseudocode}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{hyperref}
 \usepackage[expansion=false]{microtype}
 \usepackage{multirow}
 \usepackage{subcaption}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds}
 \usepackage{xcolor}
-\usepackage{url}
 \usepackage{enumitem}
-
+%% Custom colours — must be defined BEFORE hyperref uses them
 \definecolor{trisgreen}{RGB}{26,152,80}
 \definecolor{trisblue}{RGB}{67,147,195}
 \definecolor{trisred}{RGB}{215,48,39}
+%% ---- Hyperlinks (load LAST, after all other packages) ----
+%% [1] in text → click → jumps to that bibliography entry.
+%% DOI in the reference list → click → opens https://doi.org/... in browser.
+\usepackage[
+  colorlinks   = true,
+  linkcolor    = trisblue,   % internal cross-refs (fig, table, section)
+  citecolor    = trisblue,   % [1] citation numbers ← click → bib entry
+  urlcolor     = trisblue,   % \url{} and external links
+  pdftitle     = {TRIsecure: A Formally Verified, Post-Quantum-Ready
+                  Biometric E-Voting System for Edge Deployment},
+  pdfauthor    = {Anonymous},
+  pdfsubject   = {Computers \& Security (Elsevier)},
+  pdfkeywords  = {biometric authentication, e-voting, formal verification,
+                  post-quantum cryptography, Raspberry Pi, Merkle proof},
+  pdfstartview = FitH,
+  breaklinks   = true,
+]{hyperref}
+%% doi package: turns doi={10.xxxx/...} bib fields into live https://doi.org/ links
+\usepackage{doi}
 
 \journal{Computers \& Security}
 
@@ -108,14 +125,18 @@ running on deployable, affordable hardware.
 
 Existing systems leave at least one of these requirements unsatisfied.
 Fingerprint- and face-based voting systems~\cite{bello2021biometric,
-sanchez2020biometric} report biometric error rates without formal protocol
-verification or post-quantum (PQC) readiness. Blockchain-based
-approaches~\cite{ayed2017conceptual,hardwick2018voting} provide strong
-vote integrity but lack biometric authentication and rely on classical
-cryptography vulnerable to quantum adversaries~\cite{bernstein2017post}.
-Industry multi-factor authentication standards (FIDO2/WebAuthn~\cite{fido2_webauthn})
-are not designed for the one-time-per-election voting constraint and do
-not incorporate formal liveness detection or voter-verifiable receipts.
+sanchez2020biometric,komatineni2020biometric,nagaraj2022voting} report
+biometric error rates without formal protocol verification or post-quantum
+(PQC) readiness. Blockchain-based approaches~\cite{ayed2017conceptual,
+hardwick2018voting,faruk2024transforming} provide strong vote integrity
+but lack biometric authentication and rely on classical cryptography
+vulnerable to quantum adversaries~\cite{bernstein2017post}; a
+comprehensive review of 81~blockchain voting systems by Huang et
+al.~\cite{huang2022blockchain_voting} confirms this gap.
+Industry multi-factor authentication standards
+(FIDO2/WebAuthn~\cite{fido2_webauthn}) are not designed for the
+one-time-per-election voting constraint and do not incorporate formal
+liveness detection or voter-verifiable receipts.
 None of the above have been formally verified at the protocol level.
 
 \subsection{Research Gap}
@@ -217,9 +238,26 @@ Section~\ref{sec:conclusion} concludes.
 Bello et al.~\cite{bello2021biometric} propose a fingerprint-and-smart-card
 voting system achieving EER~$=2.5\%$ with 950~ms authentication latency.
 Sánchez-Reillo et al.~\cite{sanchez2020biometric} examine biometric
-verification in constrained environments (EER~$=3.2\%$, 480~ms). Neither
-system incorporates presentation attack detection, post-quantum
-cryptography, or formal verification of the authentication protocol.
+verification in constrained environments (EER~$=3.2\%$, 480~ms).
+Komatineni and Lingala~\cite{komatineni2020biometric} combine machine
+learning-based face detection with biometric scanning for duplicate-vote
+prevention in a two-factor architecture.
+Nagaraj et al.~\cite{nagaraj2022voting} integrate facial recognition with
+fingerprint authentication to strengthen polling station security.
+Revathy et al.~\cite{revathy2022cnn_evoting} integrate CNN-based face
+recognition with blockchain and blind signatures, reporting that combining
+deep learning classifiers with immutable vote records improves both
+authentication accuracy and tamper evidence.
+Ashok Kumar et al.~\cite{ashokkumar2023smart} demonstrate an online smart
+voting platform using face recognition for voter identification in a web
+deployment.
+Faruk et al.~\cite{faruk2024transforming} deploy blockchain and biometric
+verification (fingerprint $+$ face) over Hyperledger Fabric, demonstrating
+87\% biometric registration success across 100~participants but relying on
+classical cryptography and providing no formal protocol verification.
+None of these systems incorporate formal automata-theoretic protocol
+verification, post-quantum cryptographic readiness, or ISO/IEC~30107-3
+compliant liveness detection.
 TRIsecure~V2 achieves a lower EER ($1.55\%$) at higher latency efficiency
 on ARM64 hardware while additionally providing formal protocol guarantees
 and PQC readiness.
@@ -231,8 +269,18 @@ voting system that provides vote receipts via blockchain transactions
 ($>2{,}100$~ms latency) but relies on PIN-only authentication with no
 biometric gate. Hardwick et al.~\cite{hardwick2018voting} extend this with
 anonymisation techniques; Hjálmarsson et al.~\cite{hjalmarsson2018blockchain}
-demonstrate a Hyperledger Fabric deployment. These works provide strong
-integrity guarantees but do not address identity binding or anti-spoofing.
+demonstrate a Hyperledger Fabric deployment.
+Huang et al.~\cite{huang2022blockchain_voting} survey blockchain
+applications in voting across 81~prior works (ACM Computing Surveys~2022),
+identifying decentralisation, transparency, and vote integrity as the
+primary design axes while noting that voter authentication and
+anti-spoofing remain open research problems.
+Hajian et al.~\cite{hajian2024blockchain} survey blockchain e-voting
+architectures with emphasis on privacy mechanisms and smart-contract ballot
+processing (Electronics~2024), confirming that biometric identity binding
+is absent from current blockchain deployments.
+These works provide strong integrity guarantees but do not address identity
+binding or anti-spoofing.
 TRIsecure~V2 achieves equivalent vote integrity through hash chaining and
 Merkle proofs without blockchain transaction overhead, while adding
 biometric authentication.
@@ -338,10 +386,18 @@ signals, enabling 3D-aware liveness detection from a single RGB camera.
 Jourabloo et al.~\cite{jourabloo2018desp} model spoof noise as a signal to be
 disentangled from the genuine face, achieving state-of-the-art ACER on
 multiple benchmarks.
+Zhang et al.~\cite{zhang2019autoGAN} show that GAN-generated fake images
+carry spectral artefacts introduced by the up-sampling pipeline, motivating
+frequency-domain analysis as a complement to depth-based liveness; this
+motivates including both texture and depth cues in PAD evaluation.
 Benchmark datasets driving this progress include the NUAA Imposter
 database~\cite{tan2010nuaa} (12,614 images, two attack types) and the
 OULU-NPU dataset~\cite{boulkenafet2017oulu} (4,950 videos, four protocols
 evaluating generalisation across unseen printers and displays).
+Yang et al.~\cite{yang2023pad_survey} survey PAD methods across 2018–2023,
+confirming that lightweight CNN models such as MiniFASNetV2 remain
+competitive on real-world deployments when computational budget is a
+primary constraint.
 TRIsecure~V2 integrates MiniFASNetV2 for its 0.5~MB footprint and 92~ms
 inference time on ARM64, with APCER/BPCER/ACER metrics reported against
 ISO/IEC~30107-3.
@@ -373,47 +429,53 @@ edge hardware.
 \centering
 \caption{Comparison of related e-voting and biometric authentication systems.
   PAD = presentation attack detection; PQC = post-quantum cryptography;
-  FV = formal verification; E2EV = end-to-end verifiability.}
+  FV = formal verification; E2EV = end-to-end verifiability;
+  BC = blockchain; BIO = biometric.}
 \label{tab:related_comparison}
 \footnotesize
-\begin{tabular}{p{2.0cm}p{2.8cm}p{3.2cm}p{3.2cm}}
+\begin{tabular}{p{2.1cm}p{2.7cm}p{3.0cm}p{3.0cm}}
   \toprule
   \textbf{Author (Year)} & \textbf{Method} & \textbf{Advantages} & \textbf{Limitations} \\
   \midrule
   Bello et al.\ (2021)~\cite{bello2021biometric}
     & Fingerprint + smart card voting system
-    & Two-factor auth; biometric binding; EER~$2.5\%$
-    & No PAD; no PQC; no formal verification; 950~ms latency; server-dependent \\
+    & Two-factor BIO auth; EER~$2.5\%$
+    & No PAD; no PQC; no FV; 950~ms; server-dependent \\
   \addlinespace
   Sánchez-Reillo et al.\ (2020)~\cite{sanchez2020biometric}
-    & Face + smart card in constrained environments
-    & Targets embedded devices; two-factor
-    & EER~$3.2\%$; no liveness detection; no formal proof; no quantum resistance \\
+    & Face + smart card, constrained devices
+    & Targets embedded deployment; two-factor
+    & EER~$3.2\%$; no liveness; no FV; no PQC \\
+  \addlinespace
+  Komatineni \& Lingala (2020)~\cite{komatineni2020biometric}
+    & ML face + BIO scan voting
+    & Duplicate-vote prevention; two-factor
+    & No PAD; no PQC; no FV; no E2EV \\
   \addlinespace
   Ayed (2017)~\cite{ayed2017conceptual}
-    & Ethereum blockchain, PIN-only authentication
-    & Vote receipts via blockchain; tamper-evident ledger
-    & No biometric gate; $>$2100~ms latency; classical cryptography; PIN-only \\
+    & Ethereum BC, PIN-only auth
+    & BC receipts; tamper-evident ledger
+    & No BIO; $>$2100~ms; classical crypto; PIN-only \\
   \addlinespace
   Hardwick et al.\ (2018)~\cite{hardwick2018voting}
-    & Blockchain voting with anonymisation
-    & Voter anonymity; blockchain integrity
-    & No biometric authentication; no PAD; classical crypto; high latency \\
+    & BC voting with anonymisation
+    & Voter anonymity; BC integrity
+    & No BIO; no PAD; classical crypto; high latency \\
   \addlinespace
-  Deng et al.\ (ArcFace+PIN, 2019)~\cite{deng2019arcface}
-    & ArcFace face recognition + PIN
-    & EER~$0.76\%$; fast (45~ms on GPU)
-    & Two-factor only; no liveness; no formal verification; requires GPU server \\
+  Faruk et al.\ (2024)~\cite{faruk2024transforming}
+    & Hyperledger Fabric + face + fingerprint
+    & BC + dual-BIO; 87\% registration (100 users)
+    & No PAD; no PQC; no FV; classical crypto \\
   \addlinespace
-  FIDO2/WebAuthn (2019)~\cite{fido2_webauthn}
-    & Device-bound multi-factor authentication
-    & Industry standard; 190~ms; hardware key support
-    & No PAD/liveness; no voter receipts; not designed for per-election constraint \\
+  FIDO2/WebAuthn (2021)~\cite{fido2_webauthn}
+    & Device-bound multi-factor auth
+    & Industry standard; hardware key support
+    & No PAD; no voter receipts; not per-election \\
   \addlinespace
   \textbf{TRIsecure V2 (Ours)}
-    & NFC + face + session token, PAD, hybrid PQC, DFA verification
-    & Formally verified; EER~$1.55\%$; PAD; PQC; E2E verifiability; edge ARM64
-    & Simulation-based biometric eval; no live field trial; Ed25519 fallback for PQC bench \\
+    & NFC + face + token; PAD; hybrid PQC; DFA verification
+    & Formally verified; EER~$1.55\%$; PAD; PQC; E2EV; edge ARM64
+    & Simulation-based BIO eval; no live field trial; Ed25519 fallback \\
   \bottomrule
 \end{tabular}
 \end{table}
@@ -504,7 +566,9 @@ previous stage succeeds; any failure transitions deterministically to
 (5 failures / 300~s) blocks brute-force before any biometric computation.
 
 \paragraph{Stage~2 — NFC verification.} The PN532 SPI reader captures the
-voter's NFC~UID. The UID is validated for format correctness and
+voter's NFC~UID—an approach first demonstrated in hardware voting terminals
+by Hasan et al.~\cite{hasan2019nfc}, here extended with AES-256-GCM
+encrypted session binding. The UID is validated for format correctness and
 looked up in the encrypted voter database.
 
 \paragraph{Stage~3 — Voter eligibility.} The \texttt{has\_voted} flag is
@@ -576,7 +640,8 @@ session database to prevent token-exposure attacks.
 \label{sec:fusion}
 
 Rather than independent hard thresholds on each modality, TRIsecure~V2
-uses Gaussian likelihood-ratio (LR) score fusion~\cite{nandakumar2012biometric}.
+uses Gaussian likelihood-ratio (LR) score fusion following
+Nandakumar and Jain~\cite{nandakumar2012biometric}.
 
 Let $s_f \in [0,1]$ denote the face cosine similarity score. We model:
 \begin{align}
