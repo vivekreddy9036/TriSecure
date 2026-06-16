@@ -26,7 +26,26 @@
       "Bash(python3 -c ' *)",
       "Bash(python3 *)",
       "Bash(pdflatex -interaction=nonstopmode -output-directory /home/vivek/TriSecure/paper /home/vivek/TriSecure/paper/trisecure_ieee.tex)",
-      "Bash(pip show *)"
+      "Bash(pip show *)",
+      "Bash(pip3 show *)",
+      "Bash(pip3 list *)",
+      "Bash(pip3 install *)",
+      "Bash(cmake --version)",
+      "Bash(gcc --version)",
+      "Bash(apt-cache show *)",
+      "Bash(apt-cache search *)",
+      "Bash(curl -L --max-time 30 \"https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.12.0.tar.gz\" -o /tmp/liboqs.tar.gz)",
+      "Bash(tar -xzf liboqs.tar.gz)",
+      "Bash(mkdir -p /tmp/liboqs-build)",
+      "Bash(cmake -S /tmp/liboqs-0.12.0 -B /tmp/liboqs-build -DBUILD_SHARED_LIBS=ON -DOQS_USE_OPENSSL=OFF -DCMAKE_INSTALL_PREFIX=/home/vivek/.local -DCMAKE_BUILD_TYPE=Release)",
+      "Bash(cmake --build /tmp/liboqs-build --parallel 4)",
+      "Bash(cmake --install /tmp/liboqs-build)",
+      "Bash(LD_LIBRARY_PATH=/home/vivek/.local/lib python3 *)",
+      "Bash(curl -L --max-time 60 \"https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.15.0.tar.gz\" -o /tmp/liboqs-0.15.0.tar.gz)",
+      "Bash(tar -xzf liboqs-0.15.0.tar.gz)",
+      "Bash(rm -rf /tmp/liboqs-build)",
+      "Bash(mkdir /tmp/liboqs-build)",
+      "Bash(cmake -S /tmp/liboqs-0.15.0 -B /tmp/liboqs-build -DBUILD_SHARED_LIBS=ON -DOQS_USE_OPENSSL=OFF -DCMAKE_INSTALL_PREFIX=/home/vivek/.local -DCMAKE_BUILD_TYPE=Release)"
     ]
   }
 }
