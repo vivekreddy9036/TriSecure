@@ -1,0 +1,17 @@
+{
+  "n_participants": 6,
+  "n_genuine": 75,
+  "n_impostor": 15,
+  "n_print_attack": 0,
+  "n_replay_attack": 5,
+  "FAR": 0.0,
+  "FRR": 0.0,
+  "APCER_print": null,
+  "APCER_replay": 0.0,
+  "APCER_combined": 0.0,
+  "BPCER": 0.0,
+  "ACER": 0.0,
+  "source": "real_pilot",
+  "csv": "data/pilot_collection.csv",
+  "sessions": "2026-06-14 to 2026-06-16"
+}

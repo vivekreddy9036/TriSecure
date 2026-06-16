@@ -25,7 +25,8 @@
       "Bash(pdfinfo /home/vivek/TriSecure/paper/trisecure_ieee.pdf)",
       "Bash(python3 -c ' *)",
       "Bash(python3 *)",
-      "Bash(pdflatex -interaction=nonstopmode -output-directory /home/vivek/TriSecure/paper /home/vivek/TriSecure/paper/trisecure_ieee.tex)"
+      "Bash(pdflatex -interaction=nonstopmode -output-directory /home/vivek/TriSecure/paper /home/vivek/TriSecure/paper/trisecure_ieee.tex)",
+      "Bash(pip show *)"
     ]
   }
 }
