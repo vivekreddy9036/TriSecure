@@ -67,7 +67,8 @@
       "Bash(mv /home/vivek/TriSecure/paper/trisecure_paper.* /home/vivek/TriSecure/paper/paper/)",
       "Bash(pdflatex -interaction=nonstopmode auth_dfa.tex)",
       "Bash(pdftoppm -r 200 -png auth_dfa.pdf auth_dfa_preview)",
-      "Bash(pdftoppm -r 300 -png auth_dfa.pdf auth_dfa)"
+      "Bash(pdftoppm -r 300 -png auth_dfa.pdf auth_dfa)",
+      "Bash(awk 'NR==17 || NR==18')"
     ]
   }
 }
