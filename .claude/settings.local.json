@@ -46,7 +46,8 @@
       "Bash(rm -rf /tmp/liboqs-build)",
       "Bash(mkdir /tmp/liboqs-build)",
       "Bash(cmake -S /tmp/liboqs-0.15.0 -B /tmp/liboqs-build -DBUILD_SHARED_LIBS=ON -DOQS_USE_OPENSSL=OFF -DCMAKE_INSTALL_PREFIX=/home/vivek/.local -DCMAKE_BUILD_TYPE=Release)",
-      "PowerShell(python -c \"import pdfminer; print\\('pdfminer available'\\)\" 2>&1; python -c \"import pypdf; print\\('pypdf available'\\)\" 2>&1; python -c \"import PyPDF2; print\\('PyPDF2 available'\\)\" 2>&1)"
+      "PowerShell(python -c \"import pdfminer; print\\('pdfminer available'\\)\" 2>&1; python -c \"import pypdf; print\\('pypdf available'\\)\" 2>&1; python -c \"import PyPDF2; print\\('PyPDF2 available'\\)\" 2>&1)",
+      "Bash(grep *)"
     ]
   }
 }

@@ -935,34 +935,6 @@ by $1/\sqrt{3}$ relative to a single-sample enrollment. Enrollment samples
 are discarded after the mean embedding is computed; only the encrypted mean
 embedding (AES-256-GCM, Argon2id-derived key) is persisted in the voter DB.
 
-\subsection{System Bill of Materials and Cost}
-
-Table~\ref{tab:bom} lists the complete TRIsecure~V2 bill of materials.
-Total hardware cost is \$89.90, within the sub-\$100 target (G5).
-The PN532 module (\$8.50) is not a Common Criteria EAL4$+$ certified secure
-element (Limitation~3, Section~\ref{sec:limitations}); replacing it with a
-certified NFC reader (e.g.\ ACS ACR122U) would increase cost to
-approximately \$40–50 for the reader alone, bringing the total to
-$\approx$\$130–140—still sub-\$200 but above the prototype budget.
-
-\begin{table}[t]
-\centering
-\caption{TRIsecure V2 bill of materials (retail unit prices, 2026).}
-\label{tab:bom}
-\begin{tabular}{lrl}
-  \toprule
-  Component & Cost (USD) & Notes \\
-  \midrule
-  Raspberry Pi~4 Model~B (4~GB) & \$55.00 & ARM Cortex-A72, 64-bit \\
-  MicroSD card (32~GB, UHS-I)   & \$8.99  & OS, DB, models \\
-  Logitech C920 HD webcam       & \$12.42 & USB~3.0, 1080p sensor \\
-  PN532 NFC module (SPI/I2C)    & \$8.50  & SPI mode enabled \\
-  NTAG2xx NFC tags (10-pack)    & \$4.99  & MIFARE Ultralight \\
-  \midrule
-  \textbf{Total}                & \textbf{\$89.90} & Sub-\$100 \\
-  \bottomrule
-\end{tabular}
-\end{table}
 
 %% ============================================================
 \section{Formal Security Analysis}
