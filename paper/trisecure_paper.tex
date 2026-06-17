@@ -70,7 +70,7 @@ threats while remaining deployable on edge hardware.
 
 \noindent\textbf{Objective:} This paper presents TRIsecure~V2, a three-factor
 biometric e-voting terminal designed to jointly satisfy all four requirements on
-a commodity Raspberry Pi~4 (ARM64, sub-\$100 hardware), without requiring
+a commodity Raspberry Pi~4 (ARM64, low-cost commodity hardware), without requiring
 server-grade computing or persistent cloud connectivity.
 
 \noindent\textbf{Methodology:} TRIsecure~V2 integrates an ISO/IEC~19795-1
@@ -91,7 +91,7 @@ ACER~$=4.25\%$. On-device benchmarking on Raspberry Pi~4 demonstrates
 
 \noindent\textbf{Conclusion:} To our knowledge, TRIsecure~V2 is the first e-voting system to
 simultaneously provide formal protocol verification, post-quantum cryptography,
-liveness detection, and end-to-end verifiability on sub-\$100 edge hardware,
+liveness detection, and end-to-end verifiability on low-cost edge hardware,
 confirming feasibility for small-to-medium polling station deployment.
 \end{abstract}
 
@@ -144,7 +144,7 @@ None of the above have been formally verified at the protocol level.
 No existing e-voting system jointly provides: (i)~multi-factor biometric
 authentication with liveness detection, (ii)~formally verified protocol
 security, (iii)~post-quantum cryptographic readiness, and (iv)~end-to-end
-voter verifiability—all running on sub-\$100 edge hardware without
+voter verifiability—all running on low-cost edge hardware without
 requiring server infrastructure or cloud connectivity.
 
 \subsection{Objectives}
@@ -208,7 +208,7 @@ in isolation: DFA-based state machine verification, Bayesian score-level
 fusion, hybrid post-quantum KEMs, lightweight CNN liveness detection, and
 Merkle-proof vote receipts each have independent prior literature.
 The novel contribution is their \emph{principled co-design} within a single
-formally verified pipeline running on sub-\$100 edge hardware.
+formally verified pipeline running on low-cost edge hardware.
 Specifically: (i)~the DFA model \emph{drives} the runtime authentication
 pipeline—it is not a post-hoc annotation added for publication; (ii)~the
 Bayesian LR fusion \emph{integrates} rather than concatenates the biometric
@@ -219,7 +219,7 @@ infrastructure.
 To our knowledge, no prior e-voting system has jointly delivered all four
 guarantees—formal protocol verification, quantum-resistant cryptography,
 ISO/IEC~30107-3 liveness detection, and voter-verifiable receipts—within a
-single device costing under \$100.
+single low-cost commodity device.
 
 The remainder of the paper is organised as follows.
 Section~\ref{sec:related} surveys related work.
@@ -300,7 +300,7 @@ Kannwischer et al.~\cite{kannwischer2019pqm4} characterise PQC scheme
 performance on Cortex-M4 microcontrollers, establishing that Kyber-768
 key generation completes in under 100k cycles on constrained ARM cores.
 To our knowledge, TRIsecure~V2 is the first e-voting system to integrate a
-hybrid PQC layer at the credential and vote-signing level on sub-\$100 ARM64
+hybrid PQC layer at the credential and vote-signing level on low-cost ARM64
 edge hardware.
 
 \subsection{Presentation Attack Detection}

@@ -71,7 +71,7 @@ systems ignore biometric authentication; and no existing system addresses
 emerging quantum threats while remaining deployable on edge hardware.
 TRIsecure~V2 is a three-factor biometric e-voting terminal that jointly
 satisfies all four requirements on a commodity Raspberry Pi~4 (ARM64,
-sub-\$100) without requiring server-grade computing or persistent cloud
+commodity edge hardware) without requiring server-grade computing or persistent cloud
 connectivity. It integrates an ISO/IEC~19795-1 compliant biometric pipeline
 with Bayesian score-level fusion of face and NFC card modalities,
 ISO/IEC~30107-3 presentation attack detection (MiniFASNetV2 liveness),
@@ -99,7 +99,7 @@ On-device benchmarking delivers 110.7~ms end-to-end authentication latency
 (p99~\(=111.3\)~ms) and 541.6~voters/min throughput. To the best of our knowledge, no prior e-voting system simultaneously
 provides formal protocol verification,
 post-quantum cryptography, adaptive context-aware trust scoring, liveness
-detection, and end-to-end verifiability on sub-\$100 edge hardware.
+detection, and end-to-end verifiability on low-cost edge hardware.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -138,7 +138,7 @@ To the best of our knowledge, no existing e-voting system jointly provides:
 (i)~multi-factor
 biometric authentication with liveness detection, (ii)~formally verified
 protocol security, (iii)~post-quantum cryptographic readiness, and
-(iv)~end-to-end voter verifiability—all on sub-\$100 edge hardware without
+(iv)~end-to-end voter verifiability—all on low-cost edge hardware without
 requiring cloud connectivity.
 
 \subsection*{Contributions}
@@ -189,7 +189,7 @@ The \textbf{novel contributions} are: (i)~the ATS engine, which introduces
 dynamic risk-adaptive weight adjustment absent from all prior biometric
 e-voting systems; (ii)~their \emph{principled co-design}; and
 (iii)~the \emph{complete systems security architecture}—a fully
-deployable secure voting terminal on sub-\$100 edge hardware,
+deployable secure voting terminal on low-cost edge hardware,
 validated end-to-end on real hardware with \(N{=}20\) participants.
 To the best of our knowledge, no prior e-voting system delivers all six
 security properties simultaneously on a Raspberry Pi class device. In detail, the
@@ -201,8 +201,8 @@ a valid NFC card \emph{and} a face spoof simultaneously;
 offline proof), so removing it breaks pipeline functionality, creating a tight
 coupling between formal security and operational correctness;
 and (iii)~all five mechanisms—fusion, PAD, PQC, DFA verification, and Merkle
-verifiability—fit within the latency (\(<200\)~ms) and cost (\(<\$100\))
-budget of commodity edge hardware, demonstrated on a Raspberry Pi~4.
+verifiability—fit within the latency (\(<200\)~ms) and resource budget
+of commodity edge hardware, demonstrated on a Raspberry Pi~4.
 
 %% ============================================================
 \section{Related Work}
@@ -288,7 +288,7 @@ NIST finalised ML-KEM (FIPS~203~\cite{nist_fips203}) and ML-DSA
 (FIPS~204~\cite{nist_fips204}) in 2024. Shor's algorithm~\cite{shor1994algorithms}
 threatens RSA and ECC; Grover's algorithm~\cite{grover1996fast} halves symmetric
 key security—motivating hybrid PQC even for edge deployments. To the best of our knowledge, no prior e-voting system integrates a
-hybrid PQC layer on sub-\$100 ARM64 edge hardware.
+hybrid PQC layer on low-cost ARM64 edge hardware.
 
 \subsection{Presentation Attack Detection}
 
@@ -1792,7 +1792,7 @@ We presented TRIsecure~V2, a three-factor biometric e-voting system
 combining formally verified authentication, Bayesian multimodal fusion,
 a novel Adaptive Trust Score (ATS) engine, ISO/IEC~30107-3 PAD, hybrid
 post-quantum cryptography, and Merkle-proof voter verifiability—implemented
-and evaluated on a Raspberry Pi~4 ARM64 platform at under \$100.
+and evaluated on a Raspberry Pi~4 ARM64 platform on commodity hardware.
 
 The ATS engine is the primary algorithmic contribution: by adjusting
 face/NFC/PAD component weights dynamically based on contextual risk signals,
@@ -1821,7 +1821,7 @@ defence stack performs correctly end-to-end on the target platform.
 
 To the best of our knowledge, no prior work jointly provides formal protocol
 verification, quantum-resistant cryptography, risk-adaptive trust scoring,
-liveness detection, and edge deployability on sub-\$100 hardware.
+liveness detection, and edge deployability on low-cost commodity hardware.
 
 Future work includes: (i)~full-scale demographic field trial per
 ISO/IEC~19795-1 Clause~8 (minimum 400 subjects/group; proof-of-concept
