@@ -59,8 +59,7 @@
       "WebFetch(domain:www.springernature.com)",
       "Bash(curl -L \"https://cms-resources.apps.public.k8s.springernature.io/springer-cms/rest/v1/content/18782940/data/v12\" -o sn-jnl.zip --max-time 60)",
       "Bash(unzip -o sn-jnl.zip -d sn-jnl-template)",
-      "Bash(pdflatex -interaction=nonstopmode trisecure_springer.tex)",
-      "Bash(bibtex trisecure_springer)"
+      "Bash(pdflatex -interaction=nonstopmode trisecure_springer.tex)"
     ]
   }
 }
