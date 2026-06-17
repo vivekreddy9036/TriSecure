@@ -510,51 +510,6 @@ MobileFaceNet, 512-D) and NFC channel evidence combined via LR fusion
 \textit{Session issuance.} 256-bit token (\texttt{secrets.token\_urlsafe(32)}),
 60~s TTL; SHA-256 hash stored (not plaintext).
 
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[
-  every node/.style={font=\scriptsize},
-  state/.style={draw, circle, minimum size=1.05cm, fill=white},
-  accept/.style={draw, circle, minimum size=1.05cm, fill=trisgreen!20,
-                 double, double distance=1.5pt},
-  reject/.style={draw, circle, minimum size=1.05cm, fill=trisred!20},
-  tr/.style={-{Latex}, font=\tiny, auto, bend left=15}
-]
-\node[state]  (idle)  at (0,0)     {IDLE};
-\node[state]  (rate)  at (1.9,0)   {RATE};
-\node[state]  (nfc)   at (3.8,0)   {NFC};
-\node[state]  (voter) at (5.7,0)   {VOTER};
-\node[state]  (elig)  at (7.6,0)   {ELIG.};
-\node[state]  (face)  at (7.6,-2.0){FACE};
-\node[state]  (fuse)  at (5.7,-2.0){FUSE};
-\node[state]  (pad)   at (3.8,-2.0){PAD};
-\node[accept] (sess)  at (1.9,-2.0){SESS.};
-\node[reject] (rej)   at (4.75,-3.8){REJ.};
-\draw[tr] (idle)  -- node{ATTEMPT}    (rate);
-\draw[tr] (rate)  -- node{RATE\_OK}   (nfc);
-\draw[tr] (nfc)   -- node{NFC\_OK}    (voter);
-\draw[tr] (voter) -- node{FOUND}      (elig);
-\draw[tr] (elig)  -- node[left]{ELIG.}(face);
-\draw[tr] (face)  -- node[above]{MATCH}(fuse);
-\draw[tr] (fuse)  -- node[above]{ACCEPT}(pad);
-\draw[tr] (pad)   -- node[above]{LIVE} (sess);
-\foreach \src/\lbl in {
-  rate/{BLOCKED},
-  nfc/{INVALID},
-  voter/{NOT FOUND},
-  elig/{NOT ELIG.},
-  face/{MISMATCH},
-  fuse/{REJECT},
-  pad/{ATTACK}}
-  \draw[-{Latex}, trisred, font=\tiny, bend right=12] (\src) to
-    node[right, inner sep=1pt]{\lbl} (rej);
-\end{tikzpicture}
-\caption{TRIsecure V2 authentication DFA. Double-circle = accepting state
-  (\textsc{Session}). Any failure transitions to \textsc{Rejected} (trap
-  state). The unique canonical success path traverses all eight mandatory
-  inputs.}
-\label{fig:dfa}
-\end{figure}
 
 \subsection{Bayesian Score-Level Fusion}\label{sec:fusion}
 
