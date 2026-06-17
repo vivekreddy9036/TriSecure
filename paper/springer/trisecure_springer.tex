@@ -953,6 +953,16 @@ All six properties machine-verified by
 \texttt{security/formal\_verification.py}.
 \end{theorem}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/auth_dfa.png}
+  \caption{TRIsecure~V2 authentication DFA~$\mathcal{M}$. Black arrows show
+    the unique canonical success path (IDLE $\to$ \ldots $\to$ SESS.);
+    red arrows denote failure transitions to the \textsc{Rejected} trap state.
+    Double circle = accepting state (\textsc{Sess.}).}
+  \label{fig:auth_dfa}
+\end{figure}
+
 Table~\ref{tab:dfa_states} enumerates all ten DFA states with their roles and
 security relevance. Each state corresponds to a distinct stage in the
 authentication protocol; the separation ensures that a bypass of any
