@@ -64,7 +64,9 @@
       "Bash(mv /home/vivek/TriSecure/paper/trisecure_springer.* /home/vivek/TriSecure/paper/springer/)",
       "Bash(mv /home/vivek/TriSecure/paper/sn-*.bst /home/vivek/TriSecure/paper/springer/)",
       "Bash(mv /home/vivek/TriSecure/paper/trisecure_ieee.* /home/vivek/TriSecure/paper/ieee/)",
-      "Bash(mv /home/vivek/TriSecure/paper/trisecure_paper.* /home/vivek/TriSecure/paper/paper/)"
+      "Bash(mv /home/vivek/TriSecure/paper/trisecure_paper.* /home/vivek/TriSecure/paper/paper/)",
+      "Bash(pdflatex -interaction=nonstopmode auth_dfa.tex)",
+      "Bash(pdftoppm -r 200 -png auth_dfa.pdf auth_dfa_preview)"
     ]
   }
 }
