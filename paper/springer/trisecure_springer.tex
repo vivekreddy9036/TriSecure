@@ -15,30 +15,18 @@
 \usepackage{multirow}%
 \usepackage{amsmath,amssymb,amsfonts}%
 \usepackage{amsthm}%
-\usepackage{mathrsfs}%
 \usepackage[title]{appendix}%
-\usepackage{xcolor}%
 \usepackage{textcomp}%
-\usepackage{manyfoot}%
 \usepackage{booktabs}%
 \usepackage{algorithm}%
 \usepackage{algorithmicx}%
 \usepackage{algpseudocode}%
-\usepackage{listings}%
 %%<additional packages>
-\usepackage{subcaption}%
-\usepackage{tikz}%
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds}%
 \usepackage{enumitem}%
 \usepackage[expansion=false]{microtype}%
 \usepackage{url}%
 \providecommand{\burl}[1]{\url{#1}}%
 %%%%
-
-%% Custom colours for TikZ figures
-\definecolor{trisgreen}{RGB}{26,152,80}
-\definecolor{trisblue}{RGB}{67,147,195}
-\definecolor{trisred}{RGB}{215,48,39}
 
 %% Theorem styles (sn-jnl predefined styles)
 \theoremstyle{thmstyleone}%
@@ -465,21 +453,7 @@ generated.
 
 \begin{figure}[t]
 \centering
-\begin{tikzpicture}[
-  every node/.style={font=\small},
-  layer/.style={draw, rounded corners=3pt, fill=#1!15, minimum width=8.2cm,
-                minimum height=0.7cm, align=center},
-  arrow/.style={-{Latex}, thick, trisblue}
-]
-\node[layer=trisblue] (hw)    at (0,0)   {\textbf{Hardware}\quad NFC (PN532/SPI) $\cdot$ Camera (ONNX) $\cdot$ Raspberry Pi~4};
-\node[layer=gray]     (repo)  at (0,0.9) {\textbf{Repositories}\quad SQLite WAL $\cdot$ AES-256-GCM blobs $\cdot$ Session DB};
-\node[layer=trisblue] (crypto)at (0,1.8) {\textbf{Crypto}\quad Argon2id $\cdot$ AES-256-GCM $\cdot$ HybridKEM $\cdot$ Dilithium-3};
-\node[layer=orange]   (core)  at (0,2.7) {\textbf{Core}\quad Auth Pipeline $\cdot$ Bayesian Fusion $\cdot$ Session Manager $\cdot$ Audit};
-\node[layer=trisgreen](sec)   at (0,3.6) {\textbf{Security}\quad DFA Verifier $\cdot$ Hash Chain $\cdot$ Merkle Tree $\cdot$ E2E Verif.};
-\node[layer=gray]     (cli)   at (0,4.5) {\textbf{Interface}\quad CLI Menu $\cdot$ Enrol $\cdot$ Vote $\cdot$ Verify $\cdot$ Re-enrol};
-\foreach \from/\to in {hw/repo, repo/crypto, crypto/core, core/sec, sec/cli}
-  \draw[arrow] (\from.north) -- (\to.south);
-\end{tikzpicture}
+\includegraphics[width=0.85\linewidth]{figures/architecture.png}
 \caption{TRIsecure V2 six-layer clean architecture. Arrows indicate upward
   dependency direction.}
 \label{fig:architecture}
@@ -1385,22 +1359,21 @@ exceeded only by standalone ArcFace on a GPU server
 
 \begin{figure*}[t]
   \centering
-  \begin{subfigure}[t]{0.48\linewidth}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
     \includegraphics[width=\linewidth]{figures/comparison_table.png}
-    \caption{Feature comparison heatmap. TRIsecure~V2 is the only system
-      supporting all six binary capability flags simultaneously.}
-    \label{fig:comparison_heatmap}
-  \end{subfigure}
+  \end{minipage}
   \hfill
-  \begin{subfigure}[t]{0.48\linewidth}
+  \begin{minipage}[t]{0.48\linewidth}
+    \centering
     \includegraphics[width=\linewidth]{figures/comparison_bar.png}
-    \caption{EER (left) and authentication latency (right) across systems.
-      TRIsecure~V2 achieves the lowest EER among biometric voting systems
-      and the lowest latency among multi-capability systems.}
-    \label{fig:comparison_bar}
-  \end{subfigure}
-  \caption{Comparative analysis against five reference systems across capability
-    flags and quantitative metrics.}
+  \end{minipage}
+  \caption{Comparative analysis against five reference systems. \textit{Left:}
+    feature comparison heatmap --- TRIsecure~V2 is the only system supporting
+    all six binary capability flags simultaneously. \textit{Right:} EER and
+    authentication latency across systems --- TRIsecure~V2 achieves the lowest
+    EER among biometric voting systems and the lowest latency among
+    multi-capability systems.}
   \label{fig:comparison_combined}
 \end{figure*}
 

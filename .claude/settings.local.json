@@ -68,7 +68,11 @@
       "Bash(pdflatex -interaction=nonstopmode auth_dfa.tex)",
       "Bash(pdftoppm -r 200 -png auth_dfa.pdf auth_dfa_preview)",
       "Bash(pdftoppm -r 300 -png auth_dfa.pdf auth_dfa)",
-      "Bash(awk 'NR==17 || NR==18')"
+      "Bash(awk 'NR==17 || NR==18')",
+      "Bash(pdffonts /home/vivek/TriSecure/paper/springer/trisecure_springer.pdf)",
+      "Bash(pdflatex -interaction=nonstopmode architecture.tex)",
+      "Bash(pdftoppm -r 200 -png architecture.pdf architecture_preview)",
+      "Bash(pdfinfo /home/vivek/TriSecure/paper/springer/trisecure_springer.pdf)"
     ]
   }
 }

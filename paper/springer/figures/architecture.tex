@@ -1,0 +1,26 @@
+\documentclass[border=4pt]{standalone}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds}
+
+\definecolor{trisgreen}{RGB}{26,152,80}
+\definecolor{trisblue}{RGB}{67,147,195}
+\definecolor{trisred}{RGB}{215,48,39}
+
+\begin{document}
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  layer/.style={draw, rounded corners=3pt, fill=#1!15, minimum width=8.2cm,
+                minimum height=0.7cm, align=center},
+  arrow/.style={-{Latex}, thick, trisblue}
+]
+\node[layer=trisblue] (hw)    at (0,0)   {\textbf{Hardware}\quad NFC (PN532/SPI) $\cdot$ Camera (ONNX) $\cdot$ Raspberry Pi~4};
+\node[layer=gray]     (repo)  at (0,0.9) {\textbf{Repositories}\quad SQLite WAL $\cdot$ AES-256-GCM blobs $\cdot$ Session DB};
+\node[layer=trisblue] (crypto)at (0,1.8) {\textbf{Crypto}\quad Argon2id $\cdot$ AES-256-GCM $\cdot$ HybridKEM $\cdot$ Dilithium-3};
+\node[layer=orange]   (core)  at (0,2.7) {\textbf{Core}\quad Auth Pipeline $\cdot$ Bayesian Fusion $\cdot$ Session Manager $\cdot$ Audit};
+\node[layer=trisgreen](sec)   at (0,3.6) {\textbf{Security}\quad DFA Verifier $\cdot$ Hash Chain $\cdot$ Merkle Tree $\cdot$ E2E Verif.};
+\node[layer=gray]     (cli)   at (0,4.5) {\textbf{Interface}\quad CLI Menu $\cdot$ Enrol $\cdot$ Vote $\cdot$ Verify $\cdot$ Re-enrol};
+\foreach \from/\to in {hw/repo, repo/crypto, crypto/core, core/sec, sec/cli}
+  \draw[arrow] (\from.north) -- (\to.south);
+\end{tikzpicture}
+\end{document}
