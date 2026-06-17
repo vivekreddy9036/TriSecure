@@ -117,22 +117,22 @@
 \@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces TRIsecure HybridKEM.Encapsulate(\(pk\))}}{11}{algorithm.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Post-Quantum Cryptographic Layer}{11}{subsection.3.6}\protected@file@percent }
 \newlabel{sec:pqc}{{3.6}{11}{Post-Quantum Cryptographic Layer}{subsection.3.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Vote Integrity and Verifiability}{11}{subsection.3.7}\protected@file@percent }
+\newlabel{sec:vote_integrity}{{3.7}{11}{Vote Integrity and Verifiability}{subsection.3.7}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces PN532 NFC module to Raspberry Pi~4 GPIO wiring (SPI0, 3.3~V logic).}}{12}{table.caption.10}\protected@file@percent }
 \newlabel{tab:pn532_wiring}{{3}{12}{PN532 NFC module to Raspberry Pi~4 GPIO wiring (SPI0, 3.3~V logic)}{table.caption.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Vote Integrity and Verifiability}{12}{subsection.3.7}\protected@file@percent }
-\newlabel{sec:vote_integrity}{{3.7}{12}{Vote Integrity and Verifiability}{subsection.3.7}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}Hardware Integration}{12}{section.4}\protected@file@percent }
 \newlabel{sec:hardware}{{4}{12}{Hardware Integration}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}PN532 NFC Module --- Physical Connection}{12}{subsection.4.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces NFC tag payload wire format (64 bytes, NTAG2xx pages 4--19).}}{13}{table.caption.12}\protected@file@percent }
+\newlabel{tab:nfc_payload}{{4}{13}{NFC tag payload wire format (64 bytes, NTAG2xx pages 4--19)}{table.caption.12}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}SPI Software Stack}{13}{subsection.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}NFC Tag Payload Format and Security}{13}{subsection.4.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces NFC tag payload wire format (64 bytes, NTAG2xx pages 4--19).}}{14}{table.caption.12}\protected@file@percent }
-\newlabel{tab:nfc_payload}{{4}{14}{NFC tag payload wire format (64 bytes, NTAG2xx pages 4--19)}{table.caption.12}{}}
+\citation{blanchet2016proverif}
+\citation{meier2013tamarin}
 \@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Camera and face-pipeline configuration on Raspberry Pi~4.}}{14}{table.caption.14}\protected@file@percent }
 \newlabel{tab:camera_config}{{5}{14}{Camera and face-pipeline configuration on Raspberry Pi~4}{table.caption.14}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Camera Configuration and Face Pipeline}{14}{subsection.4.4}\protected@file@percent }
-\citation{blanchet2016proverif}
-\citation{meier2013tamarin}
 \@writefile{toc}{\contentsline {section}{\numberline {5}Formal Security Analysis}{15}{section.5}\protected@file@percent }
 \newlabel{sec:security}{{5}{15}{Formal Security Analysis}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}DFA Verification}{15}{subsection.5.1}\protected@file@percent }
@@ -150,6 +150,8 @@
 \citation{grover1996fast}
 \@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces TRIsecure~V2 DFA state roles. $\star $~Accepting state; $\times $~trap state (sink).}}{17}{table.caption.17}\protected@file@percent }
 \newlabel{tab:dfa_states}{{6}{17}{TRIsecure~V2 DFA state roles. $\star $~Accepting state; $\times $~trap state (sink)}{table.caption.17}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Security levels of TRIsecure~V2 primitives (bits). $\dagger $ Ed25519/X25519 classical fallback; Kyber/Dilithium form the hybrid layer providing forward secrecy against both adversary classes.}}{17}{table.caption.20}\protected@file@percent }
+\newlabel{tab:security_levels}{{7}{17}{Security levels of TRIsecure~V2 primitives (bits). $\dagger $ Ed25519/X25519 classical fallback; Kyber/Dilithium form the hybrid layer providing forward secrecy against both adversary classes}{table.caption.20}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Cryptographic Security Levels}{17}{subsection.5.4}\protected@file@percent }
 \newlabel{sec:crypto_levels}{{5.4}{17}{Cryptographic Security Levels}{subsection.5.4}{}}
 \citation{iso19795_6}
@@ -157,8 +159,6 @@
 \citation{zhang2020minifasnet}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Threat model coverage matrix. Green (\(\text  {$\mathsurround \z@ \mathchar "458$}\), score~2) = full mitigation; yellow (\(\sim \), score~1) = partial; red (\(\times \), score~0) = no mitigation by that layer. Column sums show total defence contribution.}}{18}{figure.caption.18}\protected@file@percent }
 \newlabel{fig:threat_heatmap}{{5}{18}{Threat model coverage matrix. Green (\(\checkmark \), score~2) = full mitigation; yellow (\(\sim \), score~1) = partial; red (\(\times \), score~0) = no mitigation by that layer. Column sums show total defence contribution}{figure.caption.18}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Security levels of TRIsecure~V2 primitives (bits). $\dagger $ Ed25519/X25519 classical fallback; Kyber/Dilithium form the hybrid layer providing forward secrecy against both adversary classes.}}{18}{table.caption.20}\protected@file@percent }
-\newlabel{tab:security_levels}{{7}{18}{Security levels of TRIsecure~V2 primitives (bits). $\dagger $ Ed25519/X25519 classical fallback; Kyber/Dilithium form the hybrid layer providing forward secrecy against both adversary classes}{table.caption.20}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}Experimental Evaluation}{18}{section.6}\protected@file@percent }
 \newlabel{sec:evaluation}{{6}{18}{Experimental Evaluation}{section.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Experimental Setup}{18}{subsection.6.1}\protected@file@percent }
@@ -166,68 +166,70 @@
 \newlabel{tab:sensitivity}{{8}{19}{Sensitivity of biometric metrics to \(\pm 10\%\) Gaussian parameter variation. Nominal: \(\sigma _G{=}0.08\), \(\sigma _I{=}0.12\)}{table.caption.22}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Biometric performance (\(n{=}1{,}000\) genuine/impostor, ArcFace priors).}}{19}{table.caption.24}\protected@file@percent }
 \newlabel{tab:biometric}{{9}{19}{Biometric performance (\(n{=}1{,}000\) genuine/impostor, ArcFace priors)}{table.caption.24}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Threshold sweep (15 operating points). Bold = EER point.}}{19}{table.caption.26}\protected@file@percent }
+\newlabel{tab:threshold_sweep}{{10}{19}{Threshold sweep (15 operating points). Bold = EER point}{table.caption.26}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Biometric Performance (ISO/IEC~19795-1)}{19}{subsection.6.2}\protected@file@percent }
 \newlabel{sec:biometric_results}{{6.2}{19}{Biometric Performance (ISO/IEC~19795-1)}{subsection.6.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Bootstrap Confidence Intervals}{19}{subsection.6.3}\protected@file@percent }
 \newlabel{sec:bootstrap}{{6.3}{19}{Bootstrap Confidence Intervals}{subsection.6.3}{}}
 \citation{zhang2020minifasnet}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Threshold sweep (15 operating points). Bold = EER point.}}{20}{table.caption.26}\protected@file@percent }
-\newlabel{tab:threshold_sweep}{{10}{20}{Threshold sweep (15 operating points). Bold = EER point}{table.caption.26}{}}
+\citation{zhang2020minifasnet}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Biometric evaluation panel. Left: ROC (AUC\(=0.9991\), EER marked). Centre: DET curve (EER\(=1.55\%\)). Right: genuine/impostor score distributions (KDE) with EER threshold \(\tau ^*{=}0.539\).}}{20}{figure.caption.27}\protected@file@percent }
 \newlabel{fig:biometric_panel}{{6}{20}{Biometric evaluation panel. Left: ROC (AUC\(=0.9991\), EER marked). Centre: DET curve (EER\(=1.55\%\)). Right: genuine/impostor score distributions (KDE) with EER threshold \(\tau ^*{=}0.539\)}{figure.caption.27}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Bootstrap 95\% percentile CI (\(B{=}10{,}000\) replicates).}}{20}{table.caption.29}\protected@file@percent }
 \newlabel{tab:bootstrap_ci}{{11}{20}{Bootstrap 95\% percentile CI (\(B{=}10{,}000\) replicates)}{table.caption.29}{}}
-\citation{zhang2020minifasnet}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Presentation Attack Detection (ISO/IEC~30107-3)}{20}{subsection.6.4}\protected@file@percent }
 \citation{zhang2020minifasnet}
 \@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces PAD metrics per ISO/IEC~30107-3.}}{21}{table.caption.31}\protected@file@percent }
 \newlabel{tab:pad}{{12}{21}{PAD metrics per ISO/IEC~30107-3}{table.caption.31}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Ablation study: cumulative component contribution. \(^\dagger \) at system default threshold \(\tau {=}0.55\).}}{21}{table.caption.33}\protected@file@percent }
 \newlabel{tab:ablation}{{13}{21}{Ablation study: cumulative component contribution. \(^\dagger \) at system default threshold \(\tau {=}0.55\)}{table.caption.33}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Presentation Attack Detection (ISO/IEC~30107-3)}{21}{subsection.6.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Ablation results. Left: EER across configurations. Centre: latency breakdown by stage. Right: attack vectors fully mitigated (of~12).}}{21}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:ablation}{{7}{21}{Ablation results. Left: EER across configurations. Centre: latency breakdown by stage. Right: attack vectors fully mitigated (of~12)}{figure.caption.34}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.5}Ablation Study}{21}{subsection.6.5}\protected@file@percent }
 \newlabel{sec:ablation}{{6.5}{21}{Ablation Study}{subsection.6.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.6}Adversarial Attack Evaluation}{21}{subsection.6.6}\protected@file@percent }
 \newlabel{sec:adversarial}{{6.6}{21}{Adversarial Attack Evaluation}{subsection.6.6}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Ablation results. Left: EER across configurations. Centre: latency breakdown by stage. Right: attack vectors fully mitigated (of~12).}}{22}{figure.caption.34}\protected@file@percent }
-\newlabel{fig:ablation}{{7}{22}{Ablation results. Left: EER across configurations. Centre: latency breakdown by stage. Right: attack vectors fully mitigated (of~12)}{figure.caption.34}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Adversarial attack simulation (\(n{=}1{,}000\) per category). Success = attack reaches the voting step. Rates are fraction of \(n\).}}{22}{table.caption.36}\protected@file@percent }
 \newlabel{tab:adversarial}{{14}{22}{Adversarial attack simulation (\(n{=}1{,}000\) per category). Success = attack reaches the voting step. Rates are fraction of \(n\)}{table.caption.36}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Cryptographic Benchmarks}{22}{subsection.6.7}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Adversarial evaluation. Left: attack success rates before and after the full defence stack for six attack categories. Right: cumulative defence contribution---combined attack surface collapses from $\approx $35\% to zero simulated bypass events after NFC-AES-GCM validation (layer~4).}}{23}{figure.caption.37}\protected@file@percent }
-\newlabel{fig:adversarial}{{8}{23}{Adversarial evaluation. Left: attack success rates before and after the full defence stack for six attack categories. Right: cumulative defence contribution---combined attack surface collapses from $\approx $35\% to zero simulated bypass events after NFC-AES-GCM validation (layer~4)}{figure.caption.37}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Adversarial evaluation. Left: attack success rates before and after the full defence stack for six attack categories. Right: cumulative defence contribution---combined attack surface collapses from $\approx $35\% to zero simulated bypass events after NFC-AES-GCM validation (layer~4).}}{22}{figure.caption.37}\protected@file@percent }
+\newlabel{fig:adversarial}{{8}{22}{Adversarial evaluation. Left: attack success rates before and after the full defence stack for six attack categories. Right: cumulative defence contribution---combined attack surface collapses from $\approx $35\% to zero simulated bypass events after NFC-AES-GCM validation (layer~4)}{figure.caption.37}{}}
+\citation{deng2019arcface}
 \@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Kyber-768/Dilithium-3 benchmarks on Raspberry Pi~4 (Cortex-A72, ARM64), measured via liboqs~0.15.0 / liboqs-python~0.15.0 (\(n{=}200\) trials, mean~$\pm $~1\,SD). Classical fallback (Ed25519/X25519) shown for comparison.}}{23}{table.caption.39}\protected@file@percent }
 \newlabel{tab:pqc_benchmarks}{{15}{23}{Kyber-768/Dilithium-3 benchmarks on Raspberry Pi~4 (Cortex-A72, ARM64), measured via liboqs~0.15.0 / liboqs-python~0.15.0 (\(n{=}200\) trials, mean~$\pm $~1\,SD). Classical fallback (Ed25519/X25519) shown for comparison}{table.caption.39}{}}
-\citation{deng2019arcface}
-\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI.}}{24}{table.caption.41}\protected@file@percent }
-\newlabel{tab:crypto}{{16}{24}{Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI}{table.caption.41}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI.}}{23}{table.caption.41}\protected@file@percent }
+\newlabel{tab:crypto}{{16}{23}{Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI}{table.caption.41}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.7}Cryptographic Benchmarks}{23}{subsection.6.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Edge System Performance}{23}{subsection.6.8}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces End-to-end authentication latency on Raspberry Pi~4, \(n{=}50\).}}{24}{table.caption.43}\protected@file@percent }
 \newlabel{tab:pi}{{17}{24}{End-to-end authentication latency on Raspberry Pi~4, \(n{=}50\)}{table.caption.43}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.8}Edge System Performance}{24}{subsection.6.8}\protected@file@percent }
+\newlabel{fig:comparison_heatmap}{{9a}{24}{Feature comparison heatmap. TRIsecure~V2 is the only system supporting all six binary capability flags simultaneously}{figure.caption.44}{}}
+\newlabel{sub@fig:comparison_heatmap}{{a}{24}{Feature comparison heatmap. TRIsecure~V2 is the only system supporting all six binary capability flags simultaneously}{figure.caption.44}{}}
+\newlabel{fig:comparison_bar}{{9b}{24}{EER (left) and authentication latency (right) across systems. TRIsecure~V2 achieves the lowest EER among biometric voting systems and the lowest latency among multi-capability systems}{figure.caption.44}{}}
+\newlabel{sub@fig:comparison_bar}{{b}{24}{EER (left) and authentication latency (right) across systems. TRIsecure~V2 achieves the lowest EER among biometric voting systems and the lowest latency among multi-capability systems}{figure.caption.44}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Comparative analysis against five reference systems across capability flags and quantitative metrics.}}{24}{figure.caption.44}\protected@file@percent }
+\newlabel{fig:comparison_combined}{{9}{24}{Comparative analysis against five reference systems across capability flags and quantitative metrics}{figure.caption.44}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {6.9}Comparative Analysis}{24}{subsection.6.9}\protected@file@percent }
 \newlabel{sec:comparison}{{6.9}{24}{Comparative Analysis}{subsection.6.9}{}}
-\newlabel{fig:comparison_heatmap}{{9a}{25}{Feature comparison heatmap. TRIsecure~V2 is the only system supporting all six binary capability flags simultaneously}{figure.caption.44}{}}
-\newlabel{sub@fig:comparison_heatmap}{{a}{25}{Feature comparison heatmap. TRIsecure~V2 is the only system supporting all six binary capability flags simultaneously}{figure.caption.44}{}}
-\newlabel{fig:comparison_bar}{{9b}{25}{EER (left) and authentication latency (right) across systems. TRIsecure~V2 achieves the lowest EER among biometric voting systems and the lowest latency among multi-capability systems}{figure.caption.44}{}}
-\newlabel{sub@fig:comparison_bar}{{b}{25}{EER (left) and authentication latency (right) across systems. TRIsecure~V2 achieves the lowest EER among biometric voting systems and the lowest latency among multi-capability systems}{figure.caption.44}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Comparative analysis against five reference systems across capability flags and quantitative metrics.}}{25}{figure.caption.44}\protected@file@percent }
-\newlabel{fig:comparison_combined}{{9}{25}{Comparative analysis against five reference systems across capability flags and quantitative metrics}{figure.caption.44}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Proof-of-concept pilot results (\(N{=}20\) participants, real hardware). 95\% CI: one-sided Clopper--Pearson upper bound for zero-failure observations; ``---'' where CI is not applicable.}}{25}{table.caption.46}\protected@file@percent }
-\newlabel{tab:pilot}{{18}{25}{Proof-of-concept pilot results (\(N{=}20\) participants, real hardware). 95\% CI: one-sided Clopper--Pearson upper bound for zero-failure observations; ``---'' where CI is not applicable}{table.caption.46}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.10}Proof-of-Concept Pilot Study}{25}{subsection.6.10}\protected@file@percent }
-\newlabel{sec:pilot}{{6.10}{25}{Proof-of-Concept Pilot Study}{subsection.6.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.10}Proof-of-Concept Pilot Study}{24}{subsection.6.10}\protected@file@percent }
+\newlabel{sec:pilot}{{6.10}{24}{Proof-of-Concept Pilot Study}{subsection.6.10}{}}
 \citation{deng2019arcface}
 \citation{iso19795}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{26}{section.7}\protected@file@percent }
-\newlabel{sec:discussion}{{7}{26}{Discussion}{section.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Proof-of-concept pilot results (\(N{=}20\) participants, real hardware). 95\% CI: one-sided Clopper--Pearson upper bound for zero-failure observations; ``---'' where CI is not applicable.}}{25}{table.caption.46}\protected@file@percent }
+\newlabel{tab:pilot}{{18}{25}{Proof-of-concept pilot results (\(N{=}20\) participants, real hardware). 95\% CI: one-sided Clopper--Pearson upper bound for zero-failure observations; ``---'' where CI is not applicable}{table.caption.46}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{25}{section.7}\protected@file@percent }
+\newlabel{sec:discussion}{{7}{25}{Discussion}{section.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Power Consumption and Off-Grid Deployment}{26}{subsection.7.1}\protected@file@percent }
 \newlabel{sec:power}{{7.1}{26}{Power Consumption and Off-Grid Deployment}{subsection.7.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Throughput and Polling Station Capacity}{26}{subsection.7.2}\protected@file@percent }
+\newlabel{sec:throughput}{{7.2}{26}{Throughput and Polling Station Capacity}{subsection.7.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Hardware Attack Surface Analysis}{26}{subsection.7.3}\protected@file@percent }
+\newlabel{sec:hw_attack}{{7.3}{26}{Hardware Attack Surface Analysis}{subsection.7.3}{}}
 \citation{jain2008cancelable}
 \@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces TRIsecure V2 deployment configurations by station size. Assumes 40~s voter interaction time; 6~h peak window.}}{27}{table.caption.48}\protected@file@percent }
 \newlabel{tab:throughput_scenarios}{{19}{27}{TRIsecure V2 deployment configurations by station size. Assumes 40~s voter interaction time; 6~h peak window}{table.caption.48}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Throughput and Polling Station Capacity}{27}{subsection.7.2}\protected@file@percent }
-\newlabel{sec:throughput}{{7.2}{27}{Throughput and Polling Station Capacity}{subsection.7.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Hardware Attack Surface Analysis}{27}{subsection.7.3}\protected@file@percent }
-\newlabel{sec:hw_attack}{{7.3}{27}{Hardware Attack Surface Analysis}{subsection.7.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Limitations}{27}{subsection.7.4}\protected@file@percent }
+\newlabel{sec:limitations}{{7.4}{27}{Limitations}{subsection.7.4}{}}
 \citation{iso19795}
 \citation{iso19795_6}
 \citation{iso30107}
@@ -236,16 +238,14 @@
 \citation{zhang2020minifasnet}
 \citation{iso24745}
 \citation{nist_sp800_63b}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Limitations}{28}{subsection.7.4}\protected@file@percent }
-\newlabel{sec:limitations}{{7.4}{28}{Limitations}{subsection.7.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Regulatory and Standards Alignment}{28}{subsection.7.5}\protected@file@percent }
 \newlabel{sec:regulatory}{{7.5}{28}{Regulatory and Standards Alignment}{subsection.7.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{29}{section.8}\protected@file@percent }
-\newlabel{sec:conclusion}{{8}{29}{Conclusion}{section.8}{}}
-\@writefile{toc}{\contentsline {subparagraph}{Acknowledgements}{29}{section*.49}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{28}{section.8}\protected@file@percent }
+\newlabel{sec:conclusion}{{8}{28}{Conclusion}{section.8}{}}
 \bibdata{references}
 \bibcite{bello2021biometric}{{1}{2021}{{Bello et~al.}}{{}}}
 \bibcite{sanchez2020biometric}{{2}{2020}{{S{\'a}nchez-Reillo et~al.}}{{}}}
+\@writefile{toc}{\contentsline {subparagraph}{Acknowledgements}{29}{section*.49}\protected@file@percent }
 \bibcite{komatineni2020biometric}{{3}{2020}{{Komatineni and Lingala}}{{}}}
 \bibcite{nagaraj2022voting}{{4}{2022}{{Nagaraj et~al.}}{{}}}
 \bibcite{ayed2017conceptual}{{5}{2017}{{Ayed}}{{}}}
@@ -309,4 +309,4 @@
 \bibcite{iso19795_6}{{63}{2012}{{{ISO/IEC}}}{{}}}
 \bibcite{grother2007biometric}{{64}{2007}{{Grother and Tabassi}}{{}}}
 \bibcite{iso19795}{{65}{2021}{{{ISO/IEC}}}{{}}}
-\gdef \@abspage@last{36}
+\gdef \@abspage@last{35}

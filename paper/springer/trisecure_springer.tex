@@ -369,9 +369,9 @@ matrix across eight systems and seven dimensions.
   FV = formal verification; E2EV = end-to-end verifiability.}
 \label{tab:related_comparison}%
 \begin{tabular*}{\textwidth}{@{\extracolsep\fill}p{2.2cm}p{3.0cm}p{3.4cm}p{3.4cm}}
-  \toprule
+  \hline
   \textbf{Author (Year)} & \textbf{Method} & \textbf{Advantages} & \textbf{Limitations} \\
-  \midrule
+  \hline
   Bello et al.\ (2021)~\cite{bello2021biometric}
     & Fingerprint + smart card
     & Two-factor; biometric binding; EER~\(2.5\%\)
@@ -407,7 +407,7 @@ matrix across eight systems and seven dimensions.
     & FV; EER~\(1.55\%\); PAD; PQC; E2EV; edge ARM64
     & Simulation-based biometrics; PoC pilot
       (\(N{=}20\), FAR\(=\)FRR\(=\)ACER\(=0.00\%\)) \\
-  \botrule
+  \hline
 \end{tabular*}
 \end{table*}
 
@@ -657,14 +657,14 @@ and PAD.
 \caption{Discriminability index (\(d'\)) per modality per risk context
   (simulation, \(N{=}20{,}000\) per class).}
 \label{tab:dprime}%
-\begin{tabular}{@{}lccc@{}}
-\toprule
+\begin{tabular}{|l|c|c|c|}
+\hline
 Context & \(d'_{\mathrm{face}}\) & \(d'_{\mathrm{NFC}}\) & \(d'_{\mathrm{PAD}}\) \\
-\midrule
+\hline
 Normal   & 9.38 & 31.58 & 5.69 \\
 Elevated & 9.15 &  5.55 & 3.97 \\
 High     & 9.13 &  3.39 & 2.80 \\
-\botrule
+\hline
 \end{tabular}
 \end{table}
 
@@ -750,10 +750,10 @@ lists the seven physical connections.
 \begin{table}[t]
 \caption{PN532 NFC module to Raspberry Pi~4 GPIO wiring (SPI0, 3.3~V logic).}
 \label{tab:pn532_wiring}%
-\begin{tabular}{@{}llll@{}}
-  \toprule
+\begin{tabular}{|l|l|l|l|}
+  \hline
   PN532 Pin & GPIO & Header Pin & Function \\
-  \midrule
+  \hline
   VCC      & 3.3~V   & Pin~1  & Power supply \\
   GND      & Ground  & Pin~6  & Ground \\
   SCK      & GPIO11  & Pin~23 & SPI0 clock \\
@@ -761,7 +761,7 @@ lists the seven physical connections.
   MISO     & GPIO9   & Pin~21 & SPI0 data in (MISO) \\
   NSS (CS) & GPIO8   & Pin~24 & SPI0 chip-select (CE0) \\
   RSTPD\_N & GPIO25  & Pin~22 & Active-low hard reset \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -828,16 +828,16 @@ defined in Table~\ref{tab:nfc_payload}.
 \begin{table}[t]
 \caption{NFC tag payload wire format (64 bytes, NTAG2xx pages 4--19).}
 \label{tab:nfc_payload}%
-\begin{tabular}{@{}lllr@{}}
-  \toprule
+\begin{tabular}{|l|l|l|r|}
+  \hline
   Bytes & Pages & Field & Size \\
-  \midrule
+  \hline
   0--11   & 4--6    & AES-GCM nonce (random 96-bit IV) & 12~B \\
   12--47  & 7--14   & AES-128 ciphertext (voter UUID) & 36~B \\
   48--63  & 15--19  & GCM authentication tag (128-bit) & 16~B \\
-  \midrule
+  \hline
   Total   & 4--19   & --- & 64~B \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -872,10 +872,10 @@ face-pipeline configuration.
 \begin{table}[t]
 \caption{Camera and face-pipeline configuration on Raspberry Pi~4.}
 \label{tab:camera_config}%
-\begin{tabular}{@{}ll@{}}
-  \toprule
+\begin{tabular}{|l|l|}
+  \hline
   Parameter & Value \\
-  \midrule
+  \hline
   Device node             & \texttt{/dev/video0} \\
   Capture backend         & OpenCV V4L2 (MJPEG) \\
   Capture resolution      & 320$\times$240 px \\
@@ -888,7 +888,7 @@ face-pipeline configuration.
   ONNX inference (mean)   & 95.2~ms on Raspberry Pi~4 \\
   PAD model               & MiniFASNetV2 (ONNX, same runtime) \\
   PAD inference overhead  & 15.5~ms (C2$\to$C3 ablation delta) \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -973,10 +973,10 @@ structurally excluded by the determinism property (P1).
 \caption{TRIsecure~V2 DFA state roles.
   $\star$~Accepting state; $\times$~trap state (sink).}
 \label{tab:dfa_states}%
-\begin{tabular}{@{}lp{5.2cm}@{}}
-  \toprule
+\begin{tabular}{|l|p{5.2cm}|}
+  \hline
   State & Role and Security Function \\
-  \midrule
+  \hline
   \textsc{Idle}
     & Awaits NFC card presentation; rate-limit counter initialised. \\
   \textsc{RateCheck}
@@ -997,7 +997,7 @@ structurally excluded by the determinism property (P1).
     & Issues 256-bit token; atomically sets \texttt{has\_voted}. \\
   \textsc{Rejected}$^\times$
     & Sink state; all failure transitions terminate here (P3/P4). \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1067,10 +1067,10 @@ algorithm~\cite{grover1996fast} and Shor's algorithm~\cite{shor1994algorithms}.
   $\dagger$ Ed25519/X25519 classical fallback; Kyber/Dilithium form the
   hybrid layer providing forward secrecy against both adversary classes.}
 \label{tab:security_levels}%
-\begin{tabular}{@{}lcll@{}}
-  \toprule
+\begin{tabular}{|l|c|l|l|}
+  \hline
   Primitive & Cl. & PQ & Standard \\
-  \midrule
+  \hline
   AES-256-GCM (templates) & 256 & 128 & FIPS 197 \\
   Argon2id (KDF)          & 256 & 128 & RFC 9106 \\
   SHA-256 (receipts)      & 256 & 128 & FIPS 180 \\
@@ -1078,7 +1078,7 @@ algorithm~\cite{grover1996fast} and Shor's algorithm~\cite{shor1994algorithms}.
   X25519 (KEM)$^\dagger$  & 128 & $\times$ & RFC 7748 \\
   Dilithium-3 (PQC sign)  & 128 & 128 & FIPS 204 \\
   Kyber-768 (PQC KEM)     & 128 & 128 & FIPS 203 \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1125,14 +1125,14 @@ Table~\ref{tab:sensitivity} confirms biometric metrics are stable under
 \caption{Sensitivity of biometric metrics to \(\pm10\%\) Gaussian parameter
   variation. Nominal: \(\sigma_G{=}0.08\), \(\sigma_I{=}0.12\).}
 \label{tab:sensitivity}%
-\begin{tabular}{@{}ccrr@{}}
-  \toprule
+\begin{tabular}{|c|c|r|r|}
+  \hline
   \(\sigma_G\) & \(\sigma_I\) & EER (\%) & AUC \\
-  \midrule
+  \hline
   0.072 (\(-10\%\)) & 0.108 (\(-10\%\)) & 1.38 & 0.9993 \\
   0.080 (nominal)   & 0.120 (nominal)   & 1.55 & 0.9991 \\
   0.088 (\(+10\%\)) & 0.132 (\(+10\%\)) & 1.71 & 0.9988 \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1144,25 +1144,25 @@ shows the ROC curve, DET curve, and score distributions.
 \begin{table}[t]
 \caption{Biometric performance (\(n{=}1{,}000\) genuine/impostor, ArcFace priors).}
 \label{tab:biometric}%
-\begin{tabular}{@{}lc@{}}
-  \toprule
+\begin{tabular}{|l|c|}
+  \hline
   Metric & Value \\
-  \midrule
+  \hline
   EER & \(1.55\%\) at \(\tau = 0.539\) \\
   TAR @ 0.1\% FAR & \(89.70\%\) \\
   TAR @ 1.0\% FAR & \(97.70\%\) \\
   ROC AUC & \(0.9991\) \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
 \begin{table}[t]
 \caption{Threshold sweep (15 operating points). Bold = EER point.}
 \label{tab:threshold_sweep}%
-\begin{tabular}{@{}cccc@{}}
-  \toprule
+\begin{tabular}{|c|c|c|c|}
+  \hline
   \(\tau\) & FAR (\%) & FRR (\%) & TAR (\%) \\
-  \midrule
+  \hline
   0.100 & 91.3 & 0.0  & 100.0 \\
   0.386 & 16.7 & 0.0  & 100.0 \\
   0.443 & 7.8  & 0.1  & 99.9  \\
@@ -1172,7 +1172,7 @@ shows the ROC curve, DET curve, and score distributions.
   0.614 & 0.3  & 9.5  & 90.5  \\
   0.671 & 0.0  & 27.3 & 72.7  \\
   0.729 & 0.0  & 54.3 & 45.7  \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1196,15 +1196,15 @@ bias. Table~\ref{tab:bootstrap_ci} reports percentile 95\% confidence intervals.
 \begin{table}[t]
 \caption{Bootstrap 95\% percentile CI (\(B{=}10{,}000\) replicates).}
 \label{tab:bootstrap_ci}%
-\begin{tabular}{@{}lcc@{}}
-  \toprule
+\begin{tabular}{|l|c|c|}
+  \hline
   Metric & Estimate & 95\% CI \\
-  \midrule
+  \hline
   EER (\%)            & 1.55   & [1.38,\ 1.71] \\
   ROC AUC             & 0.9991 & [0.9988,\ 0.9994] \\
   TAR @ 1\% FAR (\%)  & 97.70  & [97.41,\ 97.98] \\
   TAR @ 0.1\% FAR (\%)& 89.70  & [89.23,\ 90.16] \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1225,16 +1225,16 @@ published CelebA-Spoof benchmark performance~\cite{zhang2020minifasnet}.
 \begin{table}[t]
 \caption{PAD metrics per ISO/IEC~30107-3.}
 \label{tab:pad}%
-\begin{tabular}{@{}lcc@{}}
-  \toprule
+\begin{tabular}{|l|c|c|}
+  \hline
   Metric & Attack type & Rate (\%) \\
-  \midrule
+  \hline
   BPCER & ---    & 1.00 \\
   APCER (print)    & Photo & 5.00 \\
   APCER (replay)   & Video & 10.00 \\
   APCER (combined) & Both  & 7.50 \\
   ACER  & ---    & 4.25 \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1260,15 +1260,15 @@ valid NFC card is rejected regardless of face score.
 \caption{Ablation study: cumulative component contribution.
   \(^\dagger\) at system default threshold \(\tau{=}0.55\).}
 \label{tab:ablation}%
-\begin{tabular}{@{}llcccc@{}}
-  \toprule
+\begin{tabular}{|l|l|c|c|c|c|}
+  \hline
   Config & Components & EER (\%) & Eff.\ FAR (\%) & Latency (ms) & Attacks \\
-  \midrule
+  \hline
   C1 & Face only\(^\dagger\)     & 1.45 & 1.2224 & 95.2  & 3/12 \\
   C2 & +Bayesian NFC fusion      & 1.55 & 0.0010 & 95.5  & 6/12 \\
   C3 & +PAD liveness             & 1.55 & 0.0010 & 110.7 & 9/12 \\
   C4 & +PQC signatures (full)    & 1.55 & 0.0010 & 125.1 & 12/12 \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1299,20 +1299,20 @@ authenticated ciphertext without the HKDF-derived deployment key.
 \caption{Adversarial attack simulation (\(n{=}1{,}000\) per category).
   Success = attack reaches the voting step. Rates are fraction of \(n\).}
 \label{tab:adversarial}%
-\begin{tabular}{@{}lrrrr@{}}
-  \toprule
+\begin{tabular}{|l|r|r|r|r|}
+  \hline
   Attack & After face & After PAD & After NFC & \textbf{Final} \\
          & threshold  & liveness  & AES-GCM   & \textbf{success} \\
-  \midrule
+  \hline
   Print photo      & 11.0\% & 0.7\%  & 0\% & \textbf{0\%} \\
   Video replay     & 26.7\% & 2.2\%  & 0\% & \textbf{0\%} \\
   Deepfake (est.)  & 59.7\% & 14.0\% & 0\% & \textbf{0\%} \\
   NFC UID clone    & ---    & ---    & 0\% & \textbf{0\%} \\
   Session replay   & 12.0\%$^\dagger$ & --- & --- & \textbf{0\%} \\
   Database tamper  & ---    & ---    & --- & \textbf{0\%} \\
-  \midrule
+  \hline
   \multicolumn{4}{l}{Detection rate (hash chain, database tamper)} & \textbf{100\%} \\
-  \botrule
+  \hline
 \end{tabular}
 \footnotetext[1]{Within 60~s TTL; one-time-use flag blocks all replays.}
 \end{table}
@@ -1344,22 +1344,22 @@ post-quantum layer fits comfortably within the \(<200\)~ms latency budget.
   trials, mean~$\pm$~1\,SD). Classical fallback (Ed25519/X25519) shown for
   comparison.}
 \label{tab:pqc_benchmarks}%
-\begin{tabular}{@{}lcrr@{}}
-  \toprule
+\begin{tabular}{|l|c|r|r|}
+  \hline
   Operation & Standard & Measured (ms) & SD (ms) \\
-  \midrule
+  \hline
   ML-KEM-768 keygen   & FIPS~203 & 0.082 & 0.033 \\
   ML-KEM-768 encaps   & FIPS~203 & 0.088 & 0.015 \\
   ML-KEM-768 decaps   & FIPS~203 & 0.095 & 0.011 \\
   ML-DSA-65 keygen    & FIPS~204 & 0.400 & 0.039 \\
   ML-DSA-65 sign      & FIPS~204 & 1.536 & 1.007 \\
   ML-DSA-65 verify    & FIPS~204 & 0.390 & 0.034 \\
-  \midrule
+  \hline
   \textbf{PQC auth path total}$^\dagger$ & --- & \textbf{2.289} & --- \\
-  \midrule
+  \hline
   X25519 ECDH (classical) & RFC~7748 & 1.022 & --- \\
   Ed25519 sign+verify (classical) & RFC~8032 & 0.532 & --- \\
-  \botrule
+  \hline
 \end{tabular}
 \footnotetext[1]{Auth path = encaps + decaps + sign + verify;
   keygen runs at enrolment only. All values measured on-device;
@@ -1369,10 +1369,10 @@ post-quantum layer fits comfortably within the \(<200\)~ms latency budget.
 \begin{table}[t]
 \caption{Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI.}
 \label{tab:crypto}%
-\begin{tabular}{@{}lcrr@{}}
-  \toprule
+\begin{tabular}{|l|c|r|r|}
+  \hline
   Operation & \(n\) & Mean (ms) & 95\% CI \\
-  \midrule
+  \hline
   Argon2id (\(t{=}3\), \(m{=}64\)~MB) & 20    & 494.5 & [492.7, 496.3] \\
   PBKDF2-HMAC-SHA256 (100k)            & 100   & 106.1 & [105.1, 107.1] \\
   AES-256-GCM enc.\ (2~kB)            & 1000  & 0.040 & [0.040, 0.041] \\
@@ -1381,7 +1381,7 @@ post-quantum layer fits comfortably within the \(<200\)~ms latency budget.
   X25519 keygen+encap+decap            & 200   & 1.022 & [1.002, 1.042] \\
   SHA-256 chain (\(n{=}1{,}000\))     & 3     & 4.27  & [4.11, 4.43]   \\
   Merkle prove+verify (\(n{=}1{,}000\))& 5    & 4.82  & [4.74, 4.90]   \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1395,26 +1395,26 @@ published ONNX Runtime ARM64 benchmarks. The p99 latency of 111.3~ms and
 \begin{table}[t]
 \caption{End-to-end authentication latency on Raspberry Pi~4, \(n{=}50\).}
 \label{tab:pi}%
-\begin{tabular}{@{}lr@{}}
-  \toprule
+\begin{tabular}{|l|r|}
+  \hline
   Metric & Value \\
-  \midrule
+  \hline
   \multicolumn{2}{l}{\textit{End-to-end latency}} \\
   \quad Mean & 110.7~ms \\
   \quad p50  & 110.7~ms \\
   \quad p95  & 110.9~ms \\
   \quad p99  & 111.3~ms \\
-  \midrule
+  \hline
   \multicolumn{2}{l}{\textit{Stage breakdown (mean)}} \\
   \quad NFC card read         & 15.1~ms \\
   \quad Database lookup       & 0.04~ms \\
   \quad Face embedding (ONNX) & 95.2~ms \\
   \quad Cosine match          & 0.28~ms \\
   \quad Session issuance      & 0.06~ms \\
-  \midrule
+  \hline
   Throughput (sustained) & 541.6~voters/min \\
   CPU temperature (load) & \(52.5\,^\circ\)C \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1465,17 +1465,17 @@ definitions.
   hardware). 95\% CI: one-sided Clopper--Pearson upper bound for zero-failure
   observations; ``---'' where CI is not applicable.}
 \label{tab:pilot}%
-\begin{tabular}{@{}lcc@{}}
-  \toprule
+\begin{tabular}{|l|c|c|}
+  \hline
   Metric & Observed & 95\% CI Upper \\
-  \midrule
+  \hline
   \multicolumn{3}{l}{\textit{Study parameters}} \\
   \quad Participants       & 20          & --- \\
   \quad Sessions           & 5 (3 days)  & --- \\
   \quad Genuine attempts   & 221         & --- \\
   \quad Impostor attempts  & 35          & --- \\
   \quad Replay attacks     & 15          & --- \\
-  \midrule
+  \hline
   \multicolumn{3}{l}{\textit{ISO/IEC~30107-3 metrics}} \\
   \quad FAR                & 0.00\%  & \(\leq\)8.20\% \\
   \quad FRR                & 0.00\%  & \(\leq\)1.35\% \\
@@ -1484,7 +1484,7 @@ definitions.
   \quad APCER (combined)   & 0.00\%  & \(\leq\)5.82\% \\
   \quad BPCER              & 0.00\%  & \(\leq\)1.35\% \\
   \quad ACER               & 0.00\%  & \(\leq\)3.58\% \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
@@ -1570,14 +1570,14 @@ three polling station sizes.
 \caption{TRIsecure V2 deployment configurations by station size. Assumes
   40~s voter interaction time; 6~h peak window.}
 \label{tab:throughput_scenarios}%
-\begin{tabular}{@{}lrrr@{}}
-  \toprule
+\begin{tabular}{|l|r|r|r|}
+  \hline
   Station size & Terminals & Voters/hr & Peak capacity \\
-  \midrule
+  \hline
   Small  ($\leq$500 voters)      & 1 & 90  & 540  \\
   Medium ($\leq$2{,}000 voters)  & 3 & 270 & 1{,}620 \\
   Large  ($\leq$5{,}000 voters)  & 8 & 720 & 4{,}320 \\
-  \botrule
+  \hline
 \end{tabular}
 \end{table}
 
