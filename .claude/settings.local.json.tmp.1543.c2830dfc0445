@@ -61,10 +61,7 @@
       "Bash(unzip -o sn-jnl.zip -d sn-jnl-template)",
       "Bash(pdflatex -interaction=nonstopmode trisecure_springer.tex)",
       "Bash(bibtex trisecure_springer)",
-      "Bash(mv /home/vivek/TriSecure/paper/trisecure_springer.* /home/vivek/TriSecure/paper/springer/)",
-      "Bash(mv /home/vivek/TriSecure/paper/sn-*.bst /home/vivek/TriSecure/paper/springer/)",
-      "Bash(mv /home/vivek/TriSecure/paper/trisecure_ieee.* /home/vivek/TriSecure/paper/ieee/)",
-      "Bash(mv /home/vivek/TriSecure/paper/trisecure_paper.* /home/vivek/TriSecure/paper/paper/)"
+      "Bash(awk '{print $3}')"
     ]
   }
 }
