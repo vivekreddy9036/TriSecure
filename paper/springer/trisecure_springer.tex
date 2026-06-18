@@ -46,8 +46,8 @@
 %% ============================================================
 \begin{document}
 
-\title[TRIsecure: Provably Secure Biometric E-Voting on Edge Hardware]{%
-  TRIsecure: Provably Secure Biometric E-Voting with Post-Quantum
+\title[TRIsecure: Formally Verified Biometric E-Voting on Edge Hardware]{%
+  TRIsecure: Formally Verified Biometric E-Voting with Post-Quantum
   Resilience on Commodity Edge Hardware}
 
 \author*[1]{\fnm{Pinnemcharla Sai Vivek} \sur{Reddy}}\email{vivekreddy9036@gmail.com}
@@ -214,7 +214,14 @@ Lingala~\cite{komatineni2020biometric} combine machine-learning face detection
 with biometric scanning for duplicate-vote prevention in a two-factor
 architecture. Nagaraj et al.~\cite{nagaraj2022voting} integrate facial
 recognition with fingerprint authentication to strengthen polling station
-security. Revathy et al.~\cite{revathy2022cnn_evoting} integrate CNN-based
+security. Megalingam et al.~\cite{megalingam2022voter} combine a voter
+identification card with fingerprint biometric authentication, achieving
+low-cost deployment on constrained hardware but providing no liveness
+detection, formal protocol verification, or post-quantum cryptography.
+Varma and Megalingam~\cite{varma2025fpga} demonstrate FPGA-accelerated
+biometric voting, showing that dedicated silicon inference reduces latency
+below ARM64 software execution, but the system lacks post-quantum
+cryptographic support and end-to-end verifiable receipts. Revathy et al.~\cite{revathy2022cnn_evoting} integrate CNN-based
 face recognition with blockchain and blind signatures, showing that combining
 deep learning classifiers with immutable vote records improves both
 authentication accuracy and tamper evidence. Ashok Kumar et
@@ -252,7 +259,12 @@ inspiring blockchain voting proposals. Ayed~\cite{ayed2017conceptual} proposes
 Ethereum-based voting (\(>2{,}100\)~ms) with PIN-only authentication.
 Hardwick et al.~\cite{hardwick2018voting} and Hj\'{a}lmarsson et
 al.~\cite{hjalmarsson2018blockchain} extend this with anonymisation and
-Hyperledger Fabric, but provide no biometric gate or anti-spoofing. Juels et
+Hyperledger Fabric, but provide no biometric gate or anti-spoofing.
+Durga et al.~\cite{durga2022blockchain} propose a private and secure
+blockchain mechanism for online voting using smart contracts to enforce vote
+confidentiality and election integrity, demonstrating practical deployment
+but relying on classical cryptography with no biometric identity binding or
+formal protocol verification. Juels et
 al.~\cite{juels2010coercion} formalise coercion-resistance, a property
 TRIsecure~V2 partially addresses through in-person biometric binding
 (Section~\ref{sec:limitations}). Huang et al.~\cite{huang2022blockchain_voting}
@@ -443,6 +455,80 @@ the output invalidates the tag.
 \textit{Supply-chain.} The SD card attack surface is mitigated by read-only
 mount of the OS partition in production and dm-verity hash-tree verification of
 the Python runtime image (deployment recommendation).
+
+\subsubsection*{STRIDE Threat Classification}
+
+Table~\ref{tab:stride} maps the TRIsecure~V2 attack surface against the
+STRIDE taxonomy~\cite{shostack2014threat}. Coverage is assessed as
+\textbf{Full} (mitigated entirely on-device), \textbf{Partial} (mitigated
+under deployment recommendations or with residual risk), or \textbf{None}
+(outside the on-device threat boundary).
+
+\begin{table*}[t]
+\caption{STRIDE threat mapping for TRIsecure~V2.
+  \textbf{Full}\,=\,fully mitigated on-device;
+  \textbf{Partial}\,=\,residual risk or requires deployment controls;
+  \textbf{None}\,=\,outside the on-device threat boundary.
+  PA\,=\,presentation attack; UID\,=\,NFC unique identifier.}
+\label{tab:stride}
+\small
+\begin{tabularx}{\textwidth}{@{}lXXl@{}}
+  \toprule
+  \textbf{Category} & \textbf{Attack Vector} & \textbf{TRIsecure V2 Mitigation} & \textbf{Coverage} \\
+  \midrule
+  \multirow{3}{*}{\textbf{Spoofing (S)}}
+    & Face PA (photo, mask, deepfake video)
+    & MiniFASNetV2 liveness detection; DFA Stage~4 gate; ACER~4.25\% (sim.), 0.00\% (pilot)
+    & Partial \\
+    & Cloned or emulated NFC card
+    & AES-128-GCM payload with per-read 96-bit random nonce
+    & Full \\
+    & Brute-force UID cycling
+    & DFA rate limiter P6: 5~failures\,/\,300\,s; transitions to \textsc{Rejected}
+    & Full \\
+  \cmidrule(l){1-4}
+  \multirow{2}{*}{\textbf{Tampering (T)}}
+    & Vote record or hash-chain modification
+    & SHA-256 hash chain + Merkle audit log; HMAC-SHA256 chaining
+    & Full \\
+    & KDF fault injection via power glitch (reducing Argon2id cost)
+    & HMAC-SHA256 output tag stored at enrolment; mismatch forces rejection
+    & Full \\
+  \cmidrule(l){1-4}
+  \textbf{Repudiation (R)}
+    & Voter denies casting ballot
+    & 256-bit session token + Merkle receipt (E2EV); DFA \textsc{SessionIssued}
+    & Full \\
+  \cmidrule(l){1-4}
+  \multirow{3}{*}{\textbf{Info.\ Disclosure (I)}}
+    & Biometric template exfiltration from voter database
+    & AES-256-GCM with Argon2id-derived key; no plaintext template stored
+    & Full \\
+    & SPI bus eavesdropping on NFC reader
+    & NFC payload AES-128-GCM encrypted; plaintext UID never on wire
+    & Full \\
+    & Quantum decryption of intercepted session ciphertext
+    & Hybrid PQC: Kyber-768\,+\,X25519 KEM (FIPS~203); both layers must be broken
+    & Full \\
+  \cmidrule(l){1-4}
+  \multirow{2}{*}{\textbf{Denial of Service (D)}}
+    & Repeated authentication flooding (per-device lockout)
+    & Per-UID rate limiter; DFA sink state \textsc{Rejected}
+    & Full \\
+    & Network-layer distributed DoS against infrastructure
+    & Outside on-device model; requires upstream network controls
+    & None \\
+  \cmidrule(l){1-4}
+  \multirow{2}{*}{\textbf{Elevation of Privilege (E)}}
+    & Insider database read\,/\,write access
+    & Biometric secret absent from DB; HMAC-keyed store; least-privilege principle
+    & Full \\
+    & Supply-chain firmware implant via SD card replacement
+    & dm-verity hash-tree verification; read-only OS partition (deployment rec.)
+    & Partial \\
+  \bottomrule
+\end{tabularx}
+\end{table*}
 
 \subsection{System Overview}
 
@@ -1348,6 +1434,53 @@ published ONNX Runtime ARM64 benchmarks. The p99 latency of 111.3~ms and
 \end{tabular}
 \end{table}
 
+\subsection{Security Overhead Analysis}\label{sec:security_overhead}
+
+Table~\ref{tab:security_overhead} isolates the latency contribution of each
+security layer from the core biometric pipeline. Presentation attack detection
+is the dominant security cost at 15.5~ms, measured as the ablation delta
+between configuration~C2 (face + NFC, no PAD) and C3 (full system with PAD).
+All PQC operations combined (Kyber-768 encapsulation/decapsulation and
+Dilithium-3 sign/verify) add only 2.289~ms on the real-time authentication
+path. Symmetric operations and the DFA protocol gate contribute less than
+0.07~ms combined. Merkle proof generation (4.82~ms per 1{,}000-entry chain)
+runs post-authentication and does not block the voter handoff, preserving the
+G5 latency target of \(<200\)~ms. The aggregate real-time security overhead
+(PAD plus all in-path cryptographic operations) is 17.85~ms, representing
+16.1\% of the core pipeline end-to-end figure.
+
+\begin{table}[t]
+\caption{Security-layer latency breakdown on Raspberry Pi~4 (ARM64).
+  PAD latency measured via C2$\to$C3 ablation.
+  All other values from Table~\ref{tab:pqc_benchmarks}
+  and Table~\ref{tab:crypto}.
+  $\dagger$~Runs post-authentication; not in the interactive critical path.}
+\label{tab:security_overhead}
+\small
+\begin{tabular}{@{}lr@{}}
+  \toprule
+  \textbf{Security Component} & \textbf{Latency (ms)} \\
+  \midrule
+  \multicolumn{2}{@{}l@{}}{\textit{Biometric liveness (PAD)}} \\
+  \quad MiniFASNetV2 ONNX (ablation C2$\to$C3)           & 15.500 \\[3pt]
+  \multicolumn{2}{@{}l@{}}{\textit{Post-quantum cryptography (FIPS 203/204)}} \\
+  \quad Kyber-768 encaps + decaps                         &  0.183 \\
+  \quad Dilithium-3 sign + verify                         &  1.926 \\
+  \quad \textbf{PQC auth-path subtotal}                   &  \textbf{2.289} \\[3pt]
+  \multicolumn{2}{@{}l@{}}{\textit{Symmetric encryption \& integrity}} \\
+  \quad AES-256-GCM template decrypt                      &  0.040 \\
+  \quad HMAC-SHA256 KDF output tag check                  &  0.013 \\[3pt]
+  \multicolumn{2}{@{}l@{}}{\textit{Protocol enforcement}} \\
+  \quad DFA state-transition check                        & $<$0.010 \\[3pt]
+  \multicolumn{2}{@{}l@{}}{\textit{End-to-end verifiability}} \\
+  \quad Merkle prove + verify (\(n{=}1{,}000\))$^\dagger$ &  4.820 \\
+  \midrule
+  \textbf{In-path security overhead (PAD + crypto + DFA)} & \textbf{17.85} \\
+  \textbf{Total overhead (incl.\ post-auth Merkle)}        & \textbf{22.67} \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Comparative Analysis}\label{sec:comparison}
 
 Figure~\ref{fig:comparison_combined} compares TRIsecure~V2 against five
@@ -1538,25 +1671,94 @@ revocation and is identified as future work.
 \subsection{Limitations}\label{sec:limitations}
 
 \begin{enumerate}
-  \item \textit{Small pilot sample.} A proof-of-concept pilot (\(N{=}20\), 271
-    events) validated end-to-end correctness on real hardware with
-    FAR\(=\)FRR\(=\)ACER\(=0.00\%\) (Section~\ref{sec:pilot}). A full field
-    trial with demographically diverse voters is still required for
-    ISO/IEC~19795-1 deployment certification (\(\geq\)400 subjects/group).
-  \item \textit{PAD dataset.} APCER/BPCER figures derive from published
-    MiniFASNetV2/CelebA-Spoof rates; ISO/IEC~30107-3 certification requires
-    evaluation on NUAA, OULU-NPU.
-  \item \textit{NFC secure element.} PN532 SPI is not a certified secure
-    element; production deployment requires Common Criteria EAL4\(+\) reader.
-  \item \textit{Coercion resistance.} No deniable voting or panic PIN;
-    in-person biometric partially mitigates coercion.
-  \item \textit{Network-layer DoS.} Distributed DoS is outside the on-device
-    security model.
-  \item \textit{PQC Python overhead.} liboqs~0.15.0 was compiled from source
-    and benchmarked on-device (Table~\ref{tab:pqc_benchmarks}). The current
-    implementation invokes liboqs via ctypes; a future \texttt{liboqs-python}
-    pre-built ARM64 wheel would remove the source-build dependency for
-    end-user deployment.
+
+  \item \textit{Simulation-based evaluation and small pilot.}
+    The primary biometric evaluation (\(n{=}1{,}000\) score pairs,
+    EER~\(=1.55\%\), AUC~\(=0.9991\)) uses Gaussian-modelled
+    genuine/impostor distributions following ISO/IEC~19795-6 operational
+    guidance, not a live capture study. The real-hardware pilot (\(N{=}20\),
+    271 events) confirms end-to-end correctness but is far below the
+    ISO/IEC~19795-1 threshold for deployment certification
+    (\(\geq\)400 subjects per demographic group). Zero error rates observed
+    in the pilot reflect the small, demographically homogeneous sample and
+    must not be extrapolated to deployment scale. A demographically diverse
+    field trial remains the critical outstanding validation step.
+
+  \item \textit{PAD evaluation dataset and attack coverage.}
+    PAD metrics (APCER, BPCER, ACER) are derived from published
+    MiniFASNetV2 performance on CelebA-Spoof, not from on-device evaluation
+    against the ISO/IEC~30107-3 standardised corpora (NUAA, OULU-NPU).
+    Attack types absent from CelebA-Spoof---high-fidelity 3D silicone masks,
+    adversarial perturbations, partial occlusion attacks---remain
+    unevaluated. ACER~\(=4.25\%\) should therefore be interpreted as a
+    single-dataset lower bound rather than a certified operational figure.
+
+  \item \textit{NFC reader and secure element.}
+    The PN532 SPI module carries no security certification. Absent a
+    Common Criteria EAL4\(+\) certified reader, AES-128-GCM key protection
+    for the NFC payload relies solely on the host OS memory isolation
+    guarantees rather than hardware-backed key storage or tamper-evidence.
+    Production deployment of an election-grade system requires certified
+    hardware throughout the NFC read path.
+
+  \item \textit{Coercion and deniable voting.}
+    TRIsecure~V2 provides no deniable-voting mechanism (a voter cannot
+    secretly record a different preference while appearing to comply with
+    a coercer) and no panic PIN to signal duress. In-person biometric
+    authentication prevents remote delegation of authentication but does
+    not protect against physical coercion at the polling station.
+    Addressing coercion resistance would require cryptographic deniability
+    schemes~\cite{juels2010civitas} integrated at the ballot-level, which
+    is deferred to future work.
+
+  \item \textit{Network-layer denial of service.}
+    The DFA rate limiter (P6, five failures per 300~s per UID) defends
+    against per-device authentication flooding. Distributed DoS attacks
+    targeting the network path (disrupting Merkle-root broadcast or
+    log-synchronisation channels) are outside the on-device threat boundary
+    and require upstream infrastructure controls, CDN-layer mitigation,
+    or air-gap deployment for high-assurance polling stations.
+
+  \item \textit{PQC implementation maturity and side-channel exposure.}
+    The Kyber-768 and Dilithium-3 layers invoke liboqs~0.15.0 via
+    \texttt{ctypes}, compiled from source on ARM64. This introduces a
+    source-build dependency and has not been independently audited for
+    constant-time execution on the Cortex-A72. FIPS~203/204 mandate
+    constant-time implementations; while liboqs targets this property,
+    its ARM64 side-channel posture has not been validated in this
+    deployment context. A production pre-built \texttt{liboqs-python}
+    ARM64 wheel would remove the build dependency and simplify auditing.
+
+  \item \textit{Power-analysis and electromagnetic side-channel attacks.}
+    Power analysis and EM side-channel characterisation of the
+    AES-256-GCM and Argon2id Python implementations on the
+    Raspberry Pi~4 platform are out of scope for this work.
+    Additionally, ONNX inference timing leaks information proportional
+    to detection confidence; while the DFA rate limiter bounds the number
+    of observable traces per voter, a systematic timing side-channel study
+    on the face-embedding inference path has not been conducted and is
+    flagged for future hardware-layer hardening.
+
+  \item \textit{Demographic and environmental robustness.}
+    MobileFaceNet (ArcFace) is trained on VGGFace2 and MS-Celeb-1M,
+    datasets with known demographic imbalance. Differential EER across
+    age groups, skin tones, and gender has not been characterised for
+    this deployment. Environmental factors typical of polling stations
+    (variable lighting, partial occlusion, eyeglasses, surgical masks
+    that avoid PAD triggering) may degrade performance below the
+    simulated EER of 1.55\%. A bias audit following ISO/IEC~19795-9
+    and testing under controlled environmental variation is required
+    before public deployment.
+
+  \item \textit{Template revocability.}
+    AES-256-GCM encryption protects template confidentiality but does
+    not support cancelable biometric transforms. If a voter's embedding
+    is compromised, it cannot be revoked and re-enrolled with a new
+    protected template derived from the same biometric trait.
+    ISO/IEC~24745:2022 Clause~6.3 (renewability) requires cancelable
+    transforms; extending TRIsecure~V2 with BioHashing or
+    fuzzy-commitment schemes is identified as future work.
+
 \end{enumerate}
 
 \subsection{Regulatory and Standards Alignment}\label{sec:regulatory}
