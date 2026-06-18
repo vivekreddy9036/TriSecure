@@ -46,9 +46,9 @@
 %% ============================================================
 \begin{document}
 
-\title[TRIsecure: Formally Verified Biometric E-Voting on Edge Hardware]{%
-  TRIsecure: Formally Verified Biometric E-Voting with Post-Quantum
-  Resilience on Commodity Edge Hardware}
+\title[TRIsecure: A Post-Quantum Biometric E-Voting Framework on Edge Hardware]{%
+  TRIsecure: Design and Evaluation of a Post-Quantum Biometric E-Voting
+  Framework on Commodity Edge Hardware}
 
 \author*[1]{\fnm{Pinnemcharla Sai Vivek} \sur{Reddy}}\email{vivekreddy9036@gmail.com}
 
@@ -464,67 +464,69 @@ STRIDE taxonomy~\cite{shostack2014threat}. Coverage is assessed as
 under deployment recommendations or with residual risk), or \textbf{None}
 (outside the on-device threat boundary).
 
-\begin{table*}[t]
+\begin{table*}[p]
 \caption{STRIDE threat mapping for TRIsecure~V2.
   \textbf{Full}\,=\,fully mitigated on-device;
   \textbf{Partial}\,=\,residual risk or requires deployment controls;
   \textbf{None}\,=\,outside the on-device threat boundary.
   PA\,=\,presentation attack; UID\,=\,NFC unique identifier.}
 \label{tab:stride}
-\small
-\begin{tabularx}{\textwidth}{@{}lXXl@{}}
+\footnotesize
+\renewcommand{\arraystretch}{1.05}
+\newcolumntype{R}{>{\raggedright\arraybackslash}X}
+\begin{tabularx}{\textwidth}{@{}lRRl@{}}
   \toprule
   \textbf{Category} & \textbf{Attack Vector} & \textbf{TRIsecure V2 Mitigation} & \textbf{Coverage} \\
   \midrule
   \multirow{3}{*}{\textbf{Spoofing (S)}}
-    & Face PA (photo, mask, deepfake video)
-    & MiniFASNetV2 liveness detection; DFA Stage~4 gate; ACER~4.25\% (sim.), 0.00\% (pilot)
+    & Face PA: photo, mask, deepfake video
+    & MiniFASNetV2 liveness; DFA Stage~4 gate; ACER 4.25\% (sim.), 0.00\% (pilot)
     & Partial \\
     & Cloned or emulated NFC card
     & AES-128-GCM payload with per-read 96-bit random nonce
     & Full \\
     & Brute-force UID cycling
-    & DFA rate limiter P6: 5~failures\,/\,300\,s; transitions to \textsc{Rejected}
+    & Rate limiter P6: 5 failures\,/\,300\,s; sink to \textsc{Rejected}
     & Full \\
   \cmidrule(l){1-4}
   \multirow{2}{*}{\textbf{Tampering (T)}}
     & Vote record or hash-chain modification
-    & SHA-256 hash chain + Merkle audit log; HMAC-SHA256 chaining
+    & SHA-256 hash chain + Merkle audit log + HMAC-SHA256 chaining
     & Full \\
-    & KDF fault injection via power glitch (reducing Argon2id cost)
-    & HMAC-SHA256 output tag stored at enrolment; mismatch forces rejection
+    & KDF fault injection (power glitch on Argon2id)
+    & HMAC-SHA256 output tag at enrolment; mismatch forces rejection
     & Full \\
   \cmidrule(l){1-4}
   \textbf{Repudiation (R)}
     & Voter denies casting ballot
-    & 256-bit session token + Merkle receipt (E2EV); DFA \textsc{SessionIssued}
+    & 256-bit session token + Merkle receipt (E2EV)
     & Full \\
   \cmidrule(l){1-4}
   \multirow{3}{*}{\textbf{Info.\ Disclosure (I)}}
-    & Biometric template exfiltration from voter database
-    & AES-256-GCM with Argon2id-derived key; no plaintext template stored
+    & Biometric template exfiltration from DB
+    & AES-256-GCM (Argon2id-derived key); no plaintext template stored
     & Full \\
     & SPI bus eavesdropping on NFC reader
     & NFC payload AES-128-GCM encrypted; plaintext UID never on wire
     & Full \\
-    & Quantum decryption of intercepted session ciphertext
-    & Hybrid PQC: Kyber-768\,+\,X25519 KEM (FIPS~203); both layers must be broken
+    & Quantum decryption of session ciphertext
+    & Hybrid PQC: Kyber-768\,+\,X25519 KEM (FIPS~203)
     & Full \\
   \cmidrule(l){1-4}
   \multirow{2}{*}{\textbf{Denial of Service (D)}}
-    & Repeated authentication flooding (per-device lockout)
+    & Repeated authentication flooding
     & Per-UID rate limiter; DFA sink state \textsc{Rejected}
     & Full \\
-    & Network-layer distributed DoS against infrastructure
-    & Outside on-device model; requires upstream network controls
+    & Network-layer distributed DoS
+    & Out of on-device scope; upstream network controls required
     & None \\
   \cmidrule(l){1-4}
   \multirow{2}{*}{\textbf{Elevation of Privilege (E)}}
-    & Insider database read\,/\,write access
-    & Biometric secret absent from DB; HMAC-keyed store; least-privilege principle
+    & Insider DB read\,/\,write access
+    & Biometric secret not in DB; HMAC-keyed store; least privilege
     & Full \\
-    & Supply-chain firmware implant via SD card replacement
-    & dm-verity hash-tree verification; read-only OS partition (deployment rec.)
+    & Supply-chain firmware implant (SD card)
+    & dm-verity hash-tree; read-only OS partition (deployment rec.)
     & Partial \\
   \bottomrule
 \end{tabularx}
@@ -1708,7 +1710,7 @@ revocation and is identified as future work.
     authentication prevents remote delegation of authentication but does
     not protect against physical coercion at the polling station.
     Addressing coercion resistance would require cryptographic deniability
-    schemes~\cite{juels2010civitas} integrated at the ballot-level, which
+    schemes~\cite{juels2010coercion,clarkson2008civitas} integrated at the ballot-level, which
     is deferred to future work.
 
   \item \textit{Network-layer denial of service.}
