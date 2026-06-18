@@ -18,6 +18,7 @@
 \usepackage[title]{appendix}%
 \usepackage{textcomp}%
 \usepackage{booktabs}%
+\usepackage{tabularx}%
 \usepackage{algorithm}%
 \usepackage{algorithmicx}%
 \usepackage{algpseudocode}%
@@ -357,50 +358,46 @@ matrix across eight systems and seven dimensions.
 
 \begin{table*}[t]
 \caption{Comparison of related e-voting and biometric authentication systems.
-  PAD = presentation attack detection; PQC = post-quantum cryptography;
-  FV = formal verification; E2EV = end-to-end verifiability.}
-\label{tab:related_comparison}%
-\begin{tabular*}{\textwidth}{@{\extracolsep\fill}p{2.2cm}p{3.0cm}p{3.4cm}p{3.4cm}}
-  \hline
+  PAD\,=\,presentation attack detection; PQC\,=\,post-quantum cryptography;
+  FV\,=\,formal verification; E2EV\,=\,end-to-end verifiability.}
+\label{tab:related_comparison}
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.9cm}p{3.5cm}XX@{}}
+  \toprule
   \textbf{Author (Year)} & \textbf{Method} & \textbf{Advantages} & \textbf{Limitations} \\
-  \hline
+  \midrule
   Bello et al.\ (2021)~\cite{bello2021biometric}
     & Fingerprint + smart card
     & Two-factor; biometric binding; EER~\(2.5\%\)
-    & No PAD; no PQC; no FV; 950~ms; server-dependent \\
-  \addlinespace
+    & No PAD; no PQC; no FV; 950~ms; server-dependent \\[3pt]
   S\'{a}nchez-Reillo et al.\ (2020)~\cite{sanchez2020biometric}
     & Face + smart card, constrained
     & Targets embedded devices
-    & EER~\(3.2\%\); no liveness; no FV; no PQC \\
-  \addlinespace
+    & EER~\(3.2\%\); no liveness; no FV; no PQC \\[3pt]
   Ayed (2017)~\cite{ayed2017conceptual}
     & Ethereum blockchain, PIN-only
     & Vote receipts; tamper-evident ledger
-    & No biometric gate; \(>2100\)~ms; classical crypto \\
-  \addlinespace
+    & No biometric gate; \(>2100\)~ms; classical crypto \\[3pt]
   Hardwick et al.\ (2018)~\cite{hardwick2018voting}
     & Blockchain with anonymisation
     & Voter anonymity; blockchain integrity
-    & No biometric; no PAD; classical crypto \\
-  \addlinespace
+    & No biometric; no PAD; classical crypto \\[3pt]
   Deng et al.\ (2019)~\cite{deng2019arcface}
     & ArcFace + PIN
     & EER~\(0.76\%\); 45~ms (GPU)
-    & No liveness; no FV; requires GPU server \\
-  \addlinespace
+    & No liveness; no FV; requires GPU server \\[3pt]
   FIDO2/WebAuthn (2019)~\cite{fido2_webauthn}
     & Device-bound MFA
     & Industry standard; 190~ms
     & No PAD; no voter receipts; not per-election \\
-  \addlinespace
+  \midrule
   \textbf{TRIsecure V2 (Ours)}
     & NFC + face + session, PAD, PQC, DFA
     & FV; EER~\(1.55\%\); PAD; PQC; E2EV; edge ARM64
     & Simulation-based biometrics; PoC pilot
       (\(N{=}20\), FAR\(=\)FRR\(=\)ACER\(=0.00\%\)) \\
-  \hline
-\end{tabular*}
+  \bottomrule
+\end{tabularx}
 \end{table*}
 
 \begin{figure}[t]
