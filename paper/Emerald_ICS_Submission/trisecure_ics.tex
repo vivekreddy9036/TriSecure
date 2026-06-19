@@ -62,6 +62,19 @@
 \setlength{\parskip}{6pt}
 \setlength{\parindent}{0pt}
 
+%% -- Float spacing (reduce gaps around tables/figures) -------
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{12pt plus 2pt minus 4pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+%% Allow more floats per page and relax placement constraints
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{3}
+\setcounter{totalnumber}{6}
+\renewcommand{\topfraction}{0.90}
+\renewcommand{\bottomfraction}{0.60}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.70}
+
 \bibliographystyle{apalike}
 
 %% =============================================================
@@ -687,7 +700,7 @@ Table~\ref{tab:biometric} reports key biometric performance metrics.
 Figure~4 visualises the ROC curve, DET curve, and genuine/impostor score
 distributions.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \caption{Biometric performance metrics (simulation; $n{=}1{,}000$
   genuine and $1{,}000$ impostor samples; ArcFace LFW priors).}
 \label{tab:biometric}
@@ -703,7 +716,7 @@ distributions.
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[!ht]
   \centering
   \includegraphics[width=0.92\linewidth]{experiments_figures/biometric_eval_panel.jpg}
   \caption{Biometric evaluation panel. Left: ROC curve
@@ -717,7 +730,7 @@ Table~\ref{tab:sensitivity} reports EER and AUC under $\pm10\%$
 variation of $\sigma_G$ and $\sigma_I$; the EER varies by $\pm0.17$
 percentage points, confirming metric stability.
 
-\begin{table}[htbp]
+\begin{table}[!ht]
 \caption{Sensitivity of biometric metrics to $\pm10\%$ Gaussian
   parameter variation. Nominal: $\sigma_G{=}0.08$, $\sigma_I{=}0.12$.}
 \label{tab:sensitivity}
