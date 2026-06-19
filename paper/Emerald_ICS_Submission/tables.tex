@@ -1,0 +1,206 @@
+%% ============================================================
+%% TABLES — SEPARATE FILE
+%%
+%% Per Emerald Publishing author guidelines:
+%%   "Tables should be typed and submitted in a separate file to
+%%    the main body of the article. The position of each table
+%%    should be clearly labelled in the main body of the article
+%%    with corresponding labels clearly shown in the table file."
+%%
+%% Upload this file as a separate item in ScholarOne alongside
+%% the main manuscript.
+%%
+%% Journal : Information and Computer Security (ICS), Emerald Publishing
+%% ============================================================
+
+\documentclass[a4paper,12pt]{article}
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=3cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{graphicx}  % for \resizebox in Table V
+
+\renewcommand{\thetable}{\Roman{table}}
+\newcommand{\botrule}{\bottomrule}
+
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{Comparison of related e-voting and biometric authentication
+  systems. PAD\,=\,presentation attack detection;
+  PQC\,=\,post-quantum cryptography; FV\,=\,formal verification;
+  BIO\,=\,biometric.}
+\label{tab:related_comparison}
+\small
+\begin{tabular}{p{2.5cm}p{3.0cm}p{3.9cm}p{3.1cm}}
+  \toprule
+  \textbf{Author (Year)} & \textbf{Method} &
+  \textbf{Advantages} & \textbf{Limitations} \\
+  \midrule
+  Bello et al. (2021)
+    & Fingerprint + smart card
+    & Two-factor BIO; EER 2.5\%
+    & No PAD; no PQC; no FV \\[2pt]
+  Sanchez et al. (2020)
+    & Face + smart card, embedded
+    & Constrained; two-factor
+    & EER 3.2\%; no liveness; no FV \\[2pt]
+  Ayed (2017)
+    & Ethereum, PIN-only
+    & Blockchain receipts
+    & No BIO; classical crypto \\[2pt]
+  Faruk et al. (2024)
+    & Hyperledger + face + fingerprint
+    & Dual-BIO; blockchain
+    & No PAD; no PQC; no FV \\[2pt]
+  FIDO Alliance (2019)
+    & Device-bound MFA standard
+    & Industry standard; keys
+    & No PAD; no voter receipts \\[2pt]
+  \textbf{TRIsecure V2}
+    & NFC+face+token; PAD; PQC; DFA
+    & Formally verified; PAD; PQC; edge
+    & Simulation BIO; no field trial \\
+  \botrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{Biometric performance metrics (simulation; $n{=}1{,}000$
+  genuine and $1{,}000$ impostor samples; ArcFace LFW priors).}
+\label{tab:biometric}
+\begin{tabular}{lc}
+  \toprule
+  \textbf{Metric} & \textbf{Value} \\
+  \midrule
+  Equal Error Rate (EER)  & 1.55\% at $\tau = 0.539$ \\
+  TAR @ 0.1\% FAR         & 89.70\%                   \\
+  TAR @ 1.0\% FAR         & 97.70\%                   \\
+  ROC AUC                 & 0.9991                    \\
+  \botrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{Sensitivity of biometric metrics to $\pm10\%$ Gaussian
+  parameter variation. Nominal: $\sigma_G{=}0.08$,
+  $\sigma_I{=}0.12$.}
+\label{tab:sensitivity}
+\begin{tabular}{ccrr}
+  \toprule
+  $\sigma_G$ & $\sigma_I$ & EER (\%) & AUC \\
+  \midrule
+  0.072 ($-10\%$) & 0.108 ($-10\%$) & 1.38 & 0.9993 \\
+  0.080 (nominal) & 0.120 (nominal) & 1.55 & 0.9991 \\
+  0.088 ($+10\%$) & 0.132 ($+10\%$) & 1.71 & 0.9988 \\
+  \botrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{PAD metrics per ISO/IEC~30107-3 ($n_{\text{bona
+  fide}}{=}500$, $n_{\text{print}}{=}200$,
+  $n_{\text{replay}}{=}200$).}
+\label{tab:pad}
+\begin{tabular}{lcc}
+  \toprule
+  \textbf{Metric} & \textbf{Attack type} & \textbf{Rate (\%)} \\
+  \midrule
+  BPCER (bona fide error)       & ---   & 1.00  \\
+  APCER (print attack)          & Photo & 5.00  \\
+  APCER (replay attack)         & Video & 10.00 \\
+  APCER (combined)              & Both  & 7.50  \\
+  ACER (average classification) & ---   & 4.25  \\
+  \botrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{Ablation study: cumulative component contribution.
+  $\dagger$\,=\,at system default threshold $\tau{=}0.55$.}
+\label{tab:ablation}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{llcccc}
+  \toprule
+  \textbf{Config} & \textbf{Components} &
+  \textbf{EER (\%)} & \textbf{Eff.\ FAR (\%)} &
+  \textbf{Latency (ms)} & \textbf{Attacks mitigated} \\
+  \midrule
+  C1 & Face threshold only$^\dagger$ & 1.45 & 1.2224 & 95.2  & 3/12 \\
+  C2 & +Bayesian NFC fusion          & 1.55 & 0.0010 & 95.5  & 6/12 \\
+  C3 & +PAD liveness                 & 1.55 & 0.0010 & 110.7 & 9/12 \\
+  C4 & +PQC signatures (full)        & 1.55 & 0.0010 & 125.1 & 12/12 \\
+  \botrule
+\end{tabular}%
+}
+\end{table}
+
+\bigskip
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{Cryptographic benchmarks on Raspberry Pi~4 (ARM64), 95\% CI.}
+\label{tab:crypto}
+\begin{tabular}{lcrr}
+  \toprule
+  \textbf{Operation} & $n$ & \textbf{Mean (ms)} & \textbf{95\% CI} \\
+  \midrule
+  Argon2id ($t{=}3$, $m{=}64$\,MB) & 20    & 494.5 & [492.7, 496.3] \\
+  PBKDF2-HMAC-SHA256 (100k iter.)   & 100   & 106.1 & [105.1, 107.1] \\
+  AES-256-GCM enc.\ (2\,kB)         & 1000  & 0.040 & [0.040, 0.041] \\
+  HMAC-SHA256 (256\,B)              & 10000 & 0.013 & [0.013, 0.013] \\
+  Ed25519 sign+verify               & 200   & 0.532 & [0.527, 0.538] \\
+  X25519 KEM keygen+encap+decap     & 200   & 1.022 & [1.002, 1.042] \\
+  SHA-256 chain ($n{=}1{,}000$)     & 3     & 4.27  & [4.11, 4.43]   \\
+  Merkle prove+verify ($n{=}1{,}000$) & 5   & 4.82  & [4.74, 4.90]   \\
+  \botrule
+\end{tabular}
+\end{table}
+
+\bigskip
+
+%% =============================================================
+\begin{table}[htbp]
+\caption{End-to-end authentication latency on Raspberry Pi~4
+  ($n{=}50$ runs).}
+\label{tab:pi}
+\begin{tabular}{lr}
+  \toprule
+  \textbf{Metric} & \textbf{Value} \\
+  \midrule
+  \multicolumn{2}{l}{\textit{End-to-end latency}} \\
+  \quad Mean                   & 110.7\,ms \\
+  \quad p50                    & 110.7\,ms \\
+  \quad p95                    & 110.9\,ms \\
+  \quad p99                    & 111.3\,ms \\
+  \midrule
+  \multicolumn{2}{l}{\textit{Stage breakdown (mean)}} \\
+  \quad NFC card read          & 15.1\,ms  \\
+  \quad Database lookup        & 0.04\,ms  \\
+  \quad Face embedding (ONNX)  & 95.2\,ms  \\
+  \quad Cosine match           & 0.28\,ms  \\
+  \quad Session issuance       & 0.06\,ms  \\
+  \midrule
+  Throughput (sustained)       & 541.6 voters/min \\
+  CPU temperature (under load) & 52.5\,$^\circ$C  \\
+  \botrule
+\end{tabular}
+\end{table}
+
+\end{document}

@@ -10,25 +10,25 @@
 
 \documentclass[a4paper,12pt]{article}
 
-%% -- Geometry and encoding (fast, always needed) ----------------
+%% -- Geometry and encoding ------------------------------------
 \usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=3cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 
-%% -- Mathematics -----------------------------------------------
+%% -- Mathematics ----------------------------------------------
 \usepackage{amsmath,amssymb}
 
-%% -- Figures ---------------------------------------------------
+%% -- Figures --------------------------------------------------
 \usepackage{graphicx}
 
-%% -- Tables ----------------------------------------------------
+%% -- Tables ---------------------------------------------------
 \usepackage{booktabs}
 
-%% -- Bibliography (fast: natbib + bibtex, no biber) ------------
+%% -- Bibliography (natbib + bibtex, no biber) ----------------
 \usepackage[round,authoryear,sort&compress]{natbib}
 \usepackage{url}
 
-%% -- Section headings: Emerald style (no titlesec) -------------
+%% -- Section headings: Emerald style (no titlesec) -----------
 %% H1: large bold  |  H2+H3: normalsize italic
 \makeatletter
 \renewcommand\section{\@startsection{section}{1}{\z@}%
@@ -42,21 +42,21 @@
   {\normalfont\normalsize\itshape}}
 \makeatother
 
-%% -- Theorem environments (standard, no amsthm) ----------------
+%% -- Theorem environments ------------------------------------
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 
-%% -- Emerald: Roman-numeral table numbering --------------------
+%% -- Emerald: Roman-numeral table numbering ------------------
 \renewcommand{\thetable}{\Roman{table}}
 
-%% -- Citation aliases (body text uses biblatex style names) ----
+%% -- Citation aliases ----------------------------------------
 \newcommand{\parencite}[1]{\citep{#1}}
 \newcommand{\textcite}[1]{\citet{#1}}
 
-%% -- booktabs alias (Springer manuscripts use \botrule) --------
+%% -- booktabs alias ------------------------------------------
 \newcommand{\botrule}{\bottomrule}
 
-%% -- Spacing tweaks -------------------------------------------
+%% -- Spacing tweaks ------------------------------------------
 \setlength{\emergencystretch}{4em}
 \setlength{\tolerance}{1500}
 \setlength{\parskip}{6pt}
@@ -74,7 +74,6 @@
 \title{\textbf{TRIsecure: Design and Evaluation of a Three-Factor
   Post-Quantum Biometric E-Voting Framework on Commodity Edge Hardware}}
 \author{}        % left blank for blind review
-%% Uncomment below for final accepted version:
 %% \author{Pinnemcharla Sai Vivek Reddy$^{1*}$,
 %%   Saranya G$^{1}$ and S.\ Udhaya Kumar$^{1}$\\[6pt]
 %%   $^{1}$Department of Computer Science and Engineering,\\
@@ -199,24 +198,19 @@ The following original contributions are made:
         A five-stage pipeline modelled as a DFA with six proved security
         properties: determinism, completeness, safety, liveness,
         double-vote prevention, and rate-limit enforcement.
-
   \item \textbf{Bayesian score-level biometric fusion.}
         Log-likelihood-ratio fusion of face cosine similarity and NFC
         channel evidence (EER\,=\,1.55\%, AUC\,=\,0.9991,
         TAR@1\%FAR\,=\,97.7\%).
-
   \item \textbf{Hybrid post-quantum cryptographic layer.}
         Kyber-768\,+\,X25519 hybrid KEM (NIST FIPS~203) and
         Dilithium-3\,+\,Ed25519 digital signatures (NIST FIPS~204).
-
   \item \textbf{ISO/IEC~30107-3 presentation attack detection.}
         MiniFASNetV2 liveness detection integrated at the final
         authentication stage (BPCER\,=\,1.0\%, ACER\,=\,4.25\%).
-
   \item \textbf{End-to-end voter verifiability.}
         SHA-256 commitment receipts and $O(\log n)$ Merkle inclusion
         proofs.
-
   \item \textbf{Edge-device evaluation.}
         Full-system benchmarks on Raspberry Pi~4 (ARM64): 110.7\,ms
         end-to-end latency (p99\,=\,111.3\,ms), 541.6~voters/min
@@ -395,8 +389,7 @@ attacker} (brute-force, replay, man-in-the-middle); (2)~\textbf{physical
 attacker} (spoofed face photo or video, cloned NFC card);
 (3)~\textbf{insider attacker} (database read/write access but no
 biometric secret or NFC card); (4)~\textbf{quantum adversary} (capable
-of breaking RSA/ECC via Shor's algorithm
-\parencite{shor1994algorithms}).
+of breaking RSA/ECC via Shor's algorithm \parencite{shor1994algorithms}).
 
 \subsection{System Overview}
 
@@ -409,7 +402,7 @@ to SHA-256 hash chain; (8)~Merkle receipt generated and saved.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/architecture.png}
+  \includegraphics[width=\linewidth]{figures/architecture.jpg}
   \caption{TRIsecure V2 six-layer clean architecture. Arrows show upward
     dependency direction; hardware details are abstracted at each layer
     boundary.}
@@ -450,12 +443,12 @@ MiniFASNetV2 classifies the captured face frame as live or spoofed.
 
 \paragraph{Session issuance.}
 A 256-bit cryptographically random session token with 60\,s TTL is
-issued. Only the SHA-256 hash of the token (not the plaintext) is
-stored to prevent token-exposure attacks.
+issued. Only the SHA-256 hash of the token is stored to prevent
+token-exposure attacks.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{figures/auth_dfa.png}
+  \includegraphics[width=\linewidth]{figures/auth_dfa.jpg}
   \caption{TRIsecure V2 authentication DFA. The single accepting state
     (\textsc{Session}) is reachable only via the unique canonical path
     through all eight mandatory inputs. Any failure transitions to
@@ -476,8 +469,7 @@ cosine similarity score. The genuine and impostor distributions are:
 \end{align}
 
 Parameters are derived from the ArcFace buffalo\_sc model evaluated on
-the Labeled Faces in the Wild (LFW) benchmark
-\parencite{deng2019arcface}.
+the Labeled Faces in the Wild (LFW) benchmark \parencite{deng2019arcface}.
 
 The NFC channel contributes a near-deterministic likelihood ratio:
 \begin{equation}
@@ -511,12 +503,9 @@ only) to $\approx$\,0.001\% (combined), as shown in the ablation study
 \renewcommand{\labelenumi}{\arabic{enumi}:}
 \begin{enumerate}
   \setlength{\topsep}{2pt}\setlength{\itemsep}{1pt}
-  \item $(ct_K, ss_K) \leftarrow
-        \textsc{Kyber768.Encaps}(pk_K)$
-  \item $(ct_X, ss_X) \leftarrow
-        \textsc{X25519.ECDH}(pk_X)$
-  \item $ss \leftarrow
-        \textsc{HKDF-SHA256}(ss_K \,\|\, ss_X)$
+  \item $(ct_K, ss_K) \leftarrow \textsc{Kyber768.Encaps}(pk_K)$
+  \item $(ct_X, ss_X) \leftarrow \textsc{X25519.ECDH}(pk_X)$
+  \item $ss \leftarrow \textsc{HKDF-SHA256}(ss_K \,\|\, ss_X)$
   \item \textbf{return} $(ct_K \,\|\, ct_X,\; ss)$
 \end{enumerate}
 \renewcommand{\labelenumi}{\arabic{enumi}.}
@@ -534,9 +523,8 @@ Vote records are signed with Dilithium-3 (ML-DSA-65, FIPS~204)
 
 \paragraph{Embedding encryption.}
 Face embeddings are encrypted at rest with AES-256-GCM, keyed via
-Argon2id ($t{=}3$, $m{=}64$\,MB, $p{=}1$)
-\parencite{biryukov2015argon2}, providing resistance to offline
-GPU/ASIC brute-force on stolen storage.
+Argon2id ($t{=}3$, $m{=}64$\,MB, $p{=}1$) \parencite{biryukov2015argon2},
+providing resistance to offline GPU/ASIC brute-force on stolen storage.
 
 \subsection{Vote Integrity and Verifiability}\label{sec:vote_integrity}
 
@@ -552,8 +540,7 @@ records, enabling $O(n)$ tamper detection.
 
 \paragraph{Merkle inclusion proofs.}
 A binary SHA-256 Merkle tree supports $O(\log n)$ individual
-verifiability proofs. The root is published as the election tally
-digest.
+verifiability proofs. The root is published as the election tally digest.
 
 \paragraph{Vote receipts.}
 Each voter receives:
@@ -586,34 +573,28 @@ DFA $\mathcal{M}$ satisfies:
 \renewcommand{\labelenumi}{P\arabic{enumi}.}
 \begin{enumerate}
   \item \textbf{Determinism.}
-    $|\delta(q,\sigma)| \leq 1$ for all $(q,\sigma) \in Q \times
-    \Sigma$. \textit{Proof: 19 unique $(q,\sigma)$ keys; no
-    duplicate defined.}
+    $|\delta(q,\sigma)| \leq 1$ for all $(q,\sigma) \in Q \times \Sigma$.
+    \textit{Proof: 19 unique $(q,\sigma)$ keys; no duplicate defined.}
   \item \textbf{Completeness.}
-    $\delta$ is complete w.r.t.\ expected inputs $\Sigma_q$ per
-    state. \textit{Proof: all 19 expected $(q,\sigma)$ pairs are
-    defined.}
+    $\delta$ is complete w.r.t.\ expected inputs $\Sigma_q$ per state.
+    \textit{Proof: all 19 expected $(q,\sigma)$ pairs are defined.}
   \item \textbf{Safety.}
-    \textnormal{\textsc{SessionIssued}} is reachable via exactly
-    one path, traversing all eight mandatory inputs in fixed order.
+    \textnormal{\textsc{SessionIssued}} is reachable via exactly one path,
+    traversing all eight mandatory inputs in fixed order.
     \textit{Proof: BFS finds a unique success path of length~9.}
   \item \textbf{Liveness.}
     Every reachable path terminates (no non-resetting cycles).
-    \textit{Proof: DFS cycle detection finds no non-trivial
-    cycles.}
+    \textit{Proof: DFS cycle detection finds no non-trivial cycles.}
   \item \textbf{Double-vote prevention.}
     $\delta(\textnormal{\textsc{EligibilityCheck}},
-    \textnormal{\textsc{NotEligible}}) =
-    \textnormal{\textsc{Rejected}}$.
+    \textnormal{\textsc{NotEligible}}) = \textnormal{\textsc{Rejected}}$.
     \textit{Proof: direct inspection of the transition table.}
   \item \textbf{Rate-limit enforcement.}
     The rate limiter executes before all biometric operations.
     \textit{Proof: $\delta(\textnormal{\textsc{Idle}},
-    \textnormal{\textsc{Attempt}}) =
-    \textnormal{\textsc{RateCheck}}$;
+    \textnormal{\textsc{Attempt}}) = \textnormal{\textsc{RateCheck}}$;
     $\delta(\textnormal{\textsc{RateCheck}},
-    \textnormal{\textsc{RateBlocked}}) =
-    \textnormal{\textsc{Rejected}}$.}
+    \textnormal{\textsc{RateBlocked}}) = \textnormal{\textsc{Rejected}}$.}
 \end{enumerate}
 \renewcommand{\labelenumi}{\arabic{enumi}.}
 All six properties are machine-verified by the system's formal
@@ -630,8 +611,7 @@ Overall coverage: 47.2\% weighted across all cells; critical attacks
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{%
-    experiments_figures/threat_model_heatmap.png}
+  \includegraphics[width=\linewidth]{experiments_figures/threat_model_heatmap.jpg}
   \caption{Threat model coverage matrix. Green cells (score~2) indicate
     full mitigation; yellow (score~1) partial mitigation; red (score~0)
     no mitigation by that layer. Column sums show total defence
@@ -653,21 +633,21 @@ Following \textcite{kusters2010accountability} and
 \begin{description}
   \item[\textbf{Individual verifiability:}]
     Voter $v$ can confirm that her commitment
-    $c_v = \mathrm{SHA\text{-}256}(v\_id \| n)$ appears in the
-    Merkle tree rooted at the published election digest~$r$.
+    $c_v = \mathrm{SHA\text{-}256}(v\_id \| n)$ appears in the Merkle
+    tree rooted at the published election digest~$r$.
   \item[\textbf{Universal verifiability:}]
-    Any external auditor can recompute the Merkle root from the
-    ordered public vote log and verify it equals~$r$.
+    Any external auditor can recompute the Merkle root from the ordered
+    public vote log and verify it equals~$r$.
   \item[\textbf{Eligibility verifiability:}]
     Only registered, non-duplicate voters can reach
     \textsc{SessionIssued}---proved by DFA properties P3 and P5.
 \end{description}
 
 \noindent\textit{Proof sketch.} Individual: the receipt
-$(v\_id, n, \pi, r)$ where $\pi$ is the Merkle path allows
-$O(\log n)$ verification. Universal: the Merkle root is a
-deterministic function of the ordered vote log. Eligibility: follows
-directly from P3 (safety) and P5 (double-vote prevention).~$\square$
+$(v\_id, n, \pi, r)$ where $\pi$ is the Merkle path allows $O(\log n)$
+verification. Universal: the Merkle root is a deterministic function of
+the ordered vote log. Eligibility: follows directly from P3 (safety) and
+P5 (double-vote prevention).~$\square$
 
 %% =============================================================
 \section{Results}\label{sec:evaluation}
@@ -697,16 +677,15 @@ rates \parencite{zhang2020minifasnet}. All biometric simulation results
 are clearly labelled as such throughout.
 
 \textit{Evaluation metrics:} Per ISO/IEC~19795-1 \parencite{iso19795}:
-Equal Error Rate (EER), True Accept Rate (TAR), and ROC Area Under
-Curve (AUC). Per ISO/IEC~30107-3 \parencite{iso30107}: APCER, BPCER,
-and ACER.
+Equal Error Rate (EER), True Accept Rate (TAR), and ROC Area Under Curve
+(AUC). Per ISO/IEC~30107-3 \parencite{iso30107}: APCER, BPCER, and ACER.
 
 \subsection{Biometric Performance (ISO/IEC~19795-1)}
 \label{sec:biometric_results}
 
 Table~\ref{tab:biometric} reports key biometric performance metrics.
-Figure~4 visualises the ROC curve, DET curve, and genuine/impostor
-score distributions.
+Figure~4 visualises the ROC curve, DET curve, and genuine/impostor score
+distributions.
 
 \begin{table}[htbp]
 \caption{Biometric performance metrics (simulation; $n{=}1{,}000$
@@ -726,8 +705,7 @@ score distributions.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.92\linewidth]{%
-    experiments_figures/biometric_eval_panel.png}
+  \includegraphics[width=0.92\linewidth]{experiments_figures/biometric_eval_panel.jpg}
   \caption{Biometric evaluation panel. Left: ROC curve
     (AUC\,=\,0.9991, EER marked). Centre: DET curve (log-log scale,
     EER\,=\,1.55\% marked). Right: genuine and impostor score
@@ -741,8 +719,7 @@ percentage points, confirming metric stability.
 
 \begin{table}[htbp]
 \caption{Sensitivity of biometric metrics to $\pm10\%$ Gaussian
-  parameter variation. Nominal: $\sigma_G{=}0.08$,
-  $\sigma_I{=}0.12$.}
+  parameter variation. Nominal: $\sigma_G{=}0.08$, $\sigma_I{=}0.12$.}
 \label{tab:sensitivity}
 \begin{tabular}{ccrr}
   \toprule
@@ -762,9 +739,8 @@ TRIsecure V2 favourably relative to published CelebA-Spoof benchmark
 performance \parencite{zhang2020minifasnet}.
 
 \begin{table}[htbp]
-\caption{PAD metrics per ISO/IEC~30107-3 ($n_{\text{bona
-  fide}}{=}500$, $n_{\text{print}}{=}200$,
-  $n_{\text{replay}}{=}200$).}
+\caption{PAD metrics per ISO/IEC~30107-3 ($n_{\text{bona fide}}{=}500$,
+  $n_{\text{print}}{=}200$, $n_{\text{replay}}{=}200$).}
 \label{tab:pad}
 \begin{tabular}{lcc}
   \toprule
@@ -783,10 +759,10 @@ performance \parencite{zhang2020minifasnet}.
 
 Table~\ref{tab:ablation} and Figure~5 show the cumulative security and
 performance contribution of each component. Bayesian NFC\,+\,face
-fusion (C2) is the dominant security improvement: effective FAR drops
-by three orders of magnitude ($1.22\% \to 0.001\%$) relative to
-face-only authentication (C1), because an attacker without a valid NFC
-card is rejected regardless of face score.
+fusion (C2) is the dominant security improvement: effective FAR drops by
+three orders of magnitude ($1.22\% \to 0.001\%$) relative to face-only
+authentication (C1), because an attacker without a valid NFC card is
+rejected regardless of face score.
 
 \begin{table}[htbp]
 \caption{Ablation study: cumulative component contribution.
@@ -810,10 +786,10 @@ card is rejected regardless of face score.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{experiments_figures/ablation_panel.png}
+  \includegraphics[width=\linewidth]{experiments_figures/ablation_panel.jpg}
   \caption{Ablation study results. Left: EER across configurations.
-    Centre: authentication latency breakdown by stage. Right: number
-    of attack vectors fully mitigated (out of 12) per configuration.}
+    Centre: authentication latency breakdown by stage. Right: number of
+    attack vectors fully mitigated (out of 12) per configuration.}
   \label{fig:ablation}
 \end{figure}
 
@@ -883,14 +859,13 @@ small-to-medium polling stations.
 
 Figures~6 and~7 compare TRIsecure V2 against five reference systems.
 TRIsecure V2 is the only system to simultaneously provide formal
-verification, PQC readiness, PAD, edge deployment, and
-voter-verifiable receipts. An EER of 1.55\% is competitive with all
-prior biometric voting systems.
+verification, PQC readiness, PAD, edge deployment, and voter-verifiable
+receipts. An EER of 1.55\% is competitive with all prior biometric
+voting systems.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{%
-    experiments_figures/comparison_table.png}
+  \includegraphics[width=\linewidth]{experiments_figures/comparison_table.jpg}
   \caption{Feature comparison heatmap. TRIsecure V2 (left column) is
     the only system supporting all six binary capability flags
     simultaneously.}
@@ -899,8 +874,7 @@ prior biometric voting systems.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\linewidth]{%
-    experiments_figures/comparison_bar.png}
+  \includegraphics[width=\linewidth]{experiments_figures/comparison_bar.jpg}
   \caption{Numerical comparison: EER (left) and authentication latency
     (right) for systems with reported values.}
   \label{fig:comparison_bar}
@@ -911,50 +885,46 @@ prior biometric voting systems.
 %% =============================================================
 
 All biometric performance metrics are produced by validated simulation
-using Gaussian score models calibrated to published ArcFace LFW
-benchmark statistics \parencite{deng2019arcface}, following the
-ISO/IEC~19795-6 simulation evaluation track \parencite{iso19795} and
-standard practice for system-design papers prior to live deployment
-trials.
+using Gaussian score models calibrated to published ArcFace LFW benchmark
+statistics \parencite{deng2019arcface}, following the ISO/IEC~19795-6
+simulation evaluation track \parencite{iso19795} and standard practice for
+system-design papers prior to live deployment trials.
 
-The ablation study (Table~\ref{tab:ablation}) demonstrates that
-Bayesian NFC\,+\,face fusion (C2) is the dominant security improvement:
-effective FAR drops by three orders of magnitude ($1.22\% \to 0.001\%$)
-without any increase in biometric EER. PAD (C3) adds liveness but
-contributes 15.5\,ms latency overhead; PQC signing (C4) adds a further
-14.4\,ms but enables quantum-adversary mitigation. The cryptographic
-benchmarks use Ed25519/X25519 classical fallback because
-\texttt{liboqs-python} is not yet available as a pre-built ARM64
-package; Kyber-768 and Dilithium-3 overhead can be estimated from
-\textcite{sikeridis2020pqc} ($\approx$\,0.18\,ms and
-$\approx$\,1.5\,ms respectively), both well within the latency budget.
+The ablation study (Table~\ref{tab:ablation}) demonstrates that Bayesian
+NFC\,+\,face fusion (C2) is the dominant security improvement: effective
+FAR drops by three orders of magnitude ($1.22\% \to 0.001\%$) without any
+increase in biometric EER. PAD (C3) adds liveness but contributes
+15.5\,ms latency overhead; PQC signing (C4) adds a further 14.4\,ms but
+enables quantum-adversary mitigation. The cryptographic benchmarks use
+Ed25519/X25519 classical fallback because \texttt{liboqs-python} is not
+yet available as a pre-built ARM64 package; Kyber-768 and Dilithium-3
+overhead can be estimated from \textcite{sikeridis2020pqc}
+($\approx$\,0.18\,ms and $\approx$\,1.5\,ms respectively), both well
+within the latency budget.
 
 %% =============================================================
 \section{Limitations}\label{sec:limitations}
 %% =============================================================
 
 \begin{enumerate}
-  \item \textbf{No live voter dataset.} Biometric evaluation uses
-    Gaussian simulation; a field trial with real voters across
-    demographic groups is necessary for deployment certification.
-  \item \textbf{PAD dataset.} APCER/BPCER figures derive from
-    published MiniFASNetV2/CelebA-Spoof rates. ISO/IEC~30107-3
-    certification requires evaluation on standardised PAD databases
-    (NUAA, OULU-NPU).
-  \item \textbf{NFC secure element.} The PN532 SPI reader lacks a
-    certified secure element. Production deployment should use Common
-    Criteria EAL4+ smart card hardware with mutual authentication.
+  \item \textbf{No live voter dataset.} Biometric evaluation uses Gaussian
+    simulation; a field trial with real voters across demographic groups is
+    necessary for deployment certification.
+  \item \textbf{PAD dataset.} APCER/BPCER figures derive from published
+    MiniFASNetV2/CelebA-Spoof rates. ISO/IEC~30107-3 certification
+    requires evaluation on standardised PAD databases (NUAA, OULU-NPU).
+  \item \textbf{NFC secure element.} The PN532 SPI reader lacks a certified
+    secure element. Production deployment should use Common Criteria EAL4+
+    smart card hardware with mutual authentication.
   \item \textbf{Coercion resistance.} TRIsecure V2 does not implement
-    deniable voting or panic PIN; vote coercion is partially mitigated
-    by requiring in-person biometric verification.
-  \item \textbf{Network-layer DoS.} Distributed denial-of-service at
-    the network layer is outside the scope of the on-device security
-    model.
-  \item \textbf{PQC benchmark validity.} Kyber-768/Dilithium-3
-    benchmarks use the classical fallback due to the unavailability of
-    pre-built \texttt{liboqs-python} ARM64 packages. Actual PQC
-    overhead is estimated from published ARM Cortex-A53 benchmarks
-    \parencite{sikeridis2020pqc}.
+    deniable voting or panic PIN; vote coercion is partially mitigated by
+    requiring in-person biometric verification.
+  \item \textbf{Network-layer DoS.} Distributed denial-of-service at the
+    network layer is outside the scope of the on-device security model.
+  \item \textbf{PQC benchmark validity.} Kyber-768/Dilithium-3 benchmarks
+    use the classical fallback due to the unavailability of pre-built
+    \texttt{liboqs-python} ARM64 packages. Actual PQC overhead is estimated
+    from published ARM Cortex-A53 benchmarks \parencite{sikeridis2020pqc}.
 \end{enumerate}
 
 %% =============================================================
@@ -963,36 +933,34 @@ $\approx$\,1.5\,ms respectively), both well within the latency budget.
 
 This paper presented TRIsecure V2, a three-factor biometric e-voting
 system combining formally verified authentication, Bayesian multimodal
-fusion, ISO/IEC~30107-3 presentation attack detection, hybrid
-post-quantum cryptography, and Merkle-proof voter
-verifiability---implemented and evaluated on a Raspberry Pi~4 ARM64
-platform.
+fusion, ISO/IEC~30107-3 presentation attack detection, hybrid post-quantum
+cryptography, and Merkle-proof voter verifiability---implemented and
+evaluated on a Raspberry Pi~4 ARM64 platform.
 
 The system achieves EER\,=\,1.55\%, AUC\,=\,0.9991 under Gaussian
-simulation with ArcFace priors, with 110.7\,ms end-to-end
-authentication latency (p99\,=\,111.3\,ms) and 541.6~voters/min
-throughput. Six security properties are formally proved via DFA
-analysis; three end-to-end verifiability properties are
-machine-verified. The ablation study demonstrates that Bayesian
-NFC\,+\,face fusion reduces the effective combined-attack FAR by three
-orders of magnitude relative to face-only authentication.
+simulation with ArcFace priors, with 110.7\,ms end-to-end authentication
+latency (p99\,=\,111.3\,ms) and 541.6~voters/min throughput. Six security
+properties are formally proved via DFA analysis; three end-to-end
+verifiability properties are machine-verified. The ablation study
+demonstrates that Bayesian NFC\,+\,face fusion reduces the effective
+combined-attack FAR by three orders of magnitude relative to face-only
+authentication.
 
-To the best of the authors' knowledge, TRIsecure V2 is the first
-e-voting system to jointly provide formal protocol verification,
-quantum-resistant cryptography, liveness detection, and edge
-deployability within a single low-cost commodity device, addressing a
-recognised gap in the literature.
+To the best of the authors' knowledge, TRIsecure V2 is the first e-voting
+system to jointly provide formal protocol verification, quantum-resistant
+cryptography, liveness detection, and edge deployability within a single
+low-cost commodity device, addressing a recognised gap in the literature.
 
 \section{Future Work}\label{sec:future}
 
-Planned extensions include: (1)~a live volunteer voter panel
-evaluation with demographic analysis per ISO/IEC~19795-1 Clause~8;
-(2)~native Kyber-768 and Dilithium-3 benchmarks after pre-built ARM64
-\texttt{liboqs-python} packages become available; (3)~real PAD
-evaluation on NUAA Imposter, OULU-NPU, and CelebA-Spoof standardised
-databases per ISO/IEC~30107-3; (4)~threshold secret sharing for
-distributed election authority; (5)~energy consumption analysis for
-renewable-powered polling station scenarios.
+Planned extensions include: (1)~a live volunteer voter panel evaluation
+with demographic analysis per ISO/IEC~19795-1 Clause~8; (2)~native
+Kyber-768 and Dilithium-3 benchmarks after pre-built ARM64
+\texttt{liboqs-python} packages become available; (3)~real PAD evaluation
+on NUAA Imposter, OULU-NPU, and CelebA-Spoof standardised databases per
+ISO/IEC~30107-3; (4)~threshold secret sharing for distributed election
+authority; (5)~energy consumption analysis for renewable-powered polling
+station scenarios.
 
 %% =============================================================
 %% DECLARATIONS
@@ -1006,33 +974,32 @@ This research received no external funding.
 The author(s) declare no conflict of interest.
 
 \bigskip\noindent\textbf{Ethics approval and consent to participate.}
-This research did not involve human participants, animal subjects, or
-the collection of personal data from individuals. All biometric
-evaluation uses validated Gaussian simulation with publicly documented
-parameters derived from published benchmark studies; no real voter data
-were collected or processed. Accordingly, no ethical approval or
-informed consent was required.
+This research did not involve human participants, animal subjects, or the
+collection of personal data from individuals. All biometric evaluation uses
+validated Gaussian simulation with publicly documented parameters derived
+from published benchmark studies; no real voter data were collected or
+processed. Accordingly, no ethical approval or informed consent was
+required.
 
 \bigskip\noindent\textbf{Consent for publication.}
 Not applicable.
 
 \bigskip\noindent\textbf{Data availability.}
 All experiment scripts, result JSON files, and generated figures are
-available in the public repository at [BLINDED FOR PEER REVIEW].
-No proprietary datasets were used; biometric evaluation uses Gaussian
+available in the public repository at [BLINDED FOR PEER REVIEW]. No
+proprietary datasets were used; biometric evaluation uses Gaussian
 simulation with publicly documented ArcFace LFW parameters. Upon
 acceptance, the full repository URL will be provided.
 
 \bigskip\noindent\textbf{Code availability.}
-Source code is publicly available at [BLINDED FOR PEER REVIEW].
-Full details will be provided upon acceptance to preserve anonymous
-review.
+Source code is publicly available at [BLINDED FOR PEER REVIEW]. Full
+details will be provided upon acceptance to preserve anonymous review.
 
 \bigskip\noindent\textbf{Author contributions.}
 [To be completed at the point of submission in ScholarOne. All
-contributing authors must be listed. Those who provided support but
-did not contribute to the research should be listed in the
-Acknowledgements file.]
+contributing authors must be listed. Those who provided support but did
+not contribute to the research should be listed in the Acknowledgements
+file.]
 
 \bigskip\noindent\textbf{AI usage disclosure.}
 In accordance with Emerald's policy on AI usage, the following is
@@ -1041,8 +1008,8 @@ generative AI tools. AI copy-editing assistance (grammar, clarity, and
 structure improvements applied to existing author-written content) was
 used during manuscript preparation. All research design, theoretical
 contributions, experimental methodology, and conclusions were developed
-and verified independently by the author(s). All citations and references have been independently verified by the
-author(s).
+and verified independently by the author(s). All citations and references
+have been independently verified by the author(s).
 
 %% =============================================================
 \bibliography{references}
