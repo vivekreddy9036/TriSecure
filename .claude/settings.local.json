@@ -74,7 +74,14 @@
       "Bash(pdftoppm -r 200 -png architecture.pdf architecture_preview)",
       "Bash(pdfinfo /home/vivek/TriSecure/paper/springer/trisecure_springer.pdf)",
       "WebFetch(domain:link.springer.com)",
-      "WebFetch(domain:api.crossref.org)"
+      "WebFetch(domain:api.crossref.org)",
+      "WebSearch",
+      "WebFetch(domain:www.emeraldgrouppublishing.com)",
+      "WebFetch(domain:emeraldpublishinggroup.freshdesk.com)",
+      "WebFetch(domain:www.overleaf.com)",
+      "Bash(Copy-Item *)",
+      "Bash(cp -r \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\springer\\\\figures\" \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\Emerald_ICS_Submission\\\\figures\")",
+      "Bash(cp -r \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\experiments\\\\figures\" \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\Emerald_ICS_Submission\\\\experiments_figures\")"
     ]
   }
 }
