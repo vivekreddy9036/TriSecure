@@ -32,6 +32,8 @@
 \RequirePackage{natbib}       % numeric [n] citations via unsrtnat
 \RequirePackage{fancyhdr}     % running headers
 \RequirePackage{etoolbox}     % \appto, \ifdefempty
+\RequirePackage{xcolor}       % \textcolor used in title-page stub note
+\setlength{\headheight}{14pt} % prevent fancyhdr underfull-head warning
 
 %% ============================================================
 %% Internal storage macros (all start empty)
@@ -178,9 +180,9 @@
   %% --- Running headers for pages 2+ ---
   \pagestyle{fancy}
   \fancyhf{}
-  \fancyhead[L]{\small\itshape \SACJ@runA}
-  \fancyhead[R]{\small\itshape \SACJ@runB}
-  \fancyfoot[C]{\small\thepage}
+  \fancyhead[L]{\footnotesize\itshape \SACJ@runA}
+  \fancyhead[C]{\footnotesize\itshape \SACJ@runB}
+  \fancyfoot[C]{\footnotesize\thepage}
   \renewcommand{\headrulewidth}{0.4pt}
   \setcounter{page}{1}%
 }
@@ -213,10 +215,4 @@
 \renewcommand{\topfraction}{0.90}
 \renewcommand{\textfraction}{0.07}
 
-%% Colour for the stub warning line (requires xcolor, loaded by default
-%% in most TeX Live installations; safe to ignore if unavailable)
-\AtBeginDocument{%
-  \@ifpackageloaded{xcolor}{}{%
-    \providecommand{\textcolor}[2]{#2}%
-  }%
-}
+%% xcolor is loaded near the top of this file via \RequirePackage{xcolor}
