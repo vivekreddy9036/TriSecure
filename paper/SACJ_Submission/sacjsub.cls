@@ -1,218 +1,467 @@
-%%
-%% sacjsub.cls  --  WORKING STUB for Overleaf compilation
-%%
-%% PURPOSE: Lets trisecure_sacj.tex compile immediately while you
-%%          obtain the official SACJ class file.
-%%
-%% TO REPLACE WITH THE OFFICIAL FILE (recommended before final submission):
-%%   1. Visit: https://journals.assaf.org.za/index.php/sacj/about/submissions
-%%   2. Download the "Complete LaTeX example" archive
-%%   3. Extract sacjsub.cls from that archive
-%%   4. Upload it to this Overleaf project, replacing this stub file
-%%
-%% This stub defines all SACJ-specific commands and produces valid,
-%% readable single-column output for review preparation.
-%% The real sacjsub.cls may produce slightly different cosmetic layout.
-%%
+% sacjsub.cls
+% v1.1 LaTeX class file for submissions to the South African Computer Journal
+% (c) 2016 James Dibley <g11d3593@campus.ru.ac.za>
+%
+% Identification part
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesClass{sacjsub}
+    [2017/10/13 v1.1 LaTeX class file for submissions to the South African Computer Journal]
 
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{sacjsub}[2026/06/27 SACJ Submission Stub Class v1.0]
 
-%% -- Options -------------------------------------------------
-%% Absorb the 'submission' option silently; pass others to article
-\DeclareOption{submission}{}
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+% Initial code
+\RequirePackage{kvoptions}
+\DeclareStringOption[0]{vol}
+\DeclareStringOption[0]{number}
+\DeclareStringOption[MONTH OF PUBLICATION]{month}
+\DeclareStringOption[\number\year]{year}
+\ProcessKeyvalOptions{sacj}
+\newcommand{\SACJpagenumber}[1]{\setcounter{page}{#1}}
+\newcommand{\@SACJresearcharticle}{Research Article}
+\newcommand{\@SACJviewpoint}{Viewpoint}
+\newcommand{\@SACJeditorial}{Editorial}
+\newcommand{\@SACJcommunication}{Communication}
+\newcommand{\@SACJletter}{Letter to the Editor}
+\newcommand{\@SACJfrontmatter}{Frontmatter}
+\newcommand{\@SACJwebsite}{\url{http://sacj.cs.uct.ac.za}}
+\newcommand{\@articletype}{}
+\newcommand{\@SACJvolume}{\sacjsub@vol}
+\newcommand{\@SACJnumber}{\sacjsub@number}
+\newcommand{\@SACJnumberparens}{(\sacjsub@number)}
+\newcommand{\@SACJyear}{\sacjsub@year}
+\newcommand{\@SACJmonth}{\sacjsub@month}
+\newcommand{\@SACJdoi}{DOI TBC}
+\newcommand{\@SACJrunningheader}{}
+\newcommand{\@sacjcontact}{}
+\newcommand{\@SACJ}{\emph{SACJ}}
+
+\author{}
+\title{}
+\newcounter{@affiliation}
+\setcounter{@affiliation}{1}
+\renewcommand{\the@affiliation}{\alph{@affiliation}}
+\newcommand\@email{}
+\newcommand\@authoronly{}
+\newcommand\@addresses{}
+\newcommand\@theabstract{\@empty}
+\newcommand\@thekeywords{}
+\newcommand\@thecategories{}
+\newcommand\@articlehistory{}
+\newcommand\@sacjahrx{}
+\newcommand\@sacjahrv{}
+\newcommand\@sacjahac{}
+\newcommand\@sacjahav{}
+\newcommand\@sacjcitationauthors{}
+\newcommand{\@SACJnotelist}{}
+% \@sacjappendnotelist
+% slightly tricky: processes SACJ author affiliation symbols
+\newcommand{\@sacjappendnotelist}[2]{%
+    \edef#1{%
+        \unexpanded\expandafter{#1}%
+        \unexpanded{\textsuperscript}%
+        \expandafter{\expandafter\unexpanded\expandafter{#2}}%
+    }%
+}
+
+\newcommand{\@sacjappendcategory}[3]{%
+    \def\@thirdarg{#3}
+    \def\@emptyhigh{\textbf{}}
+    \ifx\@thirdarg\@emptyhigh%
+        \edef#1{%
+            \unexpanded\expandafter{#1}%
+            {~$\bullet$~}%
+            \expandafter{\expandafter\unexpanded\expandafter{#2}}%
+        }%
+    \else%
+        \edef#1{%
+            \unexpanded\expandafter{#1}%
+            {~$\bullet$~}%
+            \expandafter{\expandafter\unexpanded\expandafter{#2}}%
+            {~$\sim$~}%
+            \unexpanded\expandafter{#3}%
+        }%
+    \fi%
+}
+
+\newcommand\@buildtitlefooter{
+    \newcommand\@titlefooter{}
+    \expandafter\ifx\@articletype\@SACJresearcharticle
+    \g@addto@macro\@titlefooter{\footnotesize%
+        \hangindent=\parindent{\@sacjcitationauthors~(\sacjsub@year). \@title.~%
+        \emph{South African Computer Journal~\@SACJvolume}\@SACJnumberparens,~%
+        \thepage--\pageref{LastPage}.~%
+        \@SACJdoi}\par%
+    }
+    \fi
+    \expandafter\ifx\@articletype\@SACJviewpoint
+    \g@addto@macro\@titlefooter{\footnotesize%
+        \hangindent=\parindent{\@sacjcitationauthors~(\sacjsub@year). \@title~[Viewpoint].~%
+        \emph{South African Computer Journal~\@SACJvolume},~%
+        \thepage--\pageref{LastPage}.~%
+        \@SACJdoi}\par%
+    }
+    \fi
+    \expandafter\ifx\@articletype\@SACJletter
+    \g@addto@macro\@titlefooter{\footnotesize%
+        \hangindent=\parindent{\@sacjcitationauthors~(\sacjsub@year). \@title~[Letter to the Editor].~%
+        \emph{South African Computer Journal~\@SACJvolume},~%
+        \thepage--\pageref{LastPage}.~%
+        \@SACJdoi}\par%
+    }
+    \fi
+    \expandafter\ifx\@articletype\@SACJcommunication
+    \g@addto@macro\@titlefooter{\footnotesize%
+        \hangindent=\parindent{\@sacjcitationauthors~(\sacjsub@year). \@title~[Communication].~%
+        \emph{South African Computer Journal~\@SACJvolume},~%
+        \thepage--\pageref{LastPage}.~%
+        \@SACJdoi}\par%
+    }
+    \fi
+    \g@addto@macro\@titlefooter{\footnotesize%
+        \noindent Copyright \copyright~the author(s);~%
+        published under a \protect\href{http://creativecommons.org/licenses/by-nc/4.0/}{Creative Commons NonCommercial 4.0 License (CC BY-NC 4.0)}.\\%
+        \emph{SACJ} is a publication of the South African Institute of Computer Scientists and Information Technologists. ISSN 1015-7999 (print) ISSN 2313-7835 (online).%
+    }
+}
+
+\newcommand{\@buildarticlehistory}{%
+    \g@addto@macro\@articlehistory{\par}
+    \ifx\@sacjahrx\empty\else
+        \g@addto@macro\@articlehistory{Received: \@sacjahrx\newline}
+      \fi
+      \expandafter \ifx\@sacjahrv\empty\else
+         \g@addto@macro\@articlehistory{Revised: \@sacjahrv\newline}
+      \fi
+      \ifx\@sacjahac\empty\else
+        \g@addto@macro\@articlehistory{Accepted: \@sacjahac\newline}
+      \fi
+      \ifx\@sacjahav\empty\else
+        \g@addto@macro\@articlehistory{Available online: \@sacjahav}
+      \fi
+}
+
+\newcommand\@SACJmaketitle{%
+    \@buildtitlefooter
+    \expandafter\ifx\@articletype\@SACJresearcharticle
+    \@buildarticlehistory
+    \fi
+    \newpage
+    \setlength{\parindent}{0pt}
+    \renewcommand{\baselinestretch}{1.1}\normalsize
+    {\raggedright \Huge\textsf{\@title}\par}
+    \renewcommand{\baselinestretch}{1}\normalsize
+    \ifx\@author\@empty\else
+        \vskip 1em
+        {%
+            \expandafter\ifx\@articletype\@SACJresearcharticle
+                \normalsize \textsf{\@author}
+            \else
+                \normalsize \textsf{\@email}
+            \fi
+            \par
+        }
+    \fi
+    \ifx\@addresses\@empty\else
+        {\footnotesize\medskip\textsf{\@addresses}}
+    \fi
+    \expandafter\ifx\@articletype\@SACJresearcharticle
+        \rule{\textwidth}{.2pt}\par
+        \if\@theabstract\@empty\else
+            \vspace{0.2em}
+            \footnotesize\textsf{\bfseries{\uppercase{Abstract}}}\\
+            % Relax parindent for abstracts that might need >1 paragraph
+            \setlength{\parindent}{20pt}
+            {\footnotesize \@theabstract}\par
+            \setlength{\parindent}{0pt}
+            \vspace{0.5\baselineskip}
+            \footnotesize \textsf{\bfseries{Keywords:}} \@thekeywords\par
+            \vspace{0.5\baselineskip}
+            % Set the next section in \raggedright because the ACM 2012
+            % categories get quite wildly spaced across the page otherwise
+            { \raggedright
+            \footnotesize \textsf{\bfseries{Categories:}} \scriptsize \@thecategories\par
+            }
+            \vspace{0.5\baselineskip}
+            \begin{tabular}{@{}p{.625\linewidth} p{.375\linewidth}@{}}
+            \footnotesize \textsf{\bfseries{Email}}:\newline\scriptsize \@email &%
+            \footnotesize \textsf{\bfseries{Article history}}: \scriptsize\@articlehistory
+            \end{tabular}
+            \rule{\textwidth}{0.2pt}\par
+        \fi
+    \else
+        \vspace{0.5\baselineskip}
+        \rule{\textwidth}{0.2pt}\par
+    \fi
+    \ifx\@titlefooter\@empty\else
+        \protected@xdef\@thanks{\protect\footnotetext{\hspace{-1.85em}\@titlefooter}}%
+    \fi
+    \hypersetup{%
+        pdfauthor={\@authoronly},%
+        pdftitle={\@title},%
+        pdfkeywords={\@thekeywords}%
+    }
+}
+
+% Declaration of options
+\DeclareOption{final}{%
+    \renewcommand{\@SACJvolume}{\sacjsub@vol}%
+    \renewcommand{\@SACJnumber}{\sacjsub@number}%
+    \renewcommand{\@SACJnumberparens}{(\sacjsub@number)}%
+    \renewcommand{\@articletype}{\@SACJresearcharticle}%
+    }
+\DeclareOption{submission}{%
+    \renewcommand{\@SACJvolume}{Vol TBC}%
+    \renewcommand{\@SACJnumber}{Num TBC}%
+    \renewcommand{\@SACJnumberparens}{(Num TBC)}%
+    \renewcommand{\@articletype}{\@SACJresearcharticle}%
+    }
+\DeclareOption{communication}{\renewcommand{\@articletype}{\@SACJcommunication}}
+\DeclareOption{letter}{\renewcommand{\@articletype}{\@SACJletter}}
+\DeclareOption{erratum}{\renewcommand{\@articletype}{Erratum}}
+\DeclareOption{viewpoint}{\renewcommand{\@articletype}{\@SACJviewpoint}}
+\DeclareOption{includenumbers}{\includenumberstrue}
+\DeclareOption*{\typeout{Unknown option `\CurrentOption'}}
+
+% Execution of options
 \ProcessOptions\relax
 
-%% -- Base class ----------------------------------------------
+% Package loading
 \LoadClass[a4paper,12pt]{article}
+\renewcommand{\footnoterule}{}
+\RequirePackage[a4paper,total={495pt,600pt},headheight=75pt,centering]{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
+\RequirePackage{sectsty}
+\RequirePackage{microtype}
+\RequirePackage{titlesec}
+\RequirePackage{csquotes}
+\RequirePackage{multirow}
+\RequirePackage[pdftex]{graphicx}
+\RequirePackage[font=small]{caption}
+\RequirePackage[square,numbers]{natbib}
+\PassOptionsToPackage{hyphens}{url}\usepackage[colorlinks=true,citecolor=black,filecolor=blue,urlcolor=blue]{hyperref}
 
-%% -- Required packages ---------------------------------------
-\RequirePackage[top=2.5cm,bottom=2.5cm,left=3cm,right=3cm]{geometry}
-\RequirePackage{natbib}       % numeric [n] citations via unsrtnat
-\RequirePackage{fancyhdr}     % running headers
-\RequirePackage{etoolbox}     % \appto, \ifdefempty
-\RequirePackage{xcolor}       % \textcolor used in title-page stub note
-\setlength{\headheight}{14pt} % prevent fancyhdr underfull-head warning
-
-%% ============================================================
-%% Internal storage macros (all start empty)
-%% ============================================================
-\newcommand{\SACJ@title}{}
-\newcommand{\SACJ@abstract}{}
-\newcommand{\SACJ@keywords}{}
-\newcommand{\SACJ@cite}{}
-\newcommand{\SACJ@runA}{}
-\newcommand{\SACJ@runB}{}
-\newcommand{\SACJ@acm}{}
-\newcommand{\SACJ@authors}{}
-\newcommand{\SACJ@addrs}{}
-
-%% ============================================================
-%% User-facing SACJ commands
-%% ============================================================
-
-%% \SACJtitle{Full title of the paper}
-\newcommand{\SACJtitle}[1]{%
-  \renewcommand{\SACJ@title}{#1}}
-
-%% \SACJauthor[affcode]{Name}{email}{corresponding or empty}
-%% In blind review submission these lines are commented out.
-%% Define the command so it compiles when uncommented.
-\newcommand{\SACJauthor}[4][]{%
-  \appto\SACJ@authors{%
-    \par\noindent #2%
-    \ifblank{#3}{}{\ \texttt{<#3>}}%
-    \ifblank{#4}{}{\ (\textit{#4})}%
-  }%
+% Special commands for package and class files
+\fancypagestyle{firstpage}{%
+    \fancyhf{}
+    \expandafter\ifx\@articletype\@SACJfrontmatter
+        \fancyhead[C]{%
+            {\textsf{\Huge South African Computer Journal}}
+         }
+    \else
+        \fancyhead[R]{\footnotesize%
+            \textsf{%
+            \emph{SACJ} \@SACJvolume\@SACJnumberparens~\@SACJmonth~\@SACJyear \\
+            \@articletype%
+            }%
+        }
+        \renewcommand{\footrulewidth}{0pt}
+    \fi
+    \renewcommand{\headrulewidth}{0pt}
+}
+\fancypagestyle{followingpage}{%
+    \fancyhf{}
+    \expandafter\ifx\@articletype\@SACJfrontmatter
+        \renewcommand{\headrulewidth}{0pt}
+        \fancyhead[C]{%
+            {\textsf{\Huge South African Computer Journal}}
+         }
+         \renewcommand{\footrulewidth}{0.5pt}
+    \else
+        \fancyhead[L]{\footnotesize \@SACJrunningheader}
+        \fancyhead[R]{%
+            \textsf{\footnotesize%
+            \thepage
+            }
+        }
+        \expandafter\ifx\@articletype\@SACJresearcharticle
+        \fancyfoot[R]{%
+            \footnotesize \textsf{\@SACJdoi}
+        }
+        \fi
+        \expandafter\ifx\@articletype\@SACJviewpoint
+        \fancyfoot[R]{%
+            \footnotesize \textsf{\@SACJdoi}
+        }
+        \fi
+        \expandafter\ifx\@articletype\@SACJletter
+        \fancyfoot[R]{%
+            \footnotesize \textsf{\@SACJdoi}
+        }
+        \fi
+        \expandafter\ifx\@articletype\@SACJcommunication
+        \fancyfoot[R]{%
+            \footnotesize \textsf{\@SACJdoi}
+        }
+        \fi
+        \renewcommand{\headrulewidth}{0.5pt}
+    \fi
 }
 
-%% \SACJappendextraemail{email}{flag}
-%% For authors who need a second email address listed.
-\newcommand{\SACJappendextraemail}[2]{%
-  \appto\SACJ@authors{;\ \texttt{<#1>}}}
-
-%% \SACJaddress[affcode]{Institution and address}
-\newcommand{\SACJaddress}[2][]{%
-  \appto\SACJ@addrs{\par\noindent\textit{#2}}}
-
-%% \SACJrunningheader{Short author list}{Short title}
-\newcommand{\SACJrunningheader}[2]{%
-  \renewcommand{\SACJ@runA}{#1}%
-  \renewcommand{\SACJ@runB}{#2}}
-
-%% \SACJcitationauthors{Full APA-style author list}
-%% Appears at foot of title page as the citation line.
-\newcommand{\SACJcitationauthors}[1]{%
-  \renewcommand{\SACJ@cite}{#1}}
-
-%% \SACJabstract{Abstract text}
-%% Must be fewer than 200 words; no references, footnotes, or
-%% special symbols hard to render in plain text (SACJ requirement).
-\newcommand{\SACJabstract}[1]{%
-  \renewcommand{\SACJ@abstract}{#1}}
-
-%% \SACJACMCategory{Top level}{Sub-category}{h/m/l relevance}
-%% Use ACM CCS 2012 only: https://dl.acm.org/ccs/ccs.cfm
-%% Relevance: h = highly relevant, m = moderate, l = low
-\newcommand{\SACJACMCategory}[3]{%
-  \appto\SACJ@acm{%
-    \item \textit{#1}~$\to$~#2%
-    \ifblank{#3}{}{%
-      \if h#3~(highly relevant)\else
-      \if m#3~(moderately relevant)\else
-      ~(low relevance)\fi\fi}%
-  }%
+% Special class file commands
+\allsectionsfont{\sffamily\raggedright} % prevent odd spacing
+\urlstyle{sf} % typewriter style is frankly harder to read
+\pagestyle{followingpage}
+\AtBeginDocument{\thispagestyle{firstpage}}
+\AtBeginDocument{%
+    \expandafter\ifx\@articletype\@SACJeditorial
+        \pagenumbering{roman}
+    \fi
+    \expandafter\ifx\@articletype\@SACJfrontmatter
+        \pagenumbering{roman}
+    \fi
 }
 
-%% \SACJkeywords{comma-separated keyword list}
-\newcommand{\SACJkeywords}[1]{%
-  \renewcommand{\SACJ@keywords}{#1}}
-
-%% ============================================================
-%% \SACJmaketitle
-%% Generates the complete title page. Call this INSIDE
-%% \begin{document}, immediately before \section{Introduction}.
-%% ============================================================
-\newcommand{\SACJmaketitle}{%
-  \thispagestyle{empty}%
-  %
-  %% --- Title block ---
-  \begin{center}
-    \vspace*{0.8cm}
-    {\LARGE\bfseries \SACJ@title \par}
-    \vspace{1.2em}
-    %
-    %% Show author block if present; otherwise show blind-review notice
-    \ifdefempty{\SACJ@authors}{%
-      {\small\itshape
-        [Author details omitted for double-blind review.
-         All authors have been listed on the journal submission form.]}%
-    }{%
-      \SACJ@authors \par
-      \vspace{0.4em}
-      \SACJ@addrs \par
-    }%
-    \vspace{1.2em}
-  \end{center}
-  %
-  %% --- Abstract ---
-  \noindent\rule{\linewidth}{0.6pt}\par
-  \vspace{0.3em}
-  \noindent{\small\bfseries Abstract.}\enspace
-  {\small \SACJ@abstract}
-  \vspace{0.3em}\par
-  \noindent\rule{\linewidth}{0.6pt}\par
-  \vspace{0.5em}
-  %
-  %% --- Keywords ---
-  \ifdefempty{\SACJ@keywords}{}{%
-    \noindent{\small\bfseries Keywords:}\enspace
-    {\small \SACJ@keywords}\par
-    \vspace{0.4em}
-  }%
-  %
-  %% --- ACM CCS 2012 categories ---
-  \ifdefempty{\SACJ@acm}{}{%
-    \noindent{\small\bfseries ACM Computing Classification System (2012):}
-    \begin{itemize}
-      \small\itemsep 0pt\parsep 0pt
-      \SACJ@acm
-    \end{itemize}
-    \vspace{0.2em}
-  }%
-  %
-  %% --- Citation line at foot of title page ---
-  \ifdefempty{\SACJ@cite}{}{%
-    \vfill
-    \noindent\rule{\linewidth}{0.4pt}\par
-    \noindent{\footnotesize
-      \textit{Cite as:}\ \SACJ@cite\
-      \SACJ@title.
-      \textit{South African Computer Journal}.}\par
-    \noindent{\footnotesize\textcolor{gray}{%
-      [This PDF was produced with a stub sacjsub.cls.
-       Replace with the official class before final submission.]}}%
-  }%
-  %
-  \newpage
-  %
-  %% --- Running headers for pages 2+ ---
-  \pagestyle{fancy}
-  \fancyhf{}
-  \fancyhead[L]{\footnotesize\itshape \SACJ@runA}
-  \fancyhead[C]{\footnotesize\itshape \SACJ@runB}
-  \fancyfoot[C]{\footnotesize\thepage}
-  \renewcommand{\headrulewidth}{0.4pt}
-  \setcounter{page}{1}%
+\newcommand{\SACJdoi}[1]{\renewcommand{\@SACJdoi}{\url{#1}}}
+\newcommand{\SACJtitle}[1]{\renewcommand\@title{#1}}
+\newcommand{\SACJaddress}[2][default]{%
+    \expandafter\ifx\csname @SACJnote#1\endcsname\relax%
+        \g@addto@macro\@addresses{#2\par}%
+    \else%
+        \g@addto@macro\@addresses{\textsuperscript{%
+            \csname @SACJnote#1\endcsname}\space#2\par}%
+    \fi%
 }
 
-%% ============================================================
-%% Miscellaneous style tweaks to approximate SACJ single-column
-%% ============================================================
+\let\@maketitle\@SACJmaketitle
 
-%% Paragraph spacing (SACJ uses block paragraphs, no indent)
-\setlength{\parskip}{6pt}
-\setlength{\parindent}{0pt}
+\newcommand\SACJmaketitle{%
+    \par
+    \typeout{Processing paper ``\@title''.}
+    \begingroup
+        \renewcommand\thefootnote{\@fnsymbol\c@footnote}%
+        \newpage
+        \global\@topnum\z@     % prevents figures from going at top of page
+        \@maketitle
+        \@thanks
+    \endgroup
+        \setcounter{footnote}{0}%
+        \global\let\thanks\relax
+        \global\let\@maketitle\relax
+        \global\let\@thanks\@empty
+        \global\let\@date\@empty
+        \global\let\title\relax
+        \global\let\@title\@empty
+        \global\let\author\relax
+        \global\let\@author\@empty
+        \global\let\@authoronly\@empty
+        \global\let\@addresses\@empty
+        \global\let\@email\@empty
+        \global\let\@theabstract\@empty
+        \global\let\@thekeywords\@empty
+        \global\let\@thecategories\@empty
+        \global\let\date\relax
+        \global\let\and\relax
+}
 
-%% Section heading style (approximate SACJ look)
-\makeatletter
-\renewcommand\section{\@startsection{section}{1}{\z@}%
-  {-14pt \@plus -4pt \@minus -2pt}{6pt \@plus 2pt}%
-  {\normalfont\large\bfseries\MakeUppercase}}
+\newcommand{\SACJauthor}[4][default]{%
+    \renewcommand{\@SACJnotelist}{\empty}
+    \def\@testforx{default}
+    \def\@firstarg{#1}
+    \ifx\@firstarg\@testforx%
+        \edef\@@note{}%
+    \else
+    \def\@corresponding{#4}
+        \@for\next:=#1\do{%
+            \expandafter\ifx\@SACJnotelist\empty\else
+                \@sacjappendnotelist{\@SACJnotelist}{,\space}
+            \fi
+            \expandafter\ifx\csname @SACJnote\next\endcsname\relax
+                \edef\@@note{\the@affiliation}%
+                \expandafter\edef\csname @SACJnote\next \endcsname{\@@note}%
+                \@sacjappendnotelist{\@SACJnotelist}{\@@note}
+                \stepcounter{@affiliation}
+            \else
+                \@sacjappendnotelist{\@SACJnotelist}{\csname @SACJnote\next \endcsname}
+            \fi
+        }
+    \fi
+    \ifx\@author\@empty\else
+        \g@addto@macro\@author{, }%
+        \g@addto@macro\@authoronly{, }%
+    \fi
+    \def\@thirdarg{#3}
+    \expandafter\ifx\@thirdarg\@empty\else
+        \expandafter\ifx\@email\newline\else
+            \g@addto@macro\@email{, }%
+            \g@addto@macro\@email\newline%
+        \fi
+        \g@addto@macro\@email{#2 %
+            \protect\href{mailto:#3}{\nolinkurl{#3}}}%
+        \expandafter\ifx\@corresponding\@empty\else
+            \g@addto@macro\@email{\space{\tiny\textsf{(CORRESPONDING)}}}%
+        \fi
+    \fi%
+    \g@addto@macro\@author{#2}%
+    \@sacjappendnotelist{\@author}{\@SACJnotelist}
+    \g@addto@macro\@authoronly{#2}%
+}
+
+\newcommand\SACJappendextraemail[2]{%
+    \def\@corresponding{#2}%
+    \g@addto@macro\@email{,\space}%
+    \g@addto@macro\@email{%
+        \protect\href{mailto:#1}{\nolinkurl{#1}}}%
+    \expandafter\ifx\@corresponding\@empty\else
+        \g@addto@macro\@email{\space{\tiny\textsf{(CORRESPONDING)}}}%
+    \fi
+}
+
+\newcommand\SACJACMCategory[3]{%
+    \def\@priority{#3}%
+    \def\@highpriority{h}%
+    \def\@medpriority{m}%
+    \def\@lowpriority{l}%
+    \ifx\@priority\@highpriority%
+        \@sacjappendcategory{\@thecategories}{\textbf{#1}}{\textbf{#2}}%
+    \fi%
+    \ifx\@priority\@medpriority%
+        \@sacjappendcategory{\@thecategories}{\textit{#1}}{\textit{#2}}%
+    \fi%
+    \ifx\@priority\@lowpriority%
+        \@sacjappendcategory{\@thecategories}{#1}{#2}%
+    \fi%
+}
+
+\newcommand\SACJabstract[1]{\renewcommand\@theabstract{#1}}
+\newcommand\SACJkeywords[1]{\renewcommand\@thekeywords{#1}}
+\newcommand\SACJcategories[1]{\renewcommand\@thecategories{#1}}
+
+\newcommand\SACJAHReceived[1]{\renewcommand{\@sacjahrx}{\textsf{#1}}}
+\newcommand\SACJAHReceivedRevised[1]{\renewcommand{\@sacjahrv}{\textsf{#1}}}
+\newcommand\SACJAHAccepted[1]{\renewcommand{\@sacjahac}{\textsf{#1}}}
+\newcommand\SACJAHAvailableOnline[1]{\renewcommand{\@sacjahav}{\textsf{#1}}}
+
+\newcommand\SACJrunningheader[2]{\renewcommand{\@SACJrunningheader}%
+    {\textsf{\textbf{#1}: #2}}}
+
+\newcommand\SACJcitationauthors[1]{\renewcommand\@sacjcitationauthors{#1}}
+
+% Sectioning
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\large\sffamily\uppercase}}
 \renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
-  {-10pt \@plus -3pt}{4pt \@plus 2pt}%
-  {\normalfont\normalsize\bfseries}}
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {0.9ex \@plus .2ex}%
+                                     {\flushleft\normalfont\sffamily\large}}
 \renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
-  {-8pt \@plus -2pt}{3pt}%
-  {\normalfont\normalsize\itshape}}
-\makeatother
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {0.9ex \@plus .2ex}%
+                                     {\normalfont\normalsize\sffamily}}
+\newcommand\subsubsubsection{\@startsection{subsubsection}{4}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {0.9ex \@plus .2ex}%
+                                     {\normalfont\normalsize\sffamily}}
 
-%% Float placement defaults
-\setcounter{topnumber}{4}
-\setcounter{bottomnumber}{3}
-\setcounter{totalnumber}{6}
-\renewcommand{\topfraction}{0.90}
-\renewcommand{\textfraction}{0.07}
-
-%% xcolor is loaded near the top of this file via \RequirePackage{xcolor}
+\newcommand{\SACJfourthlevel}{
+    \setcounter{secnumdepth}{4}
+    \titleformat{\section}
+    {\large\sffamily\uppercase}{\thesection}{1em}{}
+    \titlespacing*{\section}
+    {0pt}{3.25ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+    \titleformat{\paragraph}
+    {\normalfont\normalsize\sffamily}{\theparagraph}{1em}{}
+    \titlespacing*{\paragraph}
+    {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+}

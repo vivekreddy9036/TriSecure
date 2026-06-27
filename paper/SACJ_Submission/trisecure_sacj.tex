@@ -24,20 +24,19 @@
 
 \documentclass[submission]{sacjsub}
 
-%% -- Packages not included in sacjsub by default -------------
+%% -- Packages not already loaded by sacjsub.cls --------------
+%% (sacjsub loads: graphicx, multirow, microtype, natbib, hyperref,
+%%  url, geometry, fancyhdr, lastpage, sectsty, titlesec, csquotes, caption)
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb}
-\usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{multirow}
 \usepackage{tabularx}
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
 \usepackage[shortlabels]{enumitem}
-\usepackage{url}
-\usepackage[expansion=false]{microtype}
+\usepackage{amsthm}
 
 %% -- Theorem environment -------------------------------------
 \newtheorem{theorem}{Theorem}
@@ -68,8 +67,8 @@
 \SACJrunningheader{[Blind review]}{TRIsecure: PQ Biometric E-Voting}
 
 %% --- Citation authors (foot of title page) ------------------
-%% For camera-ready, replace the line below with the real author list:
-%% \SACJcitationauthors{Pinnemcharla Sai Vivek Reddy, Saranya G and S.\ Udhaya Kumar (year).}
+%% For camera-ready, replace with: Surname, I., Surname, I., and Surname, I.
+%% \SACJcitationauthors{Pinnemcharla Sai Vivek Reddy, Saranya G and S.\ Udhaya Kumar}
 \SACJcitationauthors{[Authors omitted for blind review]}
 
 %% --- Abstract -----------------------------------------------
@@ -246,7 +245,7 @@ overhead, while adding biometric authentication.
 
 Sikeridis et al.~\cite{sikeridis2020pqc} show Kyber-768 and
 Dilithium-3 are feasible in TLS~1.3 on ARM devices via liboqs. Paquin
-et al.~\cite{paquin2019oqs} benchmark liboqs across x86 and ARM.
+et al.~\cite{paquin2020oqs} benchmark liboqs across x86 and ARM.
 Delvaux et al.~\cite{delvaux2024pqc_iot} provide 2024 benchmarks of
 NIST finalists on Cortex-A class processors, confirming ML-KEM-768
 encapsulation under 0.5~ms on Cortex-A53. NIST finalised ML-KEM
@@ -568,6 +567,7 @@ trust; 0.7\% are escalated; none classified \textsc{Low}.
 
 \begin{algorithm}[t]
 \caption{TRIsecure HybridKEM.Encapsulate(\(pk\))}
+\label{alg:hybridkem}
 \begin{algorithmic}[1]
   \State \((ct_K, ss_K) \gets \textsc{Kyber768.Encaps}(pk_K)\)
     \Comment{ML-KEM-768, FIPS 203}
@@ -583,7 +583,7 @@ The hybrid construction is secure as long as \emph{either} Kyber-768
 or X25519 is unbroken~\cite{bernstein2017post}. Vote records are signed
 with Dilithium-3 (ML-DSA-65, FIPS~204~\cite{nist_fips204}). Face
 embeddings are encrypted at rest with AES-256-GCM keyed via Argon2id
-(\(t{=}3\), \(m{=}64\)~MB)~\cite{biryukov2015argon2}.
+(\(t{=}3\), \(m{=}64\)~MB)~\cite{biryukov2016argon2}.
 
 \subsection{Vote Integrity and Verifiability}\label{sec:vote_integrity}
 
@@ -1276,7 +1276,7 @@ illustrates deployment configurations.
     protect against physical coercion at the polling station.
     Addressing coercion resistance would require integration of
     cryptographic deniability
-    schemes~\cite{juels2010coercion,clarkson2008civitas}.
+    schemes~\cite{juels2005coercion,clarkson2008civitas}.
 
   \item \textit{Demographic and environmental robustness.}
     MobileFaceNet (ArcFace) is trained on datasets with known
