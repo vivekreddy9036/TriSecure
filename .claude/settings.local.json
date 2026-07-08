@@ -83,7 +83,8 @@
       "Bash(cp -r \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\springer\\\\figures\" \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\Emerald_ICS_Submission\\\\figures\")",
       "Bash(cp -r \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\experiments\\\\figures\" \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\Emerald_ICS_Submission\\\\experiments_figures\")",
       "Bash(perl -0777 -pe ' *)",
-      "PowerShell(Get-Command *)"
+      "PowerShell(Get-Command *)",
+      "WebFetch(domain:www.sciencedirect.com)"
     ]
   }
 }
