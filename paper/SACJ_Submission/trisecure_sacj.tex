@@ -6,8 +6,8 @@
 %%      https://journals.assaf.org.za/index.php/sacj/about/submissions
 %%      (look for "Complete LaTeX example")
 %%   2. Upload sacjsub.cls to this Overleaf project
-%%   3. Copy all PNG files from springer/figures/ into the
-%%      figures/ subfolder here
+%%   3. Copy all PNG/JPG files from springer/figures/ into the
+%%      figures/ subfolder here (JPG preferred for Overleaf compile speed)
 %%   4. Set Compiler = pdfLaTeX, Bibliography = BibTeX
 %%   5. Compile: pdfLaTeX -> BibTeX -> pdfLaTeX -> pdfLaTeX
 %%
@@ -335,7 +335,7 @@ the only system to satisfy all capability dimensions on edge hardware.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/gap_matrix.png}
+  \includegraphics[width=\linewidth]{figures/gap_matrix.jpg}
   \caption{Capability gap matrix across eight prior systems and seven
     dimensions. Green (\(\checkmark\))~=~full support;
     yellow (\(\sim\))~=~partial; red (\(\times\))~=~absent.
@@ -442,7 +442,7 @@ SHA-256 hash chain; (8)~Merkle receipt generated.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.9\linewidth]{figures/architecture.png}
+\includegraphics[width=0.9\linewidth]{figures/architecture.jpg}
 \caption{TRIsecure V2 six-layer clean architecture. Arrows indicate
   upward dependency direction.}
 \label{fig:architecture}
@@ -540,7 +540,7 @@ exhibits \(d'=31.6\), far exceeding face (\(d'=9.4\)) or PAD
 collapses to 3.4 (high context), shifting discriminative load to face
 and PAD.
 
-\begin{table}[h]
+\begin{table}[ht]
 \caption{Discriminability index (\(d'\)) per modality per risk context
   (simulation, \(N{=}20{,}000\) per class).}
 \label{tab:dprime}
@@ -789,7 +789,7 @@ controls beyond the on-device model.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/threat_model_heatmap.png}
+  \includegraphics[width=\linewidth]{figures/threat_model_heatmap.jpg}
   \caption{Threat model coverage matrix. Green (\(\checkmark\),
     score~2)~=~full mitigation; yellow (\(\sim\), score~1)~=~partial;
     red (\(\times\), score~0)~=~none. Column sums show total defence
@@ -904,7 +904,7 @@ Table~\ref{tab:sensitivity} confirms biometric metrics are stable under
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/biometric_eval_panel.png}
+  \includegraphics[width=\linewidth]{figures/biometric_eval_panel.jpg}
   \caption{Biometric evaluation panel. Left: ROC (AUC\(=0.9991\),
     EER marked). Centre: DET curve (EER\(=1.55\%\)). Right:
     genuine/impostor score distributions (KDE) with EER threshold
@@ -988,7 +988,7 @@ magnitude (\(1.22\% \to 0.001\%\)) without increasing biometric EER.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/ablation_panel.png}
+  \includegraphics[width=\linewidth]{figures/ablation_panel.jpg}
   \caption{Ablation results. Left: EER across configurations. Centre:
     latency breakdown by stage. Right: attack vectors fully mitigated
     (of 12).}
@@ -1027,7 +1027,7 @@ ciphertext without the HKDF-derived deployment key.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{figures/adversarial_panel.png}
+  \includegraphics[width=\linewidth]{figures/adversarial_panel.jpg}
   \caption{Adversarial evaluation. Left: attack success rates before
     and after the full defence stack. Right: cumulative defence
     contribution---combined attack surface collapses from
@@ -1160,8 +1160,8 @@ competitive with all prior biometric voting systems.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.48\linewidth]{figures/comparison_table.png}
-  \includegraphics[width=0.48\linewidth]{figures/comparison_bar.png}
+  \includegraphics[width=0.48\linewidth]{figures/comparison_table.jpg}
+  \includegraphics[width=0.48\linewidth]{figures/comparison_bar.jpg}
   \caption{Comparative analysis against five reference systems. Left:
     feature comparison heatmap---TRIsecure~V2 is the only system
     supporting all six binary capability flags simultaneously. Right:
