@@ -32,6 +32,20 @@ and privacy," "biometrics ... and forensic signal analysis," and
 "security and privacy of sensing systems and cyber-physical systems,"
 evaluated end-to-end on real edge hardware (Raspberry Pi 4).
 
+Issues relating to journal policies
+----------------------------------------------
+The manuscript includes a proof-of-concept pilot study (Section 4.10,
+N=20 participants, including the authors) involving facial biometric
+data captured for authentication testing. Participants gave informed
+consent, but no formal institutional ethics board (IRB) review was
+sought, consistent with common practice for non-clinical engineering
+proof-of-concept pilots of this scale. Raw images were discarded
+immediately after each attempt; only encrypted embeddings were retained
+for the pilot's duration and results are reported only in anonymised,
+aggregate form. Full details are in the manuscript's Declarations
+section. We flag this proactively in case the editorial office has
+additional requirements for human-subject biometric data of this kind.
+
 Declarations
 ----------------------------------------------
 - Competing interests: The authors declare no competing interests.
@@ -47,23 +61,15 @@ Declarations
 - Suggested reviewers: None suggested.
 - Reviewers to exclude: None.
 
-[USER: ACTION REQUIRED BEFORE SUBMISSION --- reference integrity]
+Note on reference integrity
+----------------------------------------------
 A full cross-check of references.bib against CrossRef/IEEE Xplore/DOI
-resolution found and fixed 10 bibliography errors (fabricated/broken DOIs,
-one wrong entry type, one wrong author list, one wrong page range) —
-details in git history of references.bib. One entry could NOT be fixed
-and needs your decision: \cite{sanchez2020biometric} ("Sanchez-Reillo
-et al., Biometric Verification in Constrained Environments: Edge-Device
-Considerations", claimed BTAS 2020) has no resolvable DOI and no
-findable IEEE Xplore/CrossRef/web record under this title or these
-authors. BTAS was also merged into IJCB starting in 2021, making a
-standalone "BTAS 2021" venue doubtful. It is cited 3 times in
-trisecure_springer.tex (Introduction, Related Work, and the comparison
-table), including the specific numeric claim "EER=3.2% at 480ms"
-attributed to it. Before submitting, please either (a) locate the real
-paper you intended to cite and correct the entry, or (b) replace it with
-a verifiable reference, or (c) remove the claim and its 3 citations. Do
-not submit with this reference unresolved.
+resolution found and fixed 10 bibliography errors (fabricated/broken
+DOIs, one wrong entry type, one wrong author list, one wrong page
+range). One entry ("Sanchez-Reillo et al., Biometric Verification in
+Constrained Environments", claimed BTAS 2020) could not be verified to
+exist at all and has been removed entirely, along with its 3 citations
+and the associated claim, rather than left unresolved.
 
 Thank you for considering our manuscript. We look forward to your
 response.

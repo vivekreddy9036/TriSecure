@@ -87,7 +87,7 @@ escalating borderline cases for supervisor review rather than binary
 accept/reject---achieving 99.3\% HIGH trust on genuine users and zero
 \textsc{Low} classifications for simulated impostors under Gaussian score
 assumptions. Simulation-based evaluation (ISO/IEC~19795-6,
-\(n{=}1{,}000\) score pairs) achieves EER~\(=1.55\%\), AUC~\(=0.9991\),
+\(n{=}1\,000\) score pairs) achieves EER~\(=1.55\%\), AUC~\(=0.9991\),
 TAR@1\%FAR~\(=97.7\%\), and PAD ACER~\(=4.25\%\) (PAD layer only). A
 proof-of-concept pilot with \(N{=}20\) participants on real hardware
 confirms FAR\(=\)FRR\(=\)ACER\(=0.00\%\) across 271 authentication events
@@ -133,7 +133,7 @@ verifiability on top of it.
 
 Existing systems leave at least one requirement unsatisfied.
 Fingerprint- and face-based voting
-systems~\cite{bello2021biometric,sanchez2020biometric,komatineni2020biometric,nagaraj2022voting}
+systems~\cite{bello2021biometric,komatineni2020biometric,nagaraj2022voting}
 report biometric error rates without formal protocol verification or
 post-quantum (PQC) readiness. Blockchain-based
 approaches~\cite{ayed2017conceptual,hardwick2018voting,faruk2024transforming}
@@ -222,8 +222,7 @@ commodity edge hardware, demonstrated on a Raspberry Pi~4.
 
 Bello et al.~\cite{bello2021biometric} achieve EER~\(=2.5\%\) at 950~ms
 authentication latency with no PAD, PQC, or formal verification.
-S\'{a}nchez-Reillo et al.~\cite{sanchez2020biometric} report EER~\(=3.2\%\)
-at 480~ms on constrained hardware. Komatineni and
+Komatineni and
 Lingala~\cite{komatineni2020biometric} combine machine-learning face detection
 with biometric scanning for duplicate-vote prevention in a two-factor
 architecture. Nagaraj et al.~\cite{nagaraj2022voting} integrate facial
@@ -270,7 +269,7 @@ blind-signature-based secret ballot scheme; Benaloh and
 Tuinstra~\cite{benaloh1994receipt} formalised receipt-freeness. Nakamoto's
 Bitcoin~\cite{nakamoto2008bitcoin} demonstrated append-only hash chaining,
 inspiring blockchain voting proposals. Ayed~\cite{ayed2017conceptual} proposes
-Ethereum-based voting (\(>2{,}100\)~ms) with PIN-only authentication.
+Ethereum-based voting (\(>2\,100\)~ms) with PIN-only authentication.
 Hardwick et al.~\cite{hardwick2018voting} and Hj\'{a}lmarsson et
 al.~\cite{hjalmarsson2018blockchain} extend this with anonymisation and
 Hyperledger Fabric, but provide no biometric gate or anti-spoofing.
@@ -396,10 +395,6 @@ matrix across eight systems and seven dimensions.
     & Fingerprint + smart card
     & Two-factor; biometric binding; EER~\(2.5\%\)
     & No PAD; no PQC; no FV; 950~ms; server-dependent \\[3pt]
-  S\'{a}nchez-Reillo et al.\ (2020)~\cite{sanchez2020biometric}
-    & Face + smart card, constrained
-    & Targets embedded devices
-    & EER~\(3.2\%\); no liveness; no FV; no PQC \\[3pt]
   Ayed (2017)~\cite{ayed2017conceptual}
     & Ethereum blockchain, PIN-only
     & Vote receipts; tamper-evident ledger
@@ -669,7 +664,7 @@ EER-minimisation problem
   \;\text{s.t.}\;\textstyle\sum_k w_k = 1,\; w_k \geq 0.10
   \label{eq:ats_opt}
 \end{equation}
-over simulated score sets \(\mathcal{X}_G, \mathcal{X}_I\) (\(N{=}20{,}000\)
+over simulated score sets \(\mathcal{X}_G, \mathcal{X}_I\) (\(N{=}20\,000\)
 per class, seed~42) via SLSQP with five initialisations, subject to three
 semantic monotonicity constraints: \(w_p^\text{high}\!\geq
 w_p^\text{elev}\!\geq w_p^\text{norm}\) (liveness detection becomes the
@@ -687,7 +682,7 @@ and PAD.
 
 \begin{table}[h]
 \caption{Discriminability index (\(d'\)) per modality per risk context
-  (simulation, \(N{=}20{,}000\) per class).}
+  (simulation, \(N{=}20\,000\) per class).}
 \label{tab:dprime}%
 \begin{tabular}{|l|c|c|c|}
 \hline
@@ -715,14 +710,14 @@ probing once the attacker is sufficiently sophisticated
 
 \textit{Simulation-based calibration.} Under \textit{normal} context with
 genuine users (\(s_f \sim \mathcal{N}(0.72,0.08^2)\), NFC valid, PAD live,
-\(N{=}10{,}000\)): 99.3\% reach \textsc{High} trust; 0.7\% are escalated to
+\(N{=}10\,000\)): 99.3\% reach \textsc{High} trust; 0.7\% are escalated to
 \textsc{Medium}; none are classified \textsc{Low}. Under the Gaussian
 simulation model, all simulated impostors (\(s_f \sim
 \mathcal{N}(0.28,0.12^2)\), NFC invalid, not live) score below the
 \textsc{Medium} threshold; this reflects the parametric score separation
 assumed by the simulation rather than a claimed zero-error rate---ground-truth
 FAR is reported in Table~\ref{tab:threshold_sweep}. Borderline cases (genuine
-face, NFC valid, PAD failed, second attempt, \(N{=}1{,}000\)): 99.4\% are
+face, NFC valid, PAD failed, second attempt, \(N{=}1\,000\)): 99.4\% are
 escalated to \textsc{Medium}, enabling supervisor override rather than hard
 rejection.
 
@@ -896,7 +891,7 @@ second physical card with copied ciphertext bytes) fail the UUID cross-check.
 
 \subsection{Camera Configuration and Face Pipeline}
 
-The Logitech C920 HD webcam is connected via USB~3.0 and accessed through
+The Logitech BRIO webcam is connected via USB~3.0 and accessed through
 OpenCV's V4L2 (Video4Linux2) backend at \texttt{/dev/video0}.
 Table~\ref{tab:camera_config} summarises the complete camera and
 face-pipeline configuration.
@@ -924,8 +919,8 @@ face-pipeline configuration.
 \end{tabular}
 \end{table}
 
-The 320$\times$240 resolution was selected after measurement: at the next C920
-resolution tier (640$\times$480), ONNX inference increases to approximately
+The 320$\times$240 resolution was selected after measurement: at the next
+available capture resolution tier (640$\times$480), ONNX inference increases to approximately
 98~ms with negligible accuracy gain because MobileFaceNet's fixed
 112$\times$112 input discards the extra pixels after the Haar crop. The V4L2
 MJPEG codec compresses frames at the camera sensor before USB transmission,
@@ -1132,8 +1127,8 @@ components quantum-safe without algorithm replacement.
 \subsection{Experimental Setup}
 
 \textit{Hardware.} Raspberry Pi~4 Model~B, 4~GB LPDDR4, ARM Cortex-A72
-@ 1.8~GHz (quad-core, 64-bit). Logitech C920 USB webcam (1080p/30~fps).
-PN532 NFC module (SPI).
+@ 1.8~GHz (quad-core, 64-bit). Logitech BRIO USB webcam (operated at
+1080p/30~fps). PN532 NFC module (SPI).
 
 \textit{Software.} Python~3.11, ONNX Runtime 1.17 (CPU), SQLite 3.42 (WAL),
 PyNaCl 1.5, PyArgon2-cffi 23.1, NumPy~1.26. All experiments reproducible via
@@ -1146,7 +1141,7 @@ unavailable. Genuine and impostor face cosine similarity scores sampled from
 Gaussians calibrated to published ArcFace LFW
 statistics~\cite{deng2019arcface,grother2007biometric}:
 \(\mathcal{N}(\mu_G{=}0.72, \sigma_G{=}0.08)\) and
-\(\mathcal{N}(\mu_I{=}0.28, \sigma_I{=}0.12)\), \(n{=}1{,}000\) each. PAD
+\(\mathcal{N}(\mu_I{=}0.28, \sigma_I{=}0.12)\), \(n{=}1\,000\) each. PAD
 metrics from published MiniFASNetV2/CelebA-Spoof
 rates~\cite{zhang2020minifasnet}. All simulation results are labelled as such;
 a proof-of-concept pilot study with \(N{=}20\) participants confirmed zero
@@ -1178,7 +1173,7 @@ Table~\ref{tab:biometric} reports key metrics. Figure~\ref{fig:biometric_panel}
 shows the ROC curve, DET curve, and score distributions.
 
 \begin{table}[t]
-\caption{Biometric performance (\(n{=}1{,}000\) genuine/impostor, ArcFace priors).}
+\caption{Biometric performance (\(n{=}1\,000\) genuine/impostor, ArcFace priors).}
 \label{tab:biometric}%
 \begin{tabular}{|l|c|}
   \hline
@@ -1224,13 +1219,13 @@ shows the ROC curve, DET curve, and score distributions.
 \subsection{Bootstrap Confidence Intervals}\label{sec:bootstrap}
 
 To quantify simulation uncertainty we apply non-parametric bootstrap resampling
-(\(B{=}10{,}000\) replicates) over the \(n{=}1{,}000\) genuine and
-\(n{=}1{,}000\) impostor score draws. At each replicate the EER operating
+(\(B{=}10\,000\) replicates) over the \(n{=}1\,000\) genuine and
+\(n{=}1\,000\) impostor score draws. At each replicate the EER operating
 threshold is re-estimated from the replicate scores to avoid threshold lock-in
 bias. Table~\ref{tab:bootstrap_ci} reports percentile 95\% confidence intervals.
 
 \begin{table}[t]
-\caption{Bootstrap 95\% percentile CI (\(B{=}10{,}000\) replicates).}
+\caption{Bootstrap 95\% percentile CI (\(B{=}10\,000\) replicates).}
 \label{tab:bootstrap_ci}%
 \begin{tabular}{|l|c|c|}
   \hline
@@ -1319,7 +1314,7 @@ valid NFC card is rejected regardless of face score.
 \subsection{Adversarial Attack Evaluation}\label{sec:adversarial}
 
 To quantify per-layer defence contribution beyond the ablation study, we
-simulate six attack categories (\(n{=}1{,}000\) attempts each) against the
+simulate six attack categories (\(n{=}1\,000\) attempts each) against the
 sequential defence stack. Face score distributions for spoof attacks are
 calibrated to published MiniFASNetV2/CelebA-Spoof~\cite{zhang2020minifasnet}
 penetration rates; NFC and session attacks use protocol-level analysis.
@@ -1332,7 +1327,7 @@ threshold and evade PAD, because the attacker cannot forge the AES-128-GCM
 authenticated ciphertext without the HKDF-derived deployment key.
 
 \begin{table}[t]
-\caption{Adversarial attack simulation (\(n{=}1{,}000\) per category).
+\caption{Adversarial attack simulation (\(n{=}1\,000\) per category).
   Success = attack reaches the voting step. Rates are fraction of \(n\).}
 \label{tab:adversarial}%
 \begin{tabular}{|l|r|r|r|r|}
@@ -1418,8 +1413,8 @@ post-quantum layer fits comfortably within the \(<200\)~ms latency budget.
   HMAC-SHA256 (256~B)                  & 10000 & 0.013 & [0.013, 0.013] \\
   Ed25519 sign+verify                  & 200   & 0.532 & [0.527, 0.538] \\
   X25519 keygen+encap+decap            & 200   & 1.022 & [1.002, 1.042] \\
-  SHA-256 chain (\(n{=}1{,}000\))     & 3     & 4.27  & [4.11, 4.43]   \\
-  Merkle prove+verify (\(n{=}1{,}000\))& 5    & 4.82  & [4.74, 4.90]   \\
+  SHA-256 chain (\(n{=}1\,000\))     & 3     & 4.27  & [4.11, 4.43]   \\
+  Merkle prove+verify (\(n{=}1\,000\))& 5    & 4.82  & [4.74, 4.90]   \\
   \hline
 \end{tabular}
 \end{table}
@@ -1466,7 +1461,7 @@ between configuration~C2 (face + NFC, no PAD) and C3 (full system with PAD).
 All PQC operations combined (Kyber-768 encapsulation/decapsulation and
 Dilithium-3 sign/verify) add only 2.289~ms on the real-time authentication
 path. Symmetric operations and the DFA protocol gate contribute less than
-0.07~ms combined. Merkle proof generation (4.82~ms per 1{,}000-entry chain)
+0.07~ms combined. Merkle proof generation (4.82~ms per 1\,000-entry chain)
 runs post-authentication and does not block the voter handoff, preserving the
 G5 latency target of \(<200\)~ms. The aggregate real-time security overhead
 (PAD plus all in-path cryptographic operations) is 17.85~ms, representing
@@ -1496,7 +1491,7 @@ G5 latency target of \(<200\)~ms. The aggregate real-time security overhead
   \multicolumn{2}{@{}l@{}}{\textit{Protocol enforcement}} \\
   \quad DFA state-transition check                        & $<$0.010 \\[3pt]
   \multicolumn{2}{@{}l@{}}{\textit{End-to-end verifiability}} \\
-  \quad Merkle prove + verify (\(n{=}1{,}000\))$^\dagger$ &  4.820 \\
+  \quad Merkle prove + verify (\(n{=}1\,000\))$^\dagger$ &  4.820 \\
   \midrule
   \textbf{In-path security overhead (PAD + crypto + DFA)} & \textbf{17.85} \\
   \textbf{Total overhead (incl.\ post-auth Merkle)}        & \textbf{22.67} \\
@@ -1516,15 +1511,7 @@ exceeded only by standalone ArcFace on a GPU server
 
 \begin{figure*}[t]
   \centering
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/comparison_table.png}
-  \end{minipage}
-  \hfill
-  \begin{minipage}[t]{0.48\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{figures/comparison_bar.png}
-  \end{minipage}
+  \includegraphics[width=\linewidth]{figures/comparison_combined_panel.png}
   \caption{Comparative analysis against five reference systems. \textit{Left:}
     feature comparison heatmap --- TRIsecure~V2 is the only system supporting
     all six binary capability flags simultaneously. \textit{Right:} EER and
@@ -1644,13 +1631,13 @@ aluminium heatsink is sufficient; active cooling is not required.
 \subsection{Throughput and Polling Station Capacity}\label{sec:throughput}
 
 At 541.6~voters/min sustained throughput and a 60-second session TTL, the
-theoretical throughput is approximately 32{,}496~voters per hour---far
+theoretical throughput is approximately 32\,496~voters per hour---far
 exceeding the registered voter count of typical polling stations
-(800--2{,}000 voters). The practical bottleneck is not the system but the
+(800--2\,000 voters). The practical bottleneck is not the system but the
 voter interaction time (card presentation, face alignment, ballot selection),
 which averages 20--40 seconds per voter. At 40 seconds per voter, a single
 terminal processes 90 voters/hour; a station with six terminals handles 540
-voters/hour---sufficient for a 2{,}000-voter station over a 4-hour peak period
+voters/hour---sufficient for a 2\,000-voter station over a 4-hour peak period
 with queuing margin.
 
 Table~\ref{tab:throughput_scenarios} illustrates deployment configurations for
@@ -1665,8 +1652,8 @@ three polling station sizes.
   Station size & Terminals & Voters/hr & Peak capacity \\
   \hline
   Small  ($\leq$500 voters)      & 1 & 90  & 540  \\
-  Medium ($\leq$2{,}000 voters)  & 3 & 270 & 1{,}620 \\
-  Large  ($\leq$5{,}000 voters)  & 8 & 720 & 4{,}320 \\
+  Medium ($\leq$2\,000 voters)  & 3 & 270 & 1\,620 \\
+  Large  ($\leq$5\,000 voters)  & 8 & 720 & 4\,320 \\
   \hline
 \end{tabular}
 \end{table}
@@ -1701,7 +1688,7 @@ revocation and is identified as future work.
 \begin{enumerate}
 
   \item \textit{Simulation-based evaluation and small pilot.}
-    The primary biometric evaluation (\(n{=}1{,}000\) score pairs,
+    The primary biometric evaluation (\(n{=}1\,000\) score pairs,
     EER~\(=1.55\%\), AUC~\(=0.9991\)) uses Gaussian-modelled
     genuine/impostor distributions following ISO/IEC~19795-6 operational
     guidance, not a live capture study. The real-hardware pilot (\(N{=}20\),
@@ -1912,6 +1899,22 @@ scripts are available at \url{https://github.com/vivekreddy9036/TriSecure}.
   (Section~\ref{sec:pilot}) are not shared, consistent with the consent
   obtained from participants; only the anonymised, aggregate pilot results
   reported in Table~\ref{tab:pilot} are available.
+  \begin{itemize}
+    \item[] \textbf{Project name:} TRIsecure V2
+    \item[] \textbf{Project home page:}
+      \url{https://github.com/vivekreddy9036/TriSecure}
+    \item[] \textbf{Archived version:} Tagged release corresponding to this
+      manuscript's submitted results (repository release tags)
+    \item[] \textbf{Operating system(s):} Linux (target deployment:
+      Raspberry Pi OS / Ubuntu~22.04 ARM64); evaluation and simulation
+      scripts are platform-independent
+    \item[] \textbf{Programming language:} Python~3.11
+    \item[] \textbf{Other requirements:} ONNX Runtime~1.17, NumPy~1.26,
+      SciPy, pandas, scikit-learn; see \texttt{requirements.txt} in the
+      repository for the full dependency list
+    \item[] \textbf{License:} MIT License
+    \item[] \textbf{Any restrictions to use by non-academics:} None
+  \end{itemize}
 \item \textbf{Competing interests.} The authors declare no competing
   interests.
 \item \textbf{Funding.} This work received no external funding.

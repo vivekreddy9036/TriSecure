@@ -99,7 +99,13 @@
       "Bash(rm -rf EURASIP_JIS_Submission)",
       "Bash(awk ' *)",
       "WebFetch(domain:doi.org)",
-      "WebFetch(domain:ieeexplore.ieee.org)"
+      "WebFetch(domain:ieeexplore.ieee.org)",
+      "Bash(awk '/\\\\\\\\begin\\\\{table/{intable=1} /\\\\\\\\end\\\\{table/{intable=0} intable && /[0-9],[0-9]/{print NR\": \"$0}' trisecure_springer.tex)",
+      "Bash(awk 'BEGIN{intable=0} /begin.table/{intable=1} /end.table/{intable=0} intable==1 && /[0-9],[0-9]/{print NR\": \"$0}' trisecure_springer.tex)",
+      "Bash(perl -v)",
+      "Bash(perl -pe 's/\\\\{,\\\\}/\\\\\\\\,/g')",
+      "Bash(awk '/\\\\\\\\begin\\\\{figure/{fig=1; count=0; start=NR} fig && /includegraphics/{count++} /\\\\\\\\end\\\\{figure/{if\\(fig && count>1\\) print \"Lines \"start\"-\"NR\": \"count\" includegraphics calls in one figure env\"; fig=0}' trisecure_springer.tex)",
+      "Bash(convert --version)"
     ]
   }
 }
