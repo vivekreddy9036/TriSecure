@@ -1,0 +1,76 @@
+Cover Letter — Submission to Journal on Information Security (Springer,
+journal 13635; formerly EURASIP Journal on Information Security)
+
+Manuscript title: TRIsecure: Design and Evaluation of a Three-Factor
+Post-Quantum Biometric E-Voting Framework on Commodity Edge Hardware
+
+Dear Editor,
+
+We are pleased to submit our manuscript "TRIsecure: Design and Evaluation
+of a Three-Factor Post-Quantum Biometric E-Voting Framework on Commodity
+Edge Hardware" for consideration as a Research Article in the Journal on
+Information Security.
+
+Why this manuscript fits the journal's scope
+----------------------------------------------
+Voter authentication in TRIsecure V2 is fundamentally a signal-processing
+problem: a face-recognition cosine-similarity score and a presentation-
+attack (liveness) classification are noisy, adversarially manipulable
+signal-level measurements that must be statistically fused with an
+independent physical-credential channel (NFC) to reach a reliable
+security decision under a tight latency budget. The manuscript's central
+contributions are (i) Bayesian signal-level fusion of biometric evidence,
+(ii) ISO/IEC 30107-3 presentation-attack detection via spoof-signal
+classification, and (iii) an Adaptive Trust Score engine that reweights
+these signal sources under contextual risk. Formal DFA-based protocol
+verification, post-quantum cryptography, and end-to-end Merkle
+verifiability are layered on top of this signal-level foundation as
+complementary system-security mechanisms, rather than being the paper's
+primary contribution. We believe this places the work squarely within
+the journal's stated scope of "signal processing methods for security
+and privacy," "biometrics ... and forensic signal analysis," and
+"security and privacy of sensing systems and cyber-physical systems,"
+evaluated end-to-end on real edge hardware (Raspberry Pi 4).
+
+Declarations
+----------------------------------------------
+- Competing interests: The authors declare no competing interests.
+- Authorship: All authors have approved this manuscript for submission.
+- Originality: [USER: confirm current status of any prior/parallel
+  submission before sending — this manuscript was previously prepared in
+  a different format for submission to the South African Computer
+  Journal (SACJ); please confirm that submission has been withdrawn or
+  otherwise resolved, and that this manuscript is not concurrently under
+  review elsewhere, before this cover letter is sent.]
+- Special issue: Not applicable — this is a submission to the journal's
+  regular research article track.
+- Suggested reviewers: None suggested.
+- Reviewers to exclude: None.
+
+[USER: ACTION REQUIRED BEFORE SUBMISSION --- reference integrity]
+A full cross-check of references.bib against CrossRef/IEEE Xplore/DOI
+resolution found and fixed 10 bibliography errors (fabricated/broken DOIs,
+one wrong entry type, one wrong author list, one wrong page range) —
+details in git history of references.bib. One entry could NOT be fixed
+and needs your decision: \cite{sanchez2020biometric} ("Sanchez-Reillo
+et al., Biometric Verification in Constrained Environments: Edge-Device
+Considerations", claimed BTAS 2020) has no resolvable DOI and no
+findable IEEE Xplore/CrossRef/web record under this title or these
+authors. BTAS was also merged into IJCB starting in 2021, making a
+standalone "BTAS 2021" venue doubtful. It is cited 3 times in
+trisecure_springer.tex (Introduction, Related Work, and the comparison
+table), including the specific numeric claim "EER=3.2% at 480ms"
+attributed to it. Before submitting, please either (a) locate the real
+paper you intended to cite and correct the entry, or (b) replace it with
+a verifiable reference, or (c) remove the claim and its 3 citations. Do
+not submit with this reference unresolved.
+
+Thank you for considering our manuscript. We look forward to your
+response.
+
+Sincerely,
+Pinnemcharla Sai Vivek Reddy
+(on behalf of all authors)
+Department of Computer Science and Engineering,
+Amrita Vishwa Vidyapeetham, Chennai, Tamil Nadu, India
+vivekreddy9036@gmail.com

@@ -19,11 +19,11 @@
   title     = {Secured {E}-Voting System Using Two-Factor Biometric Authentication},
   booktitle = {Proc. 4th International Conference on Computing Methodologies and
                Communication (ICCMC 2020)},
-  pages     = {1--5},
+  pages     = {245--248},
   year      = {2020},
   publisher = {IEEE},
   isbn      = {978-1-7281-4889-2},
-  doi       = {10.1109/ICCMC48092.2020.ICCMC-00006},
+  doi       = {10.1109/ICCMC48092.2020.ICCMC-00046},
 }
 
 @inproceedings{nagaraj2022voting,
@@ -36,7 +36,7 @@
   year      = {2022},
   publisher = {IEEE},
   isbn      = {979-8-3503-3384-8},
-  doi       = {10.1109/ICDSAAI55433.2022.10028819},
+  doi       = {10.1109/ICDSAAI55433.2022.10028783},
 }
 
 @article{revathy2022cnn_evoting,
@@ -49,6 +49,7 @@
   pages     = {61--67},
   year      = {2022},
   publisher = {Elsevier},
+  doi       = {10.1016/j.tcs.2022.05.005},
   url       = {https://www.sciencedirect.com/science/article/pii/S0304397522002869},
 }
 
@@ -59,9 +60,14 @@
   volume    = {9},
   pages     = {98405--98418},
   year      = {2021},
-  doi       = {10.1109/ACCESS.2021.3095800},
 }
 
+% *** UNVERIFIED ENTRY --- fix or replace before submission ***
+% Could not confirm this paper exists: no DOI/CrossRef/IEEE Xplore record
+% found, and BTAS was merged into IJCB starting in 2021, so a standalone
+% "BTAS 2021" venue is itself doubtful. The fabricated DOI has been removed.
+% Cited 3x in trisecure_springer.tex (lines ~136, ~225, ~399) including the
+% specific numeric claim "EER=3.2% at 480ms" attributed to this source.
 @inproceedings{sanchez2020biometric,
   author    = {S{\'a}nchez-Reillo, Ra{\'u}l and Liu-Jimenez, Judith and Entrena, Luis},
   title     = {Biometric Verification in Constrained Environments: Edge-Device
@@ -70,7 +76,6 @@
                and Systems (BTAS)},
   year      = {2020},
   pages     = {1--8},
-  doi       = {10.1109/BTAS52227.2021.9554928},
 }
 
 @article{ashokkumar2023smart,
@@ -189,16 +194,18 @@
   doi       = {10.5121/ijnsa.2017.9301},
 }
 
-@article{hardwick2018voting,
-  author    = {Hardwick, Freya Sheer and Akram, Raja Naeem and
-               Markantonakis, Konstantinos and Watkins, Martin},
+@inproceedings{hardwick2018voting,
+  author    = {Hardwick, Freya Sheer and Gioulis, Apostolos and
+               Akram, Raja Naeem and Markantonakis, Konstantinos},
   title     = {E-Voting with Blockchain: An E-Voting Protocol with
                Decentralisation and Voter Privacy},
-  journal   = {IEEE Access},
-  volume    = {6},
-  pages     = {47663--47673},
+  booktitle = {Proc. IEEE International Conference on Internet of Things
+               (iThings) and IEEE Green Computing and Communications
+               (GreenCom) and IEEE Cyber, Physical and Social Computing
+               (CPSCom) and IEEE Smart Data (SmartData)},
+  publisher = {IEEE},
   year      = {2018},
-  doi       = {10.1109/ACCESS.2018.2871916},
+  doi       = {10.1109/Cybermatics_2018.2018.00262},
 }
 
 @inproceedings{hjalmarsson2018blockchain,
@@ -279,7 +286,7 @@
   doi       = {10.1007/978-3-662-53357-4_12},
 }
 
-@misc{gjosteen2010norwegian,
+@misc{gjosteen2013norwegian,
   author    = {Gj{\o}steen, Kristian},
   title     = {The {Norwegian} Internet Voting Protocol},
   year      = {2013},
@@ -307,7 +314,7 @@
   url       = {https://www.usenix.org/legacy/events/evtwote11/tech/final_files/Benaloh.pdf},
 }
 
-@inproceedings{juels2010coercion,
+@inproceedings{juels2005coercion,
   author    = {Juels, Ari and Catalano, Dario and Jakobsson, Markus},
   title     = {Coercion-Resistant Electronic Elections},
   booktitle = {Proc. ACM Workshop on Privacy in the Electronic Society (WPES)},
@@ -522,6 +529,7 @@
   doi       = {10.1109/WIFS47025.2019.9035107},
 }
 
+% doi field removed: 10.1109/TIFS.2023.3307596 returned 404 (unverified)
 @article{yang2023pad_survey,
   author    = {Yang, Jianwei and Shi, Zhiyong and Yang, Jian},
   title     = {Face Anti-Spoofing: A Survey on Presentation Attack Detection
@@ -530,7 +538,6 @@
   volume    = {18},
   pages     = {5261--5285},
   year      = {2023},
-  doi       = {10.1109/TIFS.2023.3307596},
 }
 
 % ============================================================
@@ -591,7 +598,7 @@
   doi         = {10.6028/NIST.FIPS.204},
 }
 
-@inproceedings{paquin2019oqs,
+@inproceedings{paquin2020oqs,
   author    = {Paquin, Christian and Stebila, Douglas and Tamvada, Goutam},
   title     = {Benchmarking Post-Quantum Cryptography in {TLS}},
   booktitle = {Proc. International Conference on Post-Quantum Cryptography
@@ -611,11 +618,12 @@
   url       = {https://eprint.iacr.org/2019/844},
 }
 
-@article{sikeridis2020pqc,
+@inproceedings{sikeridis2020pqc,
   author    = {Sikeridis, Dimitrios and Kampanakis, Panos and
                Devetsikiotis, Michael},
   title     = {Post-Quantum Authentication in {TLS}~1.3: A Performance Study},
-  journal   = {Proc. Network and Distributed System Security Symposium (NDSS)},
+  booktitle = {Proc. Network and Distributed System Security Symposium (NDSS 2020)},
+  publisher = {Internet Society},
   year      = {2020},
   doi       = {10.14722/ndss.2020.24203},
 }
@@ -651,6 +659,7 @@
   doi       = {10.1145/237814.237866},
 }
 
+% doi field removed: 10.1109/JIOT.2023.3307498 returned 404 (unverified)
 @article{delvaux2024pqc_iot,
   author    = {Delvaux, Jeroen and Chabanne, Herv\'{e} and Rautenberg, Oliver},
   title     = {Post-Quantum Cryptography for Resource-Constrained {IoT}
@@ -660,7 +669,6 @@
   number    = {4},
   pages     = {6100--6118},
   year      = {2024},
-  doi       = {10.1109/JIOT.2023.3307498},
 }
 
 % ============================================================
@@ -774,7 +782,7 @@
   doi       = {10.1109/TPAMI.2007.1019},
 }
 
-@article{nandakumar2012biometric,
+@article{nandakumar2015biometric,
   author    = {Nandakumar, Karthik and Jain, Anil K.},
   title     = {Biometric Template Protection: Bridging the Performance Gap
                Between Theory and Practice},
@@ -795,7 +803,7 @@
   number    = {2},
   pages     = {158--168},
   year      = {2024},
-  doi       = {10.1109/TBIOM.2024.3352044},
+  doi       = {10.1109/TBIOM.2024.3352164},
 }
 
 @techreport{nist_sp800_63b,
@@ -820,7 +828,7 @@
 % 12. CRYPTOGRAPHIC PRIMITIVES
 % ============================================================
 
-@inproceedings{biryukov2015argon2,
+@inproceedings{biryukov2016argon2,
   author    = {Biryukov, Alex and Dinu, Daniel and Khovratovich, Dmitry},
   title     = {Argon2: New Generation of Memory-Hard Functions for Password
                Hashing and Other Applications},
@@ -868,6 +876,7 @@
 % 14. COMPREHENSIVE E-VOTING SECURITY SURVEYS
 % ============================================================
 
+% doi field removed: 10.1145/3671641 returned 404 (unverified)
 @article{buchmann2024pvoting,
   author    = {Buchmann, Erik and Hartmann, Jonathan and Locher, Thomas},
   title     = {Security Analysis of Remote Electronic Voting Systems:
@@ -877,15 +886,15 @@
   number    = {1},
   pages     = {1--38},
   year      = {2024},
-  doi       = {10.1145/3671641},
 }
 
+% NOTE: this entry is not currently \cite'd anywhere in trisecure_springer.tex
 @inproceedings{liu2023deepfake_survey,
-  author    = {Liu, Zhiyuan and Qi, Xiaojuan and Torr, Philip},
+  author    = {Liu, Zhengzhe and Qi, Xiaojuan and Torr, Philip H.~S.},
   title     = {Global Texture Enhancement for Fake Face Detection in the Wild},
   booktitle = {Proc. IEEE/CVF Conference on Computer Vision and Pattern
                Recognition (CVPR)},
-  pages     = {8060--8069},
-  year      = {2023},
-  doi       = {10.1109/CVPR52688.2023.00778},
+  pages     = {8057--8066},
+  year      = {2020},
+  doi       = {10.1109/CVPR42600.2020.00808},
 }

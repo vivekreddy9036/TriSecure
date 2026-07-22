@@ -1,12 +1,11 @@
-%% TRIsecure: Springer Nature Journal Format (sn-jnl)
-%% Content sourced from trisecure_ieee.tex — do NOT modify trisecure_ieee.tex
+%% TRIsecure: Journal on Information Security submission (Springer sn-jnl)
 %%
-%% Target: Springer Nature (sn-mathphys-num)
+%% Target: Journal on Information Security (Springer, journal 13635; formerly EURASIP Journal on Information Security, retitled Jan 2026)
 %% Compile: pdflatex -> bibtex -> pdflatex -> pdflatex
 %%
 %% Version 3.1 December 2024 (sn-jnl template)
 
-\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}% Math and Physical Sciences Numbered Reference Style
+\documentclass[pdflatex,sn-vancouver-num]{sn-jnl}% Vancouver Numbered Reference Style (Journal on Information Security convention)
 
 %%%% Standard Packages
 \usepackage[T1]{fontenc}%
@@ -27,6 +26,8 @@
 \usepackage[expansion=false]{microtype}%
 \usepackage{url}%
 \providecommand{\burl}[1]{\url{#1}}%
+\usepackage{lineno}% required by Journal on Information Security: line numbering
+\usepackage{setspace}% required by Journal on Information Security: double-line spacing
 %%%%
 
 %% Theorem styles (sn-jnl predefined styles)
@@ -62,19 +63,21 @@
 
 \abstract{%
 Electronic voting systems must simultaneously satisfy strong voter
-authentication, tamper-evident vote integrity, end-to-end voter
-verifiability, and practical deployment constraints on resource-limited
-hardware. Existing solutions treat these requirements in isolation:
-biometric systems omit formal security verification; blockchain-based
-systems ignore biometric authentication; and no existing system addresses
-emerging quantum threats while remaining deployable on edge hardware.
-TRIsecure~V2 is a three-factor biometric e-voting terminal that jointly
-satisfies all four requirements on a commodity Raspberry Pi~4 (ARM64,
-commodity edge hardware) without requiring server-grade computing or
-persistent cloud connectivity. It integrates an ISO/IEC~19795-1 compliant
-biometric pipeline with Bayesian score-level fusion of face and NFC card
-modalities, ISO/IEC~30107-3 presentation attack detection (MiniFASNetV2
-liveness), a hybrid post-quantum cryptographic layer
+authentication grounded in robust signal-level biometric evidence,
+tamper-evident vote integrity, end-to-end voter verifiability, and
+practical deployment constraints on resource-limited hardware. Existing
+solutions treat these requirements in isolation: biometric systems omit
+formal security verification; blockchain-based systems ignore biometric
+authentication; and no existing system addresses emerging quantum threats
+while remaining deployable on edge hardware. TRIsecure~V2 is a
+three-factor biometric e-voting terminal that jointly satisfies all four
+requirements on a commodity Raspberry Pi~4 (ARM64, commodity edge
+hardware) without requiring server-grade computing or persistent cloud
+connectivity. It integrates an ISO/IEC~19795-1 compliant biometric
+pipeline with Bayesian signal-level fusion of face-recognition similarity
+scores and NFC channel evidence, ISO/IEC~30107-3 presentation attack
+detection via spoof-signal classification (MiniFASNetV2 liveness), a
+hybrid post-quantum cryptographic layer
 (Kyber-768\(+\)X25519 KEM and Dilithium-3\(+\)Ed25519 signatures per
 NIST FIPS~203/204), and a formally verified five-stage DFA authentication
 protocol with six proved security properties. A novel Adaptive Trust Score
@@ -107,6 +110,9 @@ Bayesian fusion, Merkle proof}
 
 \maketitle
 
+\linenumbers
+\doublespacing
+
 %% ============================================================
 \section{Introduction}\label{sec:intro}
 
@@ -115,7 +121,15 @@ consequences are asymmetric: a single undetected fraud vector can undermine
 election legitimacy at scale. The fundamental security challenge is to
 authenticate the right voter, record the right vote, prevent tampering,
 and allow the voter to verify their participation---all while running on
-deployable, affordable hardware.
+deployable, affordable hardware. At its core, voter authentication is a
+signal-processing problem: a face-recognition similarity score and a
+liveness (presentation-attack) classification are noisy, adversarially
+manipulable measurements that must be fused, thresholded, and combined
+with an independent physical-credential channel (NFC) to reach a reliable
+security decision under a bounded latency budget. TRIsecure~V2 treats this
+signal-level evidence fusion as the central design problem, layering
+formal protocol verification, post-quantum cryptography, and end-to-end
+verifiability on top of it.
 
 Existing systems leave at least one requirement unsatisfied.
 Fingerprint- and face-based voting
@@ -265,7 +279,7 @@ blockchain mechanism for online voting using smart contracts to enforce vote
 confidentiality and election integrity, demonstrating practical deployment
 but relying on classical cryptography with no biometric identity binding or
 formal protocol verification. Juels et
-al.~\cite{juels2010coercion} formalise coercion-resistance, a property
+al.~\cite{juels2005coercion} formalise coercion-resistance, a property
 TRIsecure~V2 partially addresses through in-person biometric binding
 (Section~\ref{sec:limitations}). Huang et al.~\cite{huang2022blockchain_voting}
 survey blockchain applications in voting across 81~prior works (ACM Computing
@@ -281,7 +295,7 @@ while adding biometric authentication.
 
 Sikeridis et al.~\cite{sikeridis2020pqc} show Kyber-768 and Dilithium-3 are
 feasible in TLS~1.3 on ARM devices via liboqs. Paquin et
-al.~\cite{paquin2019oqs} benchmark liboqs across x86 and ARM, providing the
+al.~\cite{paquin2020oqs} benchmark liboqs across x86 and ARM, providing the
 reference figures against which our Pi~4 measurements are calibrated.
 Kannwischer et al.~\cite{kannwischer2019pqm4} characterise PQC on Cortex-M4,
 establishing Kyber-768 key generation under 100k cycles. Delvaux et
@@ -337,7 +351,7 @@ coercion-resistance using threshold cryptography.
 Scantegrity~II~\cite{chaum2009scantegrity} achieves optical-scan E2E
 verifiability through confirmation codes. Selene~\cite{ryan2016selene}
 introduces tracker-number-based verifiability with coercion mitigation. The
-Norwegian scheme~\cite{gjosteen2010norwegian} deployed return-code
+Norwegian scheme~\cite{gjosteen2013norwegian} deployed return-code
 verifiability at national scale. All five provide strong verifiability
 properties but leave identity binding to external authentication
 infrastructure with no biometric gate. K\"{u}sters et
@@ -347,7 +361,7 @@ which TRIsecure~V2 satisfies via Merkle receipts. Dodis et
 al.~\cite{dodis2004fuzzy} formalise fuzzy extractors for biometric key
 derivation; Jain et al.~\cite{jain2008cancelable} survey cancelable
 biometrics per ISO/IEC~24745~\cite{iso24745}; Nandakumar and
-Jain~\cite{nandakumar2012biometric} survey the gap between biometric template
+Jain~\cite{nandakumar2015biometric} survey the gap between biometric template
 protection theory and practice. TRIsecure~V2 protects face embeddings via
 AES-256-GCM with per-voter keys; extending to cancelable representations is
 identified as future work.
@@ -732,7 +746,7 @@ is unbroken~\cite{bernstein2017post}. Vote records are signed with Dilithium-3
 (ML-DSA-65, FIPS~204~\cite{nist_fips204}), falling back to Ed25519 when
 \texttt{liboqs-python} is unavailable. Face embeddings are encrypted at rest
 with AES-256-GCM keyed via Argon2id (\(t{=}3\),
-\(m{=}64\)~MB)~\cite{biryukov2015argon2}.
+\(m{=}64\)~MB)~\cite{biryukov2016argon2}.
 
 \subsection{Vote Integrity and Verifiability}\label{sec:vote_integrity}
 
@@ -970,6 +984,10 @@ The DFA \(\mathcal{M}\) satisfies:
 All six properties machine-verified by
 \texttt{security/formal\_verification.py}.
 \end{theorem}
+
+Figure~\ref{fig:auth_dfa} depicts the DFA \(\mathcal{M}\): the unique
+canonical success path and the failure transitions that all terminate at
+the \textsc{Rejected} trap state.
 
 \begin{figure}[t]
   \centering
@@ -1335,6 +1353,9 @@ authenticated ciphertext without the HKDF-derived deployment key.
 \footnotetext[1]{Within 60~s TTL; one-time-use flag blocks all replays.}
 \end{table}
 
+Figure~\ref{fig:adversarial} visualises these results alongside the
+cumulative defence contribution of each layer.
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{figures/adversarial_panel.png}
@@ -1358,9 +1379,9 @@ post-quantum layer fits comfortably within the \(<200\)~ms latency budget.
 
 \begin{table}[t]
 \caption{Kyber-768/Dilithium-3 benchmarks on Raspberry Pi~4 (Cortex-A72,
-  ARM64), measured via liboqs~0.15.0 / liboqs-python~0.15.0 (\(n{=}200\)
-  trials, mean~$\pm$~1\,SD). Classical fallback (Ed25519/X25519) shown for
-  comparison.}
+  ARM64). Measured via liboqs~0.15.0 / liboqs-python~0.15.0
+  (\(n{=}200\) trials, mean~$\pm$~1\,SD). Classical fallback (Ed25519/X25519)
+  shown for comparison.}
 \label{tab:pqc_benchmarks}%
 \begin{tabular}{|l|c|r|r|}
   \hline
@@ -1516,8 +1537,13 @@ exceeded only by standalone ArcFace on a GPU server
 \subsection{Proof-of-Concept Pilot Study}\label{sec:pilot}
 
 To validate end-to-end system correctness on real hardware, a proof-of-concept
-pilot study was conducted with \(N{=}20\) participants on a Raspberry Pi~4
-Model~B. A total of 271 authentication events were recorded across five
+pilot study was conducted with \(N{=}20\) volunteer participants (including
+the authors) on a Raspberry Pi~4 Model~B. All participants gave informed
+consent for their facial biometric data to be captured and processed for
+authentication testing; raw face images were discarded immediately after
+each attempt and only encrypted embeddings were retained for the duration of
+the pilot (see Declarations). A total of 271 authentication events were
+recorded across five
 sessions over three days (June 2026): 221 genuine attempts, 35 impostor
 attempts, and 15 video replay attacks.
 
@@ -1710,7 +1736,7 @@ revocation and is identified as future work.
     authentication prevents remote delegation of authentication but does
     not protect against physical coercion at the polling station.
     Addressing coercion resistance would require cryptographic deniability
-    schemes~\cite{juels2010coercion,clarkson2008civitas} integrated at the ballot-level, which
+    schemes~\cite{juels2005coercion,clarkson2008civitas} integrated at the ballot-level, which
     is deferred to future work.
 
   \item \textit{Network-layer denial of service.}
@@ -1860,19 +1886,36 @@ scripts are available at \url{https://github.com/vivekreddy9036/TriSecure}.
 \section*{Declarations}
 
 \begin{itemize}
+\item \textbf{Ethics approval and consent to participate.} The proof-of-concept
+  pilot study (Section~\ref{sec:pilot}, \(N{=}20\)) involved the authors and
+  volunteer colleagues at the authors' institution, who participated
+  voluntarily and gave informed consent for their facial biometric data to
+  be captured and processed solely for authentication testing. No formal
+  institutional ethics board review was sought, consistent with common
+  practice for non-clinical engineering proof-of-concept pilots of this
+  scale; no vulnerable populations were involved. Raw face images were
+  discarded immediately after each authentication attempt and were never
+  persisted to disk; only encrypted embeddings (AES-256-GCM, per-voter
+  keys) were retained during the pilot session and were deleted at its
+  conclusion.
+\item \textbf{Consent for publication.} All pilot participants consented to
+  the anonymised, aggregate reporting of pilot results (counts and error
+  rates only; Table~\ref{tab:pilot}) in this manuscript. No participant is
+  individually identifiable from the reported data.
+\item \textbf{Availability of data and materials.} The dataset(s) supporting
+  the conclusions of this article is(are) available in the TRIsecure
+  repository, \url{https://github.com/vivekreddy9036/TriSecure}. This
+  includes all experiment scripts, source code, and the simulation-based
+  biometric evaluation (Section~\ref{sec:evaluation}), which uses Gaussian
+  simulation with publicly documented ArcFace LFW parameters. Raw biometric
+  data (face images/embeddings) from the \(N{=}20\) human pilot
+  (Section~\ref{sec:pilot}) are not shared, consistent with the consent
+  obtained from participants; only the anonymised, aggregate pilot results
+  reported in Table~\ref{tab:pilot} are available.
+\item \textbf{Competing interests.} The authors declare no competing
+  interests.
 \item \textbf{Funding.} This work received no external funding.
-\item \textbf{Conflict of interest.} The authors declare no conflict of
-  interest.
-\item \textbf{Ethics approval and consent to participate.} Not applicable.
-\item \textbf{Consent for publication.} Not applicable.
-\item \textbf{Data availability.} All experiment scripts, result JSON files,
-  and generated figures are available at
-  \url{https://github.com/vivekreddy9036/TriSecure}. No proprietary datasets
-  were used; biometric evaluation uses Gaussian simulation with publicly
-  documented ArcFace LFW parameters.
-\item \textbf{Code availability.} Source code publicly available at
-  \url{https://github.com/vivekreddy9036/TriSecure}.
-\item \textbf{Author contribution.} V.R. conceived the system, implemented
+\item \textbf{Authors' contributions.} V.R. conceived the system, implemented
   the codebase, conducted all experiments, and wrote the manuscript.
   U.K. and S.G. supervised the work and provided critical feedback.
   U.K. and S.G. contributed equally to this work ($\dagger$).

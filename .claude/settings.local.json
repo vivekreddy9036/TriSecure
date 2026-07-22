@@ -84,7 +84,22 @@
       "Bash(cp -r \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\experiments\\\\figures\" \"C:\\\\Vivek's Workspace\\\\TriSecure\\\\paper\\\\Emerald_ICS_Submission\\\\experiments_figures\")",
       "Bash(perl -0777 -pe ' *)",
       "PowerShell(Get-Command *)",
-      "WebFetch(domain:www.sciencedirect.com)"
+      "WebFetch(domain:www.sciencedirect.com)",
+      "WebFetch(domain:jis-eurasipjournals.springeropen.com)",
+      "WebFetch(domain:jwcn-eurasipjournals.springeropen.com)",
+      "WebFetch(domain:web.archive.org)",
+      "Bash(mkdir -p EURASIP_JIS_Submission/figures)",
+      "Bash(cp springer/sn-jnl.cls springer/*.bst EURASIP_JIS_Submission/)",
+      "Bash(cp springer/figures/*.png springer/figures/*.jpg EURASIP_JIS_Submission/figures/)",
+      "Bash(cp springer/references.bib EURASIP_JIS_Submission/references.bib)",
+      "Bash(cd *)",
+      "Bash(cp EURASIP_JIS_Submission/trisecure_jis.tex springer/trisecure_springer.tex)",
+      "Bash(cp EURASIP_JIS_Submission/references.bib springer/references.bib)",
+      "Bash(cp EURASIP_JIS_Submission/cover_letter.txt springer/cover_letter.txt)",
+      "Bash(rm -rf EURASIP_JIS_Submission)",
+      "Bash(awk ' *)",
+      "WebFetch(domain:doi.org)",
+      "WebFetch(domain:ieeexplore.ieee.org)"
     ]
   }
 }
