@@ -50,26 +50,15 @@ Declarations
 ----------------------------------------------
 - Competing interests: The authors declare no competing interests.
 - Authorship: All authors have approved this manuscript for submission.
-- Originality: [USER: confirm current status of any prior/parallel
-  submission before sending — this manuscript was previously prepared in
-  a different format for submission to the South African Computer
-  Journal (SACJ); please confirm that submission has been withdrawn or
-  otherwise resolved, and that this manuscript is not concurrently under
-  review elsewhere, before this cover letter is sent.]
+- Originality: This manuscript is not published, in press, or under
+  review at any other journal. An earlier version was prepared for
+  possible submission to the South African Computer Journal (SACJ), but
+  that submission was never made; this Journal on Information Security
+  submission is the manuscript's sole active submission.
 - Special issue: Not applicable — this is a submission to the journal's
   regular research article track.
 - Suggested reviewers: None suggested.
 - Reviewers to exclude: None.
-
-Note on reference integrity
-----------------------------------------------
-A full cross-check of references.bib against CrossRef/IEEE Xplore/DOI
-resolution found and fixed 10 bibliography errors (fabricated/broken
-DOIs, one wrong entry type, one wrong author list, one wrong page
-range). One entry ("Sanchez-Reillo et al., Biometric Verification in
-Constrained Environments", claimed BTAS 2020) could not be verified to
-exist at all and has been removed entirely, along with its 3 citations
-and the associated claim, rather than left unresolved.
 
 Thank you for considering our manuscript. We look forward to your
 response.
