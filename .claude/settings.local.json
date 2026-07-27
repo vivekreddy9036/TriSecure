@@ -105,7 +105,9 @@
       "Bash(perl -v)",
       "Bash(perl -pe 's/\\\\{,\\\\}/\\\\\\\\,/g')",
       "Bash(awk '/\\\\\\\\begin\\\\{figure/{fig=1; count=0; start=NR} fig && /includegraphics/{count++} /\\\\\\\\end\\\\{figure/{if\\(fig && count>1\\) print \"Lines \"start\"-\"NR\": \"count\" includegraphics calls in one figure env\"; fig=0}' trisecure_springer.tex)",
-      "Bash(convert --version)"
+      "Bash(convert --version)",
+      "Bash(unzip -l references.zip)",
+      "Bash(zip -X references.zip trisecure_springer.tex references.bib sn-jnl.cls sn-vancouver-num.bst figures/ablation_panel.png figures/adversarial_panel.png figures/architecture.png figures/auth_dfa.png figures/biometric_eval_panel.png figures/comparison_combined_panel.png figures/gap_matrix.png figures/threat_model_heatmap.png)"
     ]
   }
 }
